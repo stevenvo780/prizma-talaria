@@ -1,0 +1,104 @@
+/**
+ * cauce-brand.css — Puente entre Bootstrap 4.6 / Paper Dashboard (estilos
+ * existentes de Mera Vuelta) y los tokens del design system Olympo.
+ *
+ * Objetivo: que botones, links, encabezados y acentos adopten el acento del
+ * módulo "meravuelta" sin reescribir los estilos existentes (aditivo).
+ *
+ * Los tokens --c-* provienen de ./cauce-tokens.css (copia self-hosted de
+ * @olympo/tokens, sin dependencias npm nuevas). El acento del módulo
+ * (--c-accent-module) se resuelve por el atributo data-module="meravuelta"
+ * presente en el wrapper .cauce.cui-root (ver src/index.js).
+ */
+
+/* ---- Variables Bootstrap mapeadas a tokens Olympo ---- */
+:root {
+  --bs-primary: var(--c-accent-module);
+  --bs-link-color: var(--c-primary);
+  --bs-link-hover-color: var(--c-primary-hover);
+  --bs-body-font-family: var(--c-font-sans);
+  --bs-border-radius: var(--c-radius-md);
+}
+
+/* ---- Tipografía base ---- */
+body {
+  font-family: var(--c-font-sans);
+}
+
+/* ---- Encabezados con la familia display del sistema ---- */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--c-font-display);
+}
+
+/* ---- Links ---- */
+a {
+  color: var(--c-primary);
+}
+a:hover,
+a:focus {
+  color: var(--c-primary-hover);
+}
+
+/* ---- Botones primarios (acento del módulo) ---- */
+.btn-primary {
+  background-color: var(--c-accent-module);
+  border-color: var(--c-accent-module);
+  color: var(--c-on-accent);
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active {
+  background-color: var(--c-accent-module);
+  border-color: var(--c-accent-module);
+  filter: brightness(0.94);
+  color: var(--c-on-accent);
+}
+.btn-primary:focus,
+.btn-primary.focus {
+  box-shadow: 0 0 0 0.2rem var(--c-accent-module-tint);
+}
+
+/* ---- Botones outline primarios ---- */
+.btn-outline-primary {
+  color: var(--c-accent-module);
+  border-color: var(--c-accent-module);
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  background-color: var(--c-accent-module);
+  border-color: var(--c-accent-module);
+  color: var(--c-on-accent);
+}
+
+/* ---- Utilidades de color / fondo Bootstrap ---- */
+.text-primary {
+  color: var(--c-accent-module) !important;
+}
+.bg-primary {
+  background-color: var(--c-accent-module) !important;
+}
+.border-primary {
+  border-color: var(--c-accent-module) !important;
+}
+
+/* ---- Estados de foco accesibles con el anillo del sistema ---- */
+.form-control:focus,
+.custom-select:focus {
+  border-color: var(--c-accent-module);
+  box-shadow: 0 0 0 0.2rem var(--c-accent-module-tint);
+}
+
+/* ---- Co-branding marca paraguas Olympo ----
+   Texto/etiqueta que acompaña al nombre del producto (Mera Vuelta) para
+   indicar que pertenece al ecosistema Olympo. Discreto, en color de marca. */
+.cauce-umbrella {
+  font-family: var(--c-font-display);
+  font-weight: var(--c-weight-semibold);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: var(--c-text-xs);
+  color: var(--c-primary);
+}

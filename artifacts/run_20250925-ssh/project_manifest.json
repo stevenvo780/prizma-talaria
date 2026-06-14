@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-09-25T00:00:00Z",
+  "workspace_root": "/mnt/DATA/repos/humanizar/MeraVuelta",
+  "projects": [
+    "MeraVueltaApi",
+    "MeraVueltaFrond",
+    "MeraVueltaMovil",
+    "MeraVueltaPublicity"
+  ],
+  "repo": {
+    "name": "MeraVueltaApi",
+    "branch": "master",
+    "commit": "2cb27a1"
+  }
+}

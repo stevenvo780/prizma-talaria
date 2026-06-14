@@ -1,0 +1,281 @@
+.main-panel {
+  min-height: 100% !important;
+}
+
+.logo {
+  padding-top: 0px !important;
+  padding-bottom: 8px !important;
+}
+
+.logo-img {
+  border-radius: 0;
+}
+
+.bubble {
+  background: linear-gradient(to right, #095169, #0a827f);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.card-edit-profile {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container-edit-profile {
+  width: 100%;
+  height: 65%;
+}
+
+.cookie-message {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+}
+
+.cookie-message button {
+  background-color: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  outline: none;
+}
+
+.circle-count {
+  font-size: 1.5rem;
+  position: relative;
+  top: 20%;
+  background: #095169;
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  margin: 0 auto;
+}
+
+.politics-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.politics-text {
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.button-reload {
+  position: fixed;
+  top: 85%;
+  left: 93%;
+  font-size: 150%;
+}
+
+.info-alert {
+  z-index: 100 !important;
+  position: fixed;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  font-size: 15px;
+  font-weight: 600;
+  width: 90%;
+}
+
+@media (max-width: 776px) {
+  .info-alert {
+    bottom: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.containerProof {
+  margin-bottom: -1.5%
+}
+
+.takeOrderTopBar {
+  margin-bottom: 0%
+}
+
+.p-top-bar {
+  margin-bottom: -0.3%
+}
+
+.loader {
+  background-color: #8c8c8c48;
+  position: fixed;
+  width: 100%;
+  height: 110%;
+  top: -10%;
+  padding: 0;
+  margin: 0;
+  z-index: 100;
+}
+
+.form-check-input {
+  margin-right: "5px";
+  position: "relative";
+  top: 50,
+}
+
+.checkbox-card {
+  width: 25px;
+  height: 25px;
+  position: relative;
+  top: -10px;
+}
+
+.checkbox-vueltas {
+  width: 25px;
+  height: 25px;
+  top: 1.5vh;
+  right: 0%;
+}
+
+.order-bar {
+  margin-left: 0;
+}
+
+.checkbox-bar-orders {
+  margin-top: 10px;
+  display: flex;
+  align-items: left;
+  justify-content: left;
+}
+
+.search-views-standard {
+  position: relative;
+  top: 10px;
+  height: 40px;
+  background: url(https://icons.iconarchive.com/icons/bootstrap/bootstrap/256/Bootstrap-search-icon.png) no-repeat scroll 7px 7px;
+  background-size: 24px 24px;
+  padding-left: 40px;
+}
+
+.form-check-input-order {
+  width: 25px;
+  height: 25px;
+  right: 0;
+}
+
+.form-check-input-register {
+  width: 25px;
+  height: 25px;
+}
+
+input[type="checkbox"]+label::before {
+  background-color: #0a827f;
+  border-color: #0a827f;
+}
+
+.content-card {
+  width: 100%;
+  position: relative;
+  height: calc(75vh);
+  overflow-y: auto;
+}
+
+.sub-text-button {
+  font-size: 10px;
+  text-transform: none !important;
+  height: 0;
+}
+
+.sub-icon-button {
+  margin: -10px;
+  margin-top: -20px;
+}
+
+@media screen and (max-width: 768px) {
+  .bubble {
+    position: relative;
+    top: -10px;
+    right: 15px;
+  }
+
+  .circle-count {
+    top: 0%;
+    margin-bottom: 10px;
+  }
+
+  .content-card {
+    left: 4%;
+  }
+
+  .order-bar-button {
+    font-size: 10px;
+  }
+
+  .checkbox-bar-orders {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .checkbox-vueltas {
+    left: 6vh !important;
+  }
+
+  .order-bar {
+    margin-left: -1vh !important;
+  }
+
+  .button-reload {
+    position: fixed;
+    top: 88%;
+    left: 78%;
+  }
+
+  .takeOrderTopBar {
+    margin-bottom: -10%
+  }
+
+  .containerProof {
+    margin-bottom: 0%
+  }
+
+  .form-check-input {
+    position: "relative";
+    left: 11vh;
+  }
+
+  .form-check-input-order {
+    top: 1.5vh;
+    left: 8vh !important;
+  }
+
+  .checkbox-card {
+    width: 25px;
+    height: 25px;
+    position: relative;
+    left: 0vh;
+  }
+
+  .search-views-contain {
+    padding-bottom: 1vh;
+  }
+}

@@ -1,0 +1,170 @@
+/* ============================================================================
+   Olympo — Design Tokens (CSS custom properties)
+   The single styling source of truth for the whole ecosystem.
+   Import once near the root of any app:  import "@olympo/tokens/olympo.css";
+   Themes: default is light. Add data-theme="dark" on <html> for dark.
+   Module accent: add data-module="graf|emw|fiar|sinergia|meravuelta|..." on a
+   container to retint --c-accent-module for that product's surface.
+   ============================================================================ */
+
+:root {
+  /* ---- Primitive: primary (corriente / teal) ---- */
+  --c-primary-50:#ECFEFF; --c-primary-100:#CFFAFB; --c-primary-200:#A2F1F3;
+  --c-primary-300:#67E2E6; --c-primary-400:#2DCBD1; --c-primary-500:#14AEB5;
+  --c-primary-600:#0B8A8F; --c-primary-700:#0E6E73; --c-primary-800:#11585C;
+  --c-primary-900:#124A4D; --c-primary-950:#052B2E;
+
+  /* ---- Primitive: accent (caudal / coral) ---- */
+  --c-accent-50:#FFF1ED; --c-accent-100:#FFE0D6; --c-accent-200:#FFC2AD;
+  --c-accent-300:#FF9D7A; --c-accent-400:#FF7A4D; --c-accent-500:#FF5A2B;
+  --c-accent-600:#ED3E0F; --c-accent-700:#C42F09; --c-accent-800:#9B280D;
+  --c-accent-900:#7D2410;
+
+  /* ---- Primitive: slate (neutral, teal-undertone) ---- */
+  --c-slate-0:#FFFFFF; --c-slate-25:#F7FAFA; --c-slate-50:#F1F5F6;
+  --c-slate-100:#E5EBEC; --c-slate-200:#CBD5D7; --c-slate-300:#A6B5B8;
+  --c-slate-400:#76898D; --c-slate-500:#51666A; --c-slate-600:#3B4F53;
+  --c-slate-700:#2A3B3F; --c-slate-800:#1A282B; --c-slate-900:#111E21;
+  --c-slate-950:#0A1416;
+
+  /* ---- Primitive: semantic hues ---- */
+  --c-success-500:#1FB57A; --c-success-600:#179063; --c-success-50:#E7F8F0;
+  --c-warning-500:#F5A524; --c-warning-600:#D6850A; --c-warning-50:#FEF6E7;
+  --c-danger-500:#F04438;  --c-danger-600:#D32619;  --c-danger-50:#FEECEA;
+  --c-info-500:#2E90FA;    --c-info-600:#1570D6;    --c-info-50:#E9F2FE;
+
+  /* ---- Typography ---- */
+  --c-font-display:'Sora',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --c-font-sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --c-font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --c-text-xs:0.75rem;  --c-text-sm:0.875rem; --c-text-base:1rem;
+  --c-text-lg:1.125rem; --c-text-xl:1.25rem;  --c-text-2xl:1.5rem;
+  --c-text-3xl:1.875rem; --c-text-4xl:2.25rem; --c-text-5xl:3rem; --c-text-6xl:3.75rem;
+  --c-weight-normal:400; --c-weight-medium:500; --c-weight-semibold:600;
+  --c-weight-bold:700; --c-weight-extrabold:800;
+
+  /* ---- Spacing (4px base) ---- */
+  --c-space-1:0.25rem; --c-space-2:0.5rem; --c-space-3:0.75rem; --c-space-4:1rem;
+  --c-space-5:1.25rem; --c-space-6:1.5rem; --c-space-8:2rem; --c-space-10:2.5rem;
+  --c-space-12:3rem; --c-space-16:4rem; --c-space-20:5rem; --c-space-24:6rem;
+
+  /* ---- Radii ---- */
+  --c-radius-sm:0.375rem; --c-radius-md:0.625rem; --c-radius-lg:0.875rem;
+  --c-radius-xl:1.25rem; --c-radius-2xl:1.75rem; --c-radius-full:9999px;
+
+  /* ---- Shadows ---- */
+  --c-shadow-xs:0 1px 2px 0 rgba(10,27,34,.05);
+  --c-shadow-sm:0 1px 3px 0 rgba(10,27,34,.08),0 1px 2px -1px rgba(10,27,34,.06);
+  --c-shadow-md:0 4px 12px -2px rgba(10,27,34,.10),0 2px 6px -2px rgba(10,27,34,.06);
+  --c-shadow-lg:0 12px 28px -6px rgba(10,27,34,.14),0 6px 12px -6px rgba(10,27,34,.08);
+  --c-shadow-xl:0 24px 48px -12px rgba(10,27,34,.20);
+  --c-shadow-glow:0 0 0 1px rgba(11,138,143,.25),0 8px 24px -6px rgba(11,138,143,.35);
+
+  /* ---- Gradients ---- */
+  --c-gradient-corriente:linear-gradient(120deg,#0A1622 0%,#0B8A8F 58%,#2DCBD1 100%);
+  --c-gradient-caudal:linear-gradient(120deg,#FF5A2B 0%,#FF9D7A 100%);
+  --c-gradient-aurora:radial-gradient(120% 120% at 0% 0%,rgba(45,203,209,.18) 0%,rgba(45,203,209,0) 45%),radial-gradient(120% 120% at 100% 0%,rgba(255,90,43,.12) 0%,rgba(255,90,43,0) 40%);
+  --c-gradient-mist:linear-gradient(180deg,#F7FAFA 0%,#ECFEFF 100%);
+
+  /* ---- Motion ---- */
+  --c-duration-fast:120ms; --c-duration-base:200ms; --c-duration-slow:320ms;
+  --c-ease-flow:cubic-bezier(.22,1,.36,1); --c-ease-standard:cubic-bezier(.4,0,.2,1);
+
+  /* ---- z-index ---- */
+  --c-z-dropdown:1000; --c-z-sticky:1100; --c-z-overlay:1200; --c-z-modal:1300;
+  --c-z-popover:1400; --c-z-toast:1500; --c-z-tooltip:1600;
+
+  /* ============ SEMANTIC (light theme) ============ */
+  --c-bg:               var(--c-slate-25);
+  --c-bg-subtle:        var(--c-slate-50);
+  --c-surface:          var(--c-slate-0);
+  --c-surface-raised:   var(--c-slate-0);
+  --c-surface-sunken:   var(--c-slate-50);
+  --c-border:           var(--c-slate-100);
+  --c-border-strong:    var(--c-slate-200);
+  --c-text:             var(--c-slate-900);
+  --c-text-muted:       var(--c-slate-500);
+  --c-text-subtle:      var(--c-slate-400);
+  --c-text-inverse:     var(--c-slate-0);
+
+  --c-primary:          var(--c-primary-600);
+  --c-primary-hover:    var(--c-primary-700);
+  --c-primary-soft:     var(--c-primary-50);
+  --c-on-primary:       #ffffff;
+  --c-accent:           var(--c-accent-500);
+  --c-accent-hover:     var(--c-accent-600);
+  --c-on-accent:        #ffffff;
+  --c-ring:             rgba(11,138,143,.45);
+
+  --c-success:var(--c-success-500); --c-success-bg:var(--c-success-50);
+  --c-warning:var(--c-warning-500); --c-warning-bg:var(--c-warning-50);
+  --c-danger:var(--c-danger-500);   --c-danger-bg:var(--c-danger-50);
+  --c-info:var(--c-info-500);       --c-info-bg:var(--c-info-50);
+
+  /* per-module accent (overridden by [data-module]) */
+  --c-accent-module: var(--c-primary-600);
+  --c-accent-module-tint: var(--c-primary-50);
+
+  color-scheme: light;
+}
+
+/* ============ Dark theme ============ */
+[data-theme="dark"] {
+  --c-bg:               var(--c-slate-950);
+  --c-bg-subtle:        var(--c-slate-900);
+  --c-surface:          var(--c-slate-900);
+  --c-surface-raised:   var(--c-slate-800);
+  --c-surface-sunken:   #0d181b;
+  --c-border:           rgba(255,255,255,.08);
+  --c-border-strong:    rgba(255,255,255,.16);
+  --c-text:             var(--c-slate-50);
+  --c-text-muted:       var(--c-slate-300);
+  --c-text-subtle:      var(--c-slate-400);
+  --c-text-inverse:     var(--c-slate-950);
+
+  --c-primary:          var(--c-primary-400);
+  --c-primary-hover:    var(--c-primary-300);
+  --c-primary-soft:     rgba(20,174,181,.14);
+  --c-on-primary:       #04211f;
+  --c-accent:           var(--c-accent-400);
+  --c-accent-hover:     var(--c-accent-300);
+  --c-ring:             rgba(45,203,209,.55);
+
+  --c-success-bg:rgba(31,181,122,.14);
+  --c-warning-bg:rgba(245,165,36,.14);
+  --c-danger-bg:rgba(240,68,56,.14);
+  --c-info-bg:rgba(46,144,250,.14);
+
+  --c-accent-module: var(--c-primary-400);
+  --c-accent-module-tint: rgba(20,174,181,.14);
+  color-scheme: dark;
+}
+
+/* ============ Per-module accent retint ============ */
+[data-module="graf"]          { --c-accent-module:#22A45A; --c-accent-module-tint:#E6F6EC; }
+[data-module="emw"]           { --c-accent-module:#1FB85C; --c-accent-module-tint:#E5F8EC; }
+[data-module="meravuelta"]    { --c-accent-module:#E8A90B; --c-accent-module-tint:#FCF3DA; }
+[data-module="sinergia"]      { --c-accent-module:#6366F1; --c-accent-module-tint:#ECEDFE; }
+[data-module="fiar"]          { --c-accent-module:#2FAE9B; --c-accent-module-tint:#E3F6F2; }
+[data-module="hub"]           { --c-accent-module:#0B8A8F; --c-accent-module-tint:#E6F7F7; }
+[data-module="apisigo"]       { --c-accent-module:#2E90FA; --c-accent-module-tint:#E9F2FE; }
+[data-module="apisoftia"]     { --c-accent-module:#8B5CF6; --c-accent-module-tint:#F0EAFE; }
+[data-module="comercial"]     { --c-accent-module:#FF5A2B; --c-accent-module-tint:#FFEDE6; }
+[data-module="automatizacion"]{ --c-accent-module:#F59E0B; --c-accent-module-tint:#FEF3DC; }
+[data-theme="dark"][data-module] *, [data-theme="dark"] [data-module] { --c-accent-module-tint:rgba(255,255,255,.06); }
+
+/* ============ Base reset / typography opt-in via .cauce ============ */
+.cauce, .cauce *, .cauce *::before, .cauce *::after { box-sizing:border-box; }
+.cauce {
+  font-family:var(--c-font-sans);
+  color:var(--c-text);
+  background:var(--c-bg);
+  font-size:var(--c-text-base);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+.cauce h1,.cauce h2,.cauce h3,.cauce h4 { font-family:var(--c-font-display); font-weight:var(--c-weight-bold); letter-spacing:-0.015em; line-height:1.15; color:var(--c-text); margin:0; }
+.cauce a { color:var(--c-primary); text-decoration:none; }
+.cauce a:hover { color:var(--c-primary-hover); }
+.cauce code,.cauce pre { font-family:var(--c-font-mono); }

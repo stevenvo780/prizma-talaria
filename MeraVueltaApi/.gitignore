@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*-service-account*.json
+node_modules
+dist
+googleService.json
+google-services.json
+secrets/google-services.json
+.qodo

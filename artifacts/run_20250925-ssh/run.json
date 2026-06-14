@@ -1,0 +1,8 @@
+{
+  "timestamp": "2025-09-25T00:05:00Z",
+  "task": "Investigate MCP options for SSH",
+  "tools": {
+    "browser": true,
+    "terminal": true
+  }
+}

@@ -1,0 +1,130 @@
+[
+  {
+    "id": 0,
+    "departamento": "Amazonas"
+  },
+  {
+    "id": 1,
+    "departamento": "Antioquia"
+  },
+  {
+    "id": 2,
+    "departamento": "Arauca"
+  },
+  {
+    "id": 3,
+    "departamento": "Atl\u00e1ntico"
+  },
+  {
+    "id": 4,
+    "departamento": "Bol\u00edvar"
+  },
+  {
+    "id": 5,
+    "departamento": "Boyac\u00e1"
+  },
+  {
+    "id": 6,
+    "departamento": "Caldas"
+  },
+  {
+    "id": 7,
+    "departamento": "Caquet\u00e1"
+  },
+  {
+    "id": 8,
+    "departamento": "Casanare"
+  },
+  {
+    "id": 9,
+    "departamento": "Cauca"
+  },
+  {
+    "id": 10,
+    "departamento": "Cesar"
+  },
+  {
+    "id": 11,
+    "departamento": "Choc\u00f3"
+  },
+  {
+    "id": 12,
+    "departamento": "Cundinamarca"
+  },
+  {
+    "id": 13,
+    "departamento": "C\u00f3rdoba"
+  },
+  {
+    "id": 14,
+    "departamento": "Guain\u00eda"
+  },
+  {
+    "id": 15,
+    "departamento": "Guaviare"
+  },
+  {
+    "id": 16,
+    "departamento": "Huila"
+  },
+  {
+    "id": 17,
+    "departamento": "La Guajira"
+  },
+  {
+    "id": 18,
+    "departamento": "Magdalena"
+  },
+  {
+    "id": 19,
+    "departamento": "Meta"
+  },
+  {
+    "id": 20,
+    "departamento": "Nari\u00f1o"
+  },
+  {
+    "id": 21,
+    "departamento": "Norte de Santander"
+  },
+  {
+    "id": 22,
+    "departamento": "Putumayo"
+  },
+  {
+    "id": 23,
+    "departamento": "Quind\u00edo"
+  },
+  {
+    "id": 24,
+    "departamento": "Risaralda"
+  },
+  {
+    "id": 25,
+    "departamento": "San Andr\u00e9s y Proviencia"
+  },
+  {
+    "id": 26,
+    "departamento": "Santander"
+  },
+  {
+    "id": 27,
+    "departamento": "Sucre"
+  },
+  {
+    "id": 28,
+    "departamento": "Tolima"
+  },
+  {
+    "id": 29,
+    "departamento": "Valle del Cauca"
+  },
+  {
+    "id": 30,
+    "departamento": "Vaup\u00e9s"
+  },
+  {
+    "id": 31,
+    "departamento": "Vichada"
+  }
+]

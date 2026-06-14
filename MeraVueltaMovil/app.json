@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "MeraVuelta",
+    "slug": "domicilios",
+    "version": "3.0.6",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "platforms": [
+      "android"
+    ],
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "versionCode": 4,
+      "permissions": [
+        "SYSTEM_ALERT_WINDOW",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "ACCESS_BACKGROUND_LOCATION",
+        "WAKE_LOCK"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.stevenvo780.MeraVuelta"
+    },
+    "githubUrl": "https://github.com/stevenvo780/MovilDomicilios.git",
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e3003f5d-8f8b-45a7-b2eb-4cee1453e618"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.stevenvo780.MeraVuelta"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "short_name": "Mera Vuelta",
+  "name": "Mera Vuelta — Olympo · Asistencia en el manejo de pedidos de domicilio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0B8A8F",
+  "description": "Mera Vuelta, parte del ecosistema Olympo, es una aplicación que brinda asistencia en el manejo de pedidos de domicilio. Con Mera Vuelta, las empresas pueden hacer un seguimiento en tiempo real de sus domiciliarios y recibir pedidos masivos a través de integración con Google Sheets.",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/x-icon",
+      "sizes": "64x64 32x32 24x24 16x16"
+    },
+    {
+      "src": "cauce-symbol.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    },
+    {
+      "src": "screenshot2.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "web"
+    }
+  ]
+}
