@@ -28,17 +28,17 @@ export class DeliveryService {
    */
   async createFromWebhook(manager: EntityManager, payload: WebhookPayload): Promise<Order> {
     try {
-      console.log(`📦 [MeraVuelta] Procesando pedido: ${payload.orderNumber}`);
+      console.log(`📦 [Talaria] Procesando pedido: ${payload.orderNumber}`);
 
       // Buscar o crear empresa/usuario por defecto para pedidos de Graf
       let company = await manager.findOne(User, { 
-        where: { email: 'graf@humanizar.co' } 
+        where: { email: 'soporte@prisma-enterprice.cloud' } 
       });
 
       if (!company) {
         // Crear empresa Graf si no existe
         company = new User();
-        company.email = 'graf@humanizar.co';
+        company.email = 'soporte@prisma-enterprice.cloud';
         company.name = 'Graf';
         company.lastName = 'Sistema';
         company.documentNumber = '900123456';
@@ -49,7 +49,7 @@ export class DeliveryService {
         company.password = 'temp_password';
         company.clientPhone = '3001234567';
         company = await manager.save(User, company);
-        console.log(`✅ [MeraVuelta] Empresa Graf creada con ID: ${company.id}`);
+        console.log(`✅ [Talaria] Empresa Graf creada con ID: ${company.id}`);
       }
 
       // Buscar o crear cliente
@@ -67,7 +67,7 @@ export class DeliveryService {
         customer.typeDocument = payload.customerDocumentType || 'CC';
         customer.company = company;
         customer = await manager.save(Customer, customer);
-        console.log(`✅ [MeraVuelta] Cliente creado: ${customer.name} ${customer.lastName}`);
+        console.log(`✅ [Talaria] Cliente creado: ${customer.name} ${customer.lastName}`);
       }
 
       // Verificar que no exista pedido duplicado
@@ -79,7 +79,7 @@ export class DeliveryService {
       });
 
       if (existingOrder) {
-        console.log(`⚠️ [MeraVuelta] Pedido duplicado: ${payload.orderNumber}`);
+        console.log(`⚠️ [Talaria] Pedido duplicado: ${payload.orderNumber}`);
         return existingOrder;
       }
 
@@ -115,21 +115,21 @@ export class DeliveryService {
 
       const savedOrder = await manager.save(Order, order);
 
-      console.log(`✅ [MeraVuelta] Entrega creada - Número: ${savedOrder.deliveryNumber}, Pedido: ${savedOrder.purchaseNumber}`);
+      console.log(`✅ [Talaria] Entrega creada - Número: ${savedOrder.deliveryNumber}, Pedido: ${savedOrder.purchaseNumber}`);
 
       // Enviar notificación WhatsApp
       try {
         await sendWppMessage(savedOrder, manager);
-        console.log(`📱 [MeraVuelta] Notificación WhatsApp enviada para entrega ${savedOrder.deliveryNumber}`);
+        console.log(`📱 [Talaria] Notificación WhatsApp enviada para entrega ${savedOrder.deliveryNumber}`);
       } catch (wppError) {
-        console.error('❌ [MeraVuelta] Error enviando WhatsApp:', wppError);
+        console.error('❌ [Talaria] Error enviando WhatsApp:', wppError);
         // No fallar por error de WhatsApp
       }
 
       return savedOrder;
 
     } catch (error: unknown) {
-      console.error('❌ [MeraVuelta] Error creando entrega:', error);
+      console.error('❌ [Talaria] Error creando entrega:', error);
       throw Boom.badRequest(`Error creando entrega: ${(error as Error).message}`);
     }
   }
@@ -154,7 +154,7 @@ export class DeliveryService {
       });
       return order;
     } catch (error) {
-      console.error('❌ [MeraVuelta] Error obteniendo entrega:', error);
+      console.error('❌ [Talaria] Error obteniendo entrega:', error);
       throw new Error(`Error obteniendo entrega: ${(error as Error).message}`);
     }
   }
@@ -183,11 +183,11 @@ export class DeliveryService {
       }
 
       const updatedOrder = await manager.save(Order, order);
-      console.log(`🔄 [MeraVuelta] Estado actualizado: ${deliveryId} -> ${updateData.status}`);
+      console.log(`🔄 [Talaria] Estado actualizado: ${deliveryId} -> ${updateData.status}`);
       
       return updatedOrder;
     } catch (error) {
-      console.error('❌ [MeraVuelta] Error actualizando estado:', error);
+      console.error('❌ [Talaria] Error actualizando estado:', error);
       throw new Error(`Error actualizando estado: ${(error as Error).message}`);
     }
   }
@@ -201,7 +201,7 @@ export class DeliveryService {
       await manager.query('SELECT 1');
       return true;
     } catch (error) {
-      console.error('❌ [MeraVuelta] Error en health check:', error);
+      console.error('❌ [Talaria] Error en health check:', error);
       return false;
     }
   }
