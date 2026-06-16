@@ -122,6 +122,10 @@
     .dropdown-item:focus{
         outline: 0 !important;
     }
+    .dropdown-item:focus-visible{
+        outline: 2px solid var(--c-primary, #0B8A8F) !important;
+        outline-offset: 2px !important;
+    }
 
     .btn-group.select &{
         min-width: 100%;

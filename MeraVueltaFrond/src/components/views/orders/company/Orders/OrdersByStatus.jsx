@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "redux-first-history";
-import Select from 'react-select';
+import ReactSelect from 'react-select';
 import * as XLSX from "xlsx/xlsx";
+import {
+  Row,
+  Col,
+} from "reactstrap";
 import {
   Button,
   Input,
   Card,
-  CardText,
   CardBody,
-  CardHeader,
-  Row,
-  Col,
   Alert,
   Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  FormGroup,
-  Label,
-} from "reactstrap";
+  Checkbox,
+} from "prizma-ui";
 import {
   getAllOrderByCompanyForStatusAction,
   deleteOrderAction,
@@ -60,6 +56,16 @@ import {
 import { ModalAssignDomiciliarys } from "./ModalAssignDomiciliarys";
 import DynamicTooltip from "../../../../../components/hooks/DynamicTooltip";
 
+// Map reactstrap/bootstrap color strings to prizma-ui Button variants
+const colorToVariant = (c) => {
+  if (c === "success") return "primary";
+  if (c === "danger") return "danger";
+  if (c === "warning") return "accent";
+  if (c === "secondary") return "secondary";
+  if (c === "info") return "secondary";
+  return "primary";
+};
+
 const OrdersByStatus = (props) => {
   const dispatch = useDispatch();
   const orders = useSelector((state) => state.order.orders);
@@ -97,17 +103,17 @@ const OrdersByStatus = (props) => {
   const [orderWord, setOrderWord] = useState("");
   const [zoneFilter, setZoneFilter] = useState("");
   const [timeSlotFilter, setTimeSlotFilter] = useState("");
-  
+
   const zones = React.useMemo(() => {
     const uniqueZones = [...new Set(orders.map(o => o.zone).filter(z => z))];
     return uniqueZones.map(zone => ({ value: zone, label: zone }));
   }, [orders]);
-  
+
   const timeSlots = React.useMemo(() => {
     const uniqueTimeSlots = [...new Set(orders.map(o => o.pickupTimeSlot).filter(t => t))];
     return uniqueTimeSlots.map(timeSlot => ({ value: timeSlot, label: timeSlot }));
   }, [orders]);
-  
+
   const search = () => {
     if (orderWord != "") {
       dispatch(
@@ -314,14 +320,13 @@ const OrdersByStatus = (props) => {
   const handleExport = () => {
     let filteredOrders = orders;
 
-    // Aplicar filtros
     if (exportFilters.dateFrom) {
-      filteredOrders = filteredOrders.filter(order => 
+      filteredOrders = filteredOrders.filter(order =>
         new Date(order.creationDate) >= new Date(exportFilters.dateFrom)
       );
     }
     if (exportFilters.dateTo) {
-      filteredOrders = filteredOrders.filter(order => 
+      filteredOrders = filteredOrders.filter(order =>
         new Date(order.creationDate) <= new Date(exportFilters.dateTo)
       );
     }
@@ -335,7 +340,6 @@ const OrdersByStatus = (props) => {
       filteredOrders = filteredOrders.filter(order => order.orderState === exportFilters.status);
     }
 
-    // Preparar datos para exportación
     const exportData = filteredOrders.map(order => ({
       'Número de Compra': order.purchaseNumber,
       'Número de Entrega': order.deliveryNumber,
@@ -358,13 +362,14 @@ const OrdersByStatus = (props) => {
       <Row>
         <Col className="search-views-contain" sm={2} xs={6}>
           <div style={{ display: "flex", alignItems: "center" }}>
+            <label htmlFor="buscar" className="sr-only">Buscar pedidos</label>
             <Input
               type="text"
               id="buscar"
               placeholder="Buscar"
               onChange={(e) => { e.preventDefault(); setOrderWord(e.target.value); }}
-              onKeyPress={(target) => {
-                if (target.charCode == 13) {
+              onKeyDown={(target) => {
+                if (target.key === 'Enter') {
                   search();
                 }
               }}
@@ -379,7 +384,7 @@ const OrdersByStatus = (props) => {
           </div>
         </Col>
         <Col sm={2} xs={6}>
-          <Select
+          <ReactSelect
             isClearable
             placeholder="Zona"
             value={zones.find(zone => zone.value === zoneFilter) || null}
@@ -391,7 +396,7 @@ const OrdersByStatus = (props) => {
         </Col>
         {props.state === "Compra" && (
           <Col sm={2} xs={6}>
-            <Select
+            <ReactSelect
               isClearable
               placeholder="Horario"
               value={timeSlots.find(slot => slot.value === timeSlotFilter) || null}
@@ -406,6 +411,7 @@ const OrdersByStatus = (props) => {
           <p>Pagina: {page}</p>
         </Col>
         <Col sm={2} xs={3} style={{ marginTop: 10 }}>
+          <label htmlFor="cantidad" className="sr-only">Cantidad de pedidos por página</label>
           <Input
             type="number"
             id="cantidad"
@@ -417,8 +423,8 @@ const OrdersByStatus = (props) => {
                 setTakeSelect(count.target.value);
               }
             }}
-            onKeyPress={(target) => {
-              if (target.charCode == 13) {
+            onKeyDown={(target) => {
+              if (target.key === 'Enter') {
                 setTake(parseInt(takeSelect));
               }
             }}
@@ -428,10 +434,8 @@ const OrdersByStatus = (props) => {
         </Col>
         {props.state !== "Entregada" && (
           <Col sm={2} xs={2}>
-            <div
-              className="checkbox-bar-orders"
-            >
-              <Input
+            <div className="checkbox-bar-orders">
+              <Checkbox
                 onChange={(e) => {
                   if (e.target.checked) {
                     setSelectedOrders(orders);
@@ -441,7 +445,6 @@ const OrdersByStatus = (props) => {
                   setSelectAll(e.target.checked);
                 }}
                 className="form-check-input-order"
-                type="checkbox"
                 checked={selectAll}
                 id="selectAll"
               />
@@ -453,9 +456,10 @@ const OrdersByStatus = (props) => {
             />
           </Col>
         )}
-        <Col sm={2} xs={4} >
+        <Col sm={2} xs={4}>
           <Button
-            color="secondary"
+            variant="secondary"
+            aria-label={toggleDirection ? "Ordenar ascendente" : "Ordenar descendente"}
             onClick={(e) => {
               e.preventDefault();
               setToggleDirection(!toggleDirection);
@@ -471,28 +475,28 @@ const OrdersByStatus = (props) => {
               );
             }}
           >
-            {toggleDirection ? <FaArrowDown /> : <FaArrowUp />}
+            {toggleDirection ? <FaArrowDown aria-hidden="true" /> : <FaArrowUp aria-hidden="true" />}
           </Button>
           {props.state === "Entregada" && (
-            <Button 
-              color="success"
+            <Button
+              variant="primary"
               onClick={() => setExportModalOpen(true)}
               style={{ marginLeft: '10px' }}
             >
-              📊 Exportar
+              Exportar
             </Button>
           )}
         </Col>
-        <Col sm={1} xs={3} >
+        <Col sm={1} xs={3}>
           <PaginationButtons margin={5} handlePage={handlePage} />
         </Col>
         {props.state === "Compra" && (
           <Col xs={8} sm={9}>
             <Button
               className='order-bar-button'
-              color="success"
+              variant="primary"
               onClick={(e) => {
-                e.preventDefault;
+                e.preventDefault();
                 setPurchaseNumberModal(null);
                 setPhoneNumberModal(null);
                 setPrefixClientPhone(null);
@@ -515,9 +519,9 @@ const OrdersByStatus = (props) => {
             />
             <Button
               className='order-bar-button'
-              color="secondary"
+              variant="secondary"
               onClick={(e) => {
-                e.preventDefault;
+                e.preventDefault();
                 setUploadFileModal(true);
               }}
               id="massive"
@@ -537,7 +541,7 @@ const OrdersByStatus = (props) => {
               <Col sm={1} xs={2}>
                 <Button
                   className="float-right"
-                  color="success"
+                  variant="primary"
                   onClick={(e) => {
                     e.preventDefault();
                     setToggleSaveManyOrders(!toggleSaveManyOrders);
@@ -556,7 +560,7 @@ const OrdersByStatus = (props) => {
             {props.state === "EsperaDespacho" && (
               <Col sm={10} xs={validateMany(selectedOrders) == false ? 12 : 8}>
                 {validateMany(selectedOrders) == false ? (
-                  <Alert color="danger">
+                  <Alert tone="danger">
                     Debe tener todos los datos obligatorios en la orden para poder
                     asignar el domiciliario
                   </Alert>
@@ -564,7 +568,7 @@ const OrdersByStatus = (props) => {
                   <>
                     <Button
                       className="float-right"
-                      color={validateMany(selectedOrders) ? "success" : "secondary"}
+                      variant={validateMany(selectedOrders) ? "primary" : "secondary"}
                       onClick={(e) => {
                         e.preventDefault();
                         if (validateMany(selectedOrders)) setToggleAssignDomiciliary(!toggleAssignDomiciliary);
@@ -586,7 +590,7 @@ const OrdersByStatus = (props) => {
               <Col sm={10} xs={8}>
                 <Button
                   className="float-right"
-                  color={validateMany(selectedOrders) ? "success" : "secondary"}
+                  variant={validateMany(selectedOrders) ? "primary" : "secondary"}
                   onClick={(e) => {
                     e.preventDefault();
                     handleDeleteDomiciliaryMassive();
@@ -606,7 +610,7 @@ const OrdersByStatus = (props) => {
               <>
                 <Button
                   className="float-right"
-                  color={"secondary"}
+                  variant="secondary"
                   onClick={(e) => {
                     e.preventDefault();
                     setToggleDeleteMassive(!toggleDeleteMassive)
@@ -622,7 +626,7 @@ const OrdersByStatus = (props) => {
                 />
               </>
             </Col>
-            <Col sm={1} xs={2} className="text-center" >
+            <Col sm={1} xs={2} className="text-center">
               <>
                 <p style={{ position: "relative", left: (props.state !== "Compra") ? "-20px" : "0", top: (props.state === "Compra") ? "0px" : "10px" }} className="circle-count">{selectedOrders.length}</p>
               </>
@@ -631,10 +635,18 @@ const OrdersByStatus = (props) => {
         )}
       </Row>
       <hr style={{ marginTop: "0px", marginBottom: "5px" }} />
-      <Row
-        className="content-card"
-      >
-        {orders?.filter(order => 
+      <Row className="content-card">
+        {orders?.filter(order =>
+            (!zoneFilter || order.zone === zoneFilter) &&
+            (!timeSlotFilter || order.pickupTimeSlot === timeSlotFilter)
+          ).length === 0 && (
+          <Col sm={12}>
+            <p role="status" style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+              Sin pedidos en este estado
+            </p>
+          </Col>
+        )}
+        {orders?.filter(order =>
             (!zoneFilter || order.zone === zoneFilter) &&
             (!timeSlotFilter || order.pickupTimeSlot === timeSlotFilter)
           ).map((order, i) => {
@@ -643,7 +655,7 @@ const OrdersByStatus = (props) => {
           return (
             <Col
               key={i}
-              sm={(screen.width > 1700) ? 4 : 6}
+              sm={6}
             >
               <Card
                 style={{
@@ -653,13 +665,13 @@ const OrdersByStatus = (props) => {
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(0, 0, 0, 0.08)",
                 }}
               >
-                <CardHeader
-                  style={{
-                    height: "40px",
-                  }}>
+                <div
+                  className="cui-card__header"
+                  style={{ height: "40px" }}
+                >
                   {(order.orderState !== "Entregada") && (
                     <div className="float-right">
-                      <Input
+                      <Checkbox
                         onChange={(e) => {
                           if (e.target.checked === false) {
                             setSelectedOrders(
@@ -672,7 +684,6 @@ const OrdersByStatus = (props) => {
                             setSelectedOrders([...selectedOrders, order]);
                           }
                         }}
-                        type="checkbox"
                         checked={selectedOrders.some(
                           (selectedOrder) =>
                             selectedOrder.purchaseNumber ===
@@ -683,48 +694,47 @@ const OrdersByStatus = (props) => {
                     </div>
                   )}
                   # Compra: {order.purchaseNumber}
-                </CardHeader>
+                </div>
                 <CardBody style={{ width: "100%" }}>
                   {order.deliveryNumber != null && (
-                    <CardText style={{ marginBottom: "2px" }}>
+                    <p style={{ marginBottom: "2px" }}>
                       # Entrega: {order.deliveryNumber}
-                    </CardText>
+                    </p>
                   )}
                   {order.name != null && (
-                    <CardText style={{ marginBottom: "2px" }}>
+                    <p style={{ marginBottom: "2px" }}>
                       Nombre: {order.name} {order.lastName}
-                    </CardText>
+                    </p>
                   )}
                   {order.clientPhone != null && (
-                    <CardText style={{ marginBottom: "2px" }}>
+                    <p style={{ marginBottom: "2px" }}>
                       Teléfono: +{order.prefix} {order.clientPhone}
-                    </CardText>
+                    </p>
                   )}
                   {order.deliveryPacket != null && (
-                    <CardText style={{ marginBottom: "2px" }}>Paquete: {order.deliveryPacket}</CardText>
+                    <p style={{ marginBottom: "2px" }}>Paquete: {order.deliveryPacket}</p>
                   )}
                   {order.zone && (
-                    <CardText style={{ marginBottom: "2px" }}>Zona: {order.zone}</CardText>
+                    <p style={{ marginBottom: "2px" }}>Zona: {order.zone}</p>
                   )}
                   {order.pickupTimeSlot && (
-                    <CardText style={{ 
-                      marginBottom: "2px", 
+                    <p style={{
+                      marginBottom: "2px",
                       backgroundColor: props.state === "Compra" ? "#e8f5e8" : "transparent",
                       padding: props.state === "Compra" ? "4px 8px" : "0",
                       borderRadius: props.state === "Compra" ? "4px" : "0",
                       fontWeight: props.state === "Compra" ? "bold" : "normal",
                       color: props.state === "Compra" ? "#2d5016" : "inherit"
                     }}>
-                      🕒 Horario: {order.pickupTimeSlot}
-                    </CardText>
+                      Horario: {order.pickupTimeSlot}
+                    </p>
                   )}
                   <Row>
                     {order.orderState == "Compra" && (
                       <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} xs={xs} sm={sm}>
                         <Button
-                          outline
+                          variant="ghost"
                           style={{ width: "100%", height: "60%" }}
-                          color="success"
                           onClick={(e) => {
                             setOrderSelected(order);
                             setToggleCreate(!toggleCreate);
@@ -732,31 +742,29 @@ const OrdersByStatus = (props) => {
                           id={`create-new-delivery-${i}`}
                         >
                           <BsBoxSeam size={20} className="sub-icon-button" />
-                          <p className="sub-text-button" >Entregar</p>
+                          <p className="sub-text-button">Entregar</p>
                         </Button>
                       </Col>
                     )}
                     <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} xs={xs} sm={sm}>
                       <Button
-                        outline
-                        color="primary"
+                        variant="ghost"
                         style={{ width: "100%", height: "60%" }}
                         onClick={(e) => {
-                          e.preventDefault;
+                          e.preventDefault();
                           setToggleDetail(!toggleDetail)
                           setOrderDetail(order);
                         }}
                         id={`detail-${i}`}
                       >
                         <BsEye size={20} className="sub-icon-button" />
-                        <p className="sub-text-button" >Ver</p>
+                        <p className="sub-text-button">Ver</p>
                       </Button>
                     </Col>
                     {(order.orderState === "Compra") && (
                       <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} xs={xs} sm={sm}>
                         <Button
-                          outline={true}
-                          color="primary"
+                          variant="ghost"
                           style={{ width: "100%", height: "60%" }}
                           onClick={(e) => {
                             e.preventDefault();
@@ -765,15 +773,14 @@ const OrdersByStatus = (props) => {
                           id={`edit-${i}`}
                         >
                           <BsPencil size={20} className="sub-icon-button" />
-                          <p className="sub-text-button" >Editar</p>
+                          <p className="sub-text-button">Editar</p>
                         </Button>
                       </Col>
                     )}
                     {(order.orderState === "EsperaDespacho") && (
                       <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} xs={xs} sm={sm}>
                         <Button
-                          outline={color(order) === "success" ? false : true}
-                          color={color(order)}
+                          variant={colorToVariant(color(order))}
                           style={{ width: "100%", height: "60%" }}
                           onClick={(e) => {
                             e.preventDefault();
@@ -787,15 +794,14 @@ const OrdersByStatus = (props) => {
                           id={`edit-${i}`}
                         >
                           <BsPencil size={20} className="sub-icon-button" />
-                          <p className="sub-text-button" >Editar</p>
+                          <p className="sub-text-button">Editar</p>
                         </Button>
                       </Col>
                     )}
                     {order.orderState != "Entregada" && (
                       <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} xs={xs} sm={sm}>
                         <Button
-                          outline
-                          color="primary"
+                          variant="ghost"
                           style={{ width: "100%", height: "60%" }}
                           onClick={(e) => {
                             e.preventDefault();
@@ -805,7 +811,7 @@ const OrdersByStatus = (props) => {
                           id={`delete-${i}`}
                         >
                           <BsTrash size={20} className="sub-icon-button" />
-                          <p className="sub-text-button" >Borrar</p>
+                          <p className="sub-text-button">Borrar</p>
                         </Button>
                       </Col>
                     )}
@@ -813,8 +819,7 @@ const OrdersByStatus = (props) => {
                       order.orderState != "Entregada" && (
                         <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} xs={xs} sm={sm}>
                           <Button
-                            outline
-                            color="primary"
+                            variant="ghost"
                             style={{ width: "100%", height: "60%" }}
                             disabled={order.domiciliary != null ? false : true}
                             onClick={(e) => {
@@ -827,7 +832,7 @@ const OrdersByStatus = (props) => {
                             id={`remove-${i}`}
                           >
                             <FiUserX size={20} className="sub-icon-button" />
-                            <p className="sub-text-button" >Remover</p>
+                            <p className="sub-text-button">Remover</p>
                           </Button>
                           <DynamicTooltip
                             targetId={`remove-${i}`}
@@ -836,7 +841,6 @@ const OrdersByStatus = (props) => {
                           />
                         </Col>
                       )}
-
                   </Row>
                 </CardBody>
               </Card>
@@ -944,6 +948,8 @@ const OrdersByStatus = (props) => {
       />
       <Button
         className="button-reload"
+        variant="ghost"
+        aria-label="Recargar pedidos"
         onClick={() =>
           dispatch(
             getAllOrderByCompanyForStatusAction({
@@ -955,83 +961,84 @@ const OrdersByStatus = (props) => {
           )
         }
       >
-        <RxReload />
+        <RxReload aria-hidden="true" />
       </Button>
 
       {/* Modal de exportación */}
-      <Modal isOpen={exportModalOpen} toggle={() => setExportModalOpen(false)}>
-        <ModalHeader toggle={() => setExportModalOpen(false)}>
-          Exportar Órdenes
-        </ModalHeader>
-        <ModalBody>
-          <FormGroup>
-            <Label for="dateFrom">Fecha desde</Label>
-            <Input
-              type="date"
-              id="dateFrom"
-              value={exportFilters.dateFrom}
-              onChange={(e) => setExportFilters({...exportFilters, dateFrom: e.target.value})}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="dateTo">Fecha hasta</Label>
-            <Input
-              type="date"
-              id="dateTo"
-              value={exportFilters.dateTo}
-              onChange={(e) => setExportFilters({...exportFilters, dateTo: e.target.value})}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="zoneExport">Zona</Label>
-            <Select
-              isClearable
-              placeholder="Seleccionar zona"
-              value={zones.find(zone => zone.value === exportFilters.zone) || null}
-              onChange={(selectedZone) => {
-                setExportFilters({...exportFilters, zone: selectedZone ? selectedZone.value : ''});
-              }}
-              options={zones}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="timeSlotExport">Horario</Label>
-            <Select
-              isClearable
-              placeholder="Seleccionar horario"
-              value={timeSlots.find(slot => slot.value === exportFilters.timeSlot) || null}
-              onChange={(selectedSlot) => {
-                setExportFilters({...exportFilters, timeSlot: selectedSlot ? selectedSlot.value : ''});
-              }}
-              options={timeSlots}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label for="statusExport">Estado</Label>
-            <Select
-              value={{value: exportFilters.status, label: exportFilters.status}}
-              onChange={(selectedStatus) => {
-                setExportFilters({...exportFilters, status: selectedStatus.value});
-              }}
-              options={[
-                {value: 'Entregada', label: 'Entregada'},
-                {value: 'Compra', label: 'Compra'},
-                {value: 'EsperaDespacho', label: 'Espera Despacho'},
-                {value: 'EsperaSalida', label: 'Espera Salida'},
-                {value: 'Aceptada', label: 'Aceptada'},
-                {value: 'Salida', label: 'Salida'}
-              ]}
-            />
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={handleExport}>
-            Exportar
-          </Button>
-          <Button color="secondary" onClick={() => setExportModalOpen(false)}>
-            Cancelar
-          </Button>
-        </ModalFooter>
+      <Modal
+        open={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        title="Exportar Ordenes"
+        footer={
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+            <Button variant="primary" onClick={handleExport}>
+              Exportar
+            </Button>
+            <Button variant="secondary" onClick={() => setExportModalOpen(false)}>
+              Cancelar
+            </Button>
+          </div>
+        }
+      >
+        <div style={{ marginBottom: '12px' }}>
+          <label htmlFor="dateFrom">Fecha desde</label>
+          <Input
+            type="date"
+            id="dateFrom"
+            value={exportFilters.dateFrom}
+            onChange={(e) => setExportFilters({...exportFilters, dateFrom: e.target.value})}
+          />
+        </div>
+        <div style={{ marginBottom: '12px' }}>
+          <label htmlFor="dateTo">Fecha hasta</label>
+          <Input
+            type="date"
+            id="dateTo"
+            value={exportFilters.dateTo}
+            onChange={(e) => setExportFilters({...exportFilters, dateTo: e.target.value})}
+          />
+        </div>
+        <div style={{ marginBottom: '12px' }}>
+          <label>Zona</label>
+          <ReactSelect
+            isClearable
+            placeholder="Seleccionar zona"
+            value={zones.find(zone => zone.value === exportFilters.zone) || null}
+            onChange={(selectedZone) => {
+              setExportFilters({...exportFilters, zone: selectedZone ? selectedZone.value : ''});
+            }}
+            options={zones}
+          />
+        </div>
+        <div style={{ marginBottom: '12px' }}>
+          <label>Horario</label>
+          <ReactSelect
+            isClearable
+            placeholder="Seleccionar horario"
+            value={timeSlots.find(slot => slot.value === exportFilters.timeSlot) || null}
+            onChange={(selectedSlot) => {
+              setExportFilters({...exportFilters, timeSlot: selectedSlot ? selectedSlot.value : ''});
+            }}
+            options={timeSlots}
+          />
+        </div>
+        <div style={{ marginBottom: '12px' }}>
+          <label>Estado</label>
+          <ReactSelect
+            value={{value: exportFilters.status, label: exportFilters.status}}
+            onChange={(selectedStatus) => {
+              setExportFilters({...exportFilters, status: selectedStatus.value});
+            }}
+            options={[
+              {value: 'Entregada', label: 'Entregada'},
+              {value: 'Compra', label: 'Compra'},
+              {value: 'EsperaDespacho', label: 'Espera Despacho'},
+              {value: 'EsperaSalida', label: 'Espera Salida'},
+              {value: 'Aceptada', label: 'Aceptada'},
+              {value: 'Salida', label: 'Salida'}
+            ]}
+          />
+        </div>
       </Modal>
     </>
   );

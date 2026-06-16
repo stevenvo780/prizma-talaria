@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Container,
-  Row,
-  Col,
   Card,
   CardHeader,
   CardBody,
   Button,
   Input,
   Label,
-  FormGroup,
+  Field,
+  Checkbox,
+  Textarea,
   Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Alert
-} from 'reactstrap';
+  Alert,
+  Badge,
+  Spinner,
+} from 'prizma-ui';
 import axios from 'axios';
 
 const MessageConfig = () => {
@@ -23,7 +21,8 @@ const MessageConfig = () => {
   const [loading, setLoading] = useState(true);
   const [editingMessage, setEditingMessage] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [alert, setAlert] = useState({ show: false, message: '', color: 'success' });
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [alert, setAlert] = useState({ show: false, message: '', tone: 'success' });
 
   const defaultMessages = [
     {
@@ -55,10 +54,10 @@ const MessageConfig = () => {
     try {
       const token = localStorage.getItem('token');
       const isUpdate = messageData.id;
-      
+
       const url = isUpdate ? `/api/message-config/${messageData.id}` : '/api/message-config';
       const method = isUpdate ? 'put' : 'post';
-      
+
       await axios[method](url, messageData, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -79,7 +78,7 @@ const MessageConfig = () => {
       await axios.delete(`/api/message-config/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
+
       showAlert('Configuración eliminada exitosamente', 'success');
       fetchMessageConfigs();
     } catch (error) {
@@ -88,9 +87,9 @@ const MessageConfig = () => {
     }
   };
 
-  const showAlert = (message, color) => {
-    setAlert({ show: true, message, color });
-    setTimeout(() => setAlert({ show: false, message: '', color: 'success' }), 5000);
+  const showAlert = (message, tone) => {
+    setAlert({ show: true, message, tone });
+    setTimeout(() => setAlert({ show: false, message: '', tone: 'success' }), 5000);
   };
 
   const openModal = (message = null) => {
@@ -109,34 +108,35 @@ const MessageConfig = () => {
   };
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <Spinner label="Cargando..." />;
   }
 
   return (
-    <Container fluid>
-      <Row>
-        <Col md="12">
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-12">
           <Card>
-            <CardHeader>
-              <h5 className="title">Configuración de Mensajes</h5>
-              <Button 
-                color="primary" 
-                size="sm" 
-                onClick={() => openModal()}
-                className="float-right"
-              >
-                Nuevo Mensaje
-              </Button>
-            </CardHeader>
+            <CardHeader
+              title={<h1 className="title" style={{ fontSize: '1.25rem' }}>Configuración de Mensajes</h1>}
+              action={
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => openModal()}
+                >
+                  Nuevo Mensaje
+                </Button>
+              }
+            />
             <CardBody>
               {alert.show && (
-                <Alert color={alert.color}>
+                <Alert tone={alert.tone}>
                   {alert.message}
                 </Alert>
               )}
 
               <p className="text-muted">
-                Configura los mensajes automáticos que se envían a los clientes. 
+                Configura los mensajes automáticos que se envían a los clientes.
                 Usa las siguientes variables: {'{companyName}'}, {'{purchaseNumber}'}, {'{deliveryNumber}'}, {'{url}'}
               </p>
 
@@ -145,31 +145,31 @@ const MessageConfig = () => {
                 return (
                   <Card key={defaultMsg.messageKey} className="mb-3">
                     <CardBody>
-                      <Row>
-                        <Col md="8">
+                      <div className="row">
+                        <div className="col-md-8">
                           <h6>{defaultMsg.description}</h6>
                           <p className="text-muted">Clave: <code>{defaultMsg.messageKey}</code></p>
                           <div>
                             <Label>Mensaje actual:</Label>
-                            <div style={{ 
-                              backgroundColor: '#f8f9fa', 
-                              padding: '10px', 
+                            <div style={{
+                              backgroundColor: '#f8f9fa',
+                              padding: '10px',
                               borderRadius: '4px',
                               border: '1px solid #dee2e6'
                             }}>
                               {existingConfig ? existingConfig.messageText : defaultMsg.defaultText}
                             </div>
                           </div>
-                        </Col>
-                        <Col md="4" className="text-right">
+                        </div>
+                        <div className="col-md-4 text-right">
                           <div className="mb-2">
-                            <span className={`badge ${existingConfig?.isActive ? 'badge-success' : 'badge-secondary'}`}>
+                            <Badge tone={existingConfig?.isActive ? 'success' : 'neutral'}>
                               {existingConfig?.isActive ? 'Activo' : 'Inactivo'}
-                            </span>
+                            </Badge>
                           </div>
-                          <Button 
-                            color="primary" 
-                            size="sm" 
+                          <Button
+                            variant="primary"
+                            size="sm"
                             onClick={() => openModal(existingConfig || {
                               messageKey: defaultMsg.messageKey,
                               messageText: defaultMsg.defaultText,
@@ -181,20 +181,16 @@ const MessageConfig = () => {
                             {existingConfig ? 'Editar' : 'Configurar'}
                           </Button>
                           {existingConfig && (
-                            <Button 
-                              color="danger" 
-                              size="sm" 
-                              onClick={() => {
-                                if (window.confirm('¿Estás seguro de eliminar esta configuración?')) {
-                                  deleteMessageConfig(existingConfig.id);
-                                }
-                              }}
+                            <Button
+                              variant="danger"
+                              size="sm"
+                              onClick={() => setConfirmDeleteId(existingConfig.id)}
                             >
                               Eliminar
                             </Button>
                           )}
-                        </Col>
-                      </Row>
+                        </div>
+                      </div>
                     </CardBody>
                   </Card>
                 );
@@ -206,135 +202,149 @@ const MessageConfig = () => {
                 .map((config) => (
                   <Card key={config.id} className="mb-3">
                     <CardBody>
-                      <Row>
-                        <Col md="8">
+                      <div className="row">
+                        <div className="col-md-8">
                           <h6>{config.description || 'Mensaje personalizado'}</h6>
                           <p className="text-muted">Clave: <code>{config.messageKey}</code></p>
                           <div>
                             <Label>Mensaje:</Label>
-                            <div style={{ 
-                              backgroundColor: '#f8f9fa', 
-                              padding: '10px', 
+                            <div style={{
+                              backgroundColor: '#f8f9fa',
+                              padding: '10px',
                               borderRadius: '4px',
                               border: '1px solid #dee2e6'
                             }}>
                               {config.messageText}
                             </div>
                           </div>
-                        </Col>
-                        <Col md="4" className="text-right">
+                        </div>
+                        <div className="col-md-4 text-right">
                           <div className="mb-2">
-                            <span className={`badge ${config.isActive ? 'badge-success' : 'badge-secondary'}`}>
+                            <Badge tone={config.isActive ? 'success' : 'neutral'}>
                               {config.isActive ? 'Activo' : 'Inactivo'}
-                            </span>
+                            </Badge>
                           </div>
-                          <Button 
-                            color="primary" 
-                            size="sm" 
+                          <Button
+                            variant="primary"
+                            size="sm"
                             onClick={() => openModal(config)}
                             className="mr-2"
                           >
                             Editar
                           </Button>
-                          <Button 
-                            color="danger" 
-                            size="sm" 
-                            onClick={() => {
-                              if (window.confirm('¿Estás seguro de eliminar esta configuración?')) {
-                                deleteMessageConfig(config.id);
-                              }
-                            }}
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => setConfirmDeleteId(config.id)}
                           >
                             Eliminar
                           </Button>
-                        </Col>
-                      </Row>
+                        </div>
+                      </div>
                     </CardBody>
                   </Card>
                 ))}
             </CardBody>
           </Card>
-        </Col>
-      </Row>
+        </div>
+      </div>
 
       {/* Modal para editar/crear mensajes */}
-      <Modal isOpen={modalOpen} toggle={() => setModalOpen(false)} size="lg">
-        <form onSubmit={handleSubmit}>
-          <ModalHeader toggle={() => setModalOpen(false)}>
-            {editingMessage?.id ? 'Editar Mensaje' : 'Nuevo Mensaje'}
-          </ModalHeader>
-          <ModalBody>
-            <FormGroup>
-              <Label for="messageKey">Clave del Mensaje</Label>
-              <Input
-                type="text"
-                id="messageKey"
-                value={editingMessage?.messageKey || ''}
-                onChange={(e) => setEditingMessage({
-                  ...editingMessage,
-                  messageKey: e.target.value
-                })}
-                required
-                disabled={!!editingMessage?.id}
-              />
-            </FormGroup>
-            
-            <FormGroup>
-              <Label for="description">Descripción</Label>
-              <Input
-                type="text"
-                id="description"
-                value={editingMessage?.description || ''}
-                onChange={(e) => setEditingMessage({
-                  ...editingMessage,
-                  description: e.target.value
-                })}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label for="messageText">Texto del Mensaje</Label>
-              <Input
-                type="textarea"
-                id="messageText"
-                rows="5"
-                value={editingMessage?.messageText || ''}
-                onChange={(e) => setEditingMessage({
-                  ...editingMessage,
-                  messageText: e.target.value
-                })}
-                required
-              />
-              <small className="text-muted">
-                Variables disponibles: {'{companyName}'}, {'{purchaseNumber}'}, {'{deliveryNumber}'}, {'{url}'}
-              </small>
-            </FormGroup>
-
-            <FormGroup check>
-              <Label check>
-                <Input
-                  type="checkbox"
-                  checked={editingMessage?.isActive || false}
-                  onChange={(e) => setEditingMessage({
-                    ...editingMessage,
-                    isActive: e.target.checked
-                  })}
-                />
-                Mensaje activo
-              </Label>
-            </FormGroup>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" type="submit">
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editingMessage?.id ? 'Editar Mensaje' : 'Nuevo Mensaje'}
+        footer={
+          <>
+            <Button variant="primary" type="submit" onClick={handleSubmit}>
               {editingMessage?.id ? 'Actualizar' : 'Crear'}
             </Button>
-            <Button color="secondary" onClick={() => setModalOpen(false)}>
+            <Button variant="secondary" onClick={() => setModalOpen(false)}>
               Cancelar
             </Button>
-          </ModalFooter>
+          </>
+        }
+      >
+        <form onSubmit={handleSubmit}>
+          <Field label="Clave del Mensaje" htmlFor="messageKey">
+            <Input
+              type="text"
+              id="messageKey"
+              value={editingMessage?.messageKey || ''}
+              onChange={(e) => setEditingMessage({
+                ...editingMessage,
+                messageKey: e.target.value
+              })}
+              required
+              disabled={!!editingMessage?.id}
+            />
+          </Field>
+
+          <Field label="Descripción" htmlFor="description">
+            <Input
+              type="text"
+              id="description"
+              value={editingMessage?.description || ''}
+              onChange={(e) => setEditingMessage({
+                ...editingMessage,
+                description: e.target.value
+              })}
+            />
+          </Field>
+
+          <Field
+            label="Texto del Mensaje"
+            htmlFor="messageText"
+            help="Variables disponibles: {companyName}, {purchaseNumber}, {deliveryNumber}, {url}"
+          >
+            <Textarea
+              id="messageText"
+              rows={5}
+              value={editingMessage?.messageText || ''}
+              onChange={(e) => setEditingMessage({
+                ...editingMessage,
+                messageText: e.target.value
+              })}
+              required
+            />
+          </Field>
+
+          <Checkbox
+            label="Mensaje activo"
+            checked={editingMessage?.isActive || false}
+            onChange={(e) => setEditingMessage({
+              ...editingMessage,
+              isActive: e.target.checked
+            })}
+          />
         </form>
       </Modal>
-    </Container>
+
+      {/* Modal de confirmación de eliminación */}
+      <Modal
+        open={confirmDeleteId !== null}
+        onClose={() => setConfirmDeleteId(null)}
+        title="Confirmar eliminación"
+        footer={
+          <>
+            <Button
+              variant="danger"
+              onClick={() => {
+                deleteMessageConfig(confirmDeleteId);
+                setConfirmDeleteId(null);
+              }}
+            >
+              Eliminar
+            </Button>
+            <Button variant="secondary" onClick={() => setConfirmDeleteId(null)}>
+              Cancelar
+            </Button>
+          </>
+        }
+      >
+        <p>¿Estás seguro de eliminar esta configuración?</p>
+      </Modal>
+    </div>
   );
 };
 

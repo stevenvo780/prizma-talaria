@@ -1,22 +1,9 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as XLSX from "xlsx/xlsx";
-import Select from 'react-select';
+import ReactSelect from 'react-select';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import {
-  Row,
-  Col,
-  Card,
-  CardHeader,
-  CardText,
-  CardBody,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-} from 'reactstrap';
+import { Button, Card, CardBody, Modal, Input } from 'prizma-ui';
 import {
   getAllCustomersAction,
   deleteCustomerAction,
@@ -61,7 +48,7 @@ const Customers = () => {
     React.useState(null);
   const [searchWord, setSearchWord] = React.useState('');
   const [zoneFilter, setZoneFilter] = React.useState('');
-  
+
   const zones = React.useMemo(() => {
     const uniqueZones = [...new Set(customers.map(c => c.zone).filter(z => z))];
     return uniqueZones.map(zone => ({ value: zone, label: zone }));
@@ -69,15 +56,13 @@ const Customers = () => {
 
   const search = () => {
     let customerSearchSelected = customers;
-    
-    // Filtrar por zona si está seleccionada
+
     if (zoneFilter) {
-      customerSearchSelected = customerSearchSelected.filter(customer => 
+      customerSearchSelected = customerSearchSelected.filter(customer =>
         customer.zone === zoneFilter
       );
     }
-    
-    // Filtrar por palabra de búsqueda si existe
+
     if (searchWord) {
       customerSearchSelected = customerSearchSelected.filter((customer) => {
         return (customer.name && customer.name.includes(searchWord)) ||
@@ -88,7 +73,7 @@ const Customers = () => {
                (customer.zone && customer.zone.includes(searchWord));
       });
     }
-    
+
     setCustomerFiltering(customerSearchSelected);
   };
 
@@ -148,7 +133,7 @@ const Customers = () => {
       }
     }
     const dataInSpanish = translateKeysToSpanish(dataInEnglish);
-    exportToExcel(dataInSpanish, "ClientesMeraVuelta.xlsx");
+    exportToExcel(dataInSpanish, "ClientesTalaria.xlsx");
   };
 
   const handleDragEnd = (result) => {
@@ -164,7 +149,6 @@ const Customers = () => {
     const [removed] = reorderedCustomers.splice(startIndex, 1);
     reorderedCustomers.splice(endIndex, 0, removed);
 
-    // Actualizar el orden en cada cliente
     reorderedCustomers.forEach((customer, index) => {
       const newOrder = index + 1;
       if (customer.order !== newOrder) {
@@ -175,7 +159,6 @@ const Customers = () => {
       }
     });
 
-    // Actualizar la vista local
     if (customerFiltering !== null) {
       setCustomerFiltering(reorderedCustomers);
     }
@@ -192,30 +175,30 @@ const Customers = () => {
           overflowX: 'hidden',
         }}
       >
-        <Button color="primary" onClick={() => {
+        <Button variant="primary" onClick={() => {
           dispatch(setCustomerTakeCustomer(null));
           dispatch(setStepCustomer(0));
           toggleModal();
         }}>Crear cliente</Button>
-        <Button color="primary" onClick={toggleUploadModal}>
+        <Button variant="primary" onClick={toggleUploadModal}>
           Cargar clientes masivamente
         </Button>
-        <Button color="primary" onClick={exportData}>
+        <Button variant="primary" onClick={exportData}>
           Descargar datos
         </Button>
-        <Row>
-          <Col md="6">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
+          <div style={{ flex: '0 0 50%', maxWidth: '50%' }}>
             <Input
               type="text"
               id="buscar"
               placeholder="Buscar"
               onChange={(e) => handleChangeWord(e, e.target.value)}
-              onKeyPress={(e) => e.charCode == 13 && search()}
+              onKeyDown={(e) => e.key === 'Enter' && search()}
               className="search-views-standard"
             />
-          </Col>
-          <Col md="4">
-            <Select
+          </div>
+          <div style={{ flex: '0 0 33.333%', maxWidth: '33.333%' }}>
+            <ReactSelect
               isClearable
               placeholder="Filtrar por zona"
               value={zones.find(zone => zone.value === zoneFilter) || null}
@@ -225,22 +208,26 @@ const Customers = () => {
               }}
               options={zones}
             />
-          </Col>
-          <Col md="2">
-            <Button 
-              color="primary" 
+          </div>
+          <div style={{ flex: '0 0 16.666%', maxWidth: '16.666%' }}>
+            <Button
+              variant="primary"
               onClick={search}
               style={{ width: '100%' }}
             >
               Buscar
             </Button>
-          </Col>
-        </Row>
+          </div>
+        </div>
         <br />
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="customers">
             {(provided) => (
-              <Row {...provided.droppableProps} ref={provided.innerRef}>
+              <div
+                style={{ display: 'flex', flexWrap: 'wrap' }}
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
                 {(customerFiltering !== null ? customerFiltering : customers)
                   .sort((a, b) => (a.order || 0) - (b.order || 0))
                   .map((customer, i) => (
@@ -255,18 +242,18 @@ const Customers = () => {
                             opacity: snapshot.isDragging ? 0.8 : 1,
                           }}
                         >
-                          <CustomerCard 
-                            customer={customer} 
-                            handleDeleteClose={handleDeleteClose} 
-                            setDeleteCustomerID={setDeleteCustomerID} 
-                            toggleModal={toggleModal} 
+                          <CustomerCard
+                            customer={customer}
+                            handleDeleteClose={handleDeleteClose}
+                            setDeleteCustomerID={setDeleteCustomerID}
+                            toggleModal={toggleModal}
                           />
                         </div>
                       )}
                     </Draggable>
                   ))}
                 {provided.placeholder}
-              </Row>
+              </div>
             )}
           </Droppable>
         </DragDropContext>
@@ -278,16 +265,17 @@ const Customers = () => {
         deleteCustomerID={deleteCustomerID}
       />
       <Button className='button-reload' onClick={() => dispatch(getAllCustomersAction())}><RxReload /></Button>
-      <Modal isOpen={modalOpen} toggle={toggleModal} className="modal-lg">
-        <ModalHeader toggle={toggleModal}>Crear cliente</ModalHeader>
-        <ModalBody>
-          {(orderStep === 0) ?
-            <CreateCustomerStep1 />
-            : <CreateCustomerStep2 />}
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={toggleModal}>Cerrar</Button>
-        </ModalFooter>
+      <Modal
+        open={modalOpen}
+        onClose={toggleModal}
+        title="Crear cliente"
+        footer={
+          <Button variant="secondary" onClick={toggleModal}>Cerrar</Button>
+        }
+      >
+        {(orderStep === 0) ?
+          <CreateCustomerStep1 />
+          : <CreateCustomerStep2 />}
       </Modal>
       <UploadCustomerModal toggle={uploadModalOpen} handleClose={toggleUploadModal} />
     </>
@@ -302,20 +290,23 @@ const DeleteCustomerModal = (props) => {
     deleteCustomerID,
   } = props;
   return (
-    <Modal isOpen={toggle} toggle={handleChange}>
-      <ModalHeader toggle={handleChange}>Confirmar</ModalHeader>
-      <ModalBody>
-        ¿Estás seguro/a de que desea eliminar el cliente seleccionado?
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          color="success"
-          onClick={(e) => handleChange(e, deleteCustomerID)}
-        >
-          Aceptar
-        </Button>
-        <Button onClick={handleClose}>Cancelar</Button>
-      </ModalFooter>
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Confirmar"
+      footer={
+        <>
+          <Button
+            variant="primary"
+            onClick={(e) => handleChange(e, deleteCustomerID)}
+          >
+            Aceptar
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
+        </>
+      }
+    >
+      ¿Estás seguro/a de que desea eliminar el cliente seleccionado?
     </Modal>
   );
 };
@@ -323,31 +314,23 @@ const DeleteCustomerModal = (props) => {
 const CustomerCard = ({ customer, handleDeleteClose, setDeleteCustomerID, toggleModal }) => {
   const dispatch = useDispatch();
   return (
-    <Col style={{ marginTop: "10px" }} sm="4">
-      <Card style={{ margin: 0, padding: 0, paddingBottom: "10px", width: "100%", height: "fit-content", maxHeight: "90%", boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)" }} body>
+    <div style={{ marginTop: '10px', padding: '0 8px', width: '33.333%' }}>
+      <Card raised style={{ margin: 0, padding: 0, paddingBottom: '10px', width: '100%', height: 'fit-content', maxHeight: '90%' }}>
         <CardBody>
-          <CardText>
-            Orden: {customer.order}
-          </CardText>
-          <CardText>
-            {customer.name} {customer.lastName}
-          </CardText>
-          <CardText>
-            Celular: {customer.clientPhone}
-          </CardText>
+          <p>Orden: {customer.order}</p>
+          <p>{customer.name} {customer.lastName}</p>
+          <p>Celular: {customer.clientPhone}</p>
           {customer.zone && (
-            <CardText>
-              Zona: {customer.zone}
-            </CardText>
+            <p>Zona: {customer.zone}</p>
           )}
           <Button
-            color="primary"
+            variant="primary"
             onClick={() => { dispatch(setCustomerTakeCustomer(customer)); toggleModal(); }}
           >
             Editar
           </Button>
           <Button
-            color="danger"
+            variant="danger"
             onClick={(e) => {
               handleDeleteClose(e);
               setDeleteCustomerID(customer.id);
@@ -357,7 +340,7 @@ const CustomerCard = ({ customer, handleDeleteClose, setDeleteCustomerID, toggle
           </Button>
         </CardBody>
       </Card>
-    </Col>
+    </div>
   );
 }
 
@@ -400,35 +383,37 @@ const UploadCustomerModal = ({ toggle, handleClose }) => {
   };
 
   return (
-    <Modal isOpen={toggle} toggle={handleClose}>
-      <ModalHeader toggle={handleClose}>Subir clientes masivamente</ModalHeader>
-      <ModalBody>
-        <p>
-          Para subir clientes utilizando un archivo de Excel, por favor descargue el formato y llénelo con los datos
-          de los clientes que desea agregar.
-        </p>
-        <p>Una vez llenado el archivo, puede subirlo utilizando el botón "Seleccionar archivo".</p>
-        <input
-          type="file"
-          id="excel-file"
-          accept=".xlsx,.xls,.csv"
-          style={{ display: 'none' }}
-          onChange={handleExcelFile}
-          ref={fileInputRef}
-        />
-      </ModalBody>
-      <ModalFooter>
-        <Button color="info" onClick={downloadFormatFile}>
-          Descargar formato
-        </Button>
-        <Button color="success" onClick={handleSelectFile}>
-          Seleccionar archivo
-        </Button>
-
-        <Button color="secondary" onClick={handleClose}>
-          Cerrar
-        </Button>
-      </ModalFooter>
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Subir clientes masivamente"
+      footer={
+        <>
+          <Button variant="secondary" onClick={downloadFormatFile}>
+            Descargar formato
+          </Button>
+          <Button variant="primary" onClick={handleSelectFile}>
+            Seleccionar archivo
+          </Button>
+          <Button variant="ghost" onClick={handleClose}>
+            Cerrar
+          </Button>
+        </>
+      }
+    >
+      <p>
+        Para subir clientes utilizando un archivo de Excel, por favor descargue el formato y llénelo con los datos
+        de los clientes que desea agregar.
+      </p>
+      <p>Una vez llenado el archivo, puede subirlo utilizando el botón "Seleccionar archivo".</p>
+      <input
+        type="file"
+        id="excel-file"
+        accept=".xlsx,.xls,.csv"
+        style={{ display: 'none' }}
+        onChange={handleExcelFile}
+        ref={fileInputRef}
+      />
     </Modal>
   );
 };

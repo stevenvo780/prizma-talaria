@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert } from 'reactstrap';
+import { Alert } from 'prizma-ui';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeNotification } from '../../store/reducer';
 
@@ -12,7 +12,7 @@ const InfoAlert = () => {
   };
 
   return (
-    <div className='info-alert'>
+    <div className='info-alert' aria-live="polite" aria-atomic="true">
       {notifications.map((notification, i) => (
         <AlertComponent
           key={i}
@@ -26,11 +26,24 @@ const InfoAlert = () => {
   );
 };
 
-const AlertComponent = ({ id, color, message, onRemoveNotification, i }) => {
-  const [isOpen, setIsOpen] = React.useState(true);
+// Map reactstrap color names to prizma-ui Alert tone values
+const colorToTone = (color) => {
+  const map = {
+    danger: 'danger',
+    success: 'success',
+    warning: 'warning',
+    info: 'info',
+    primary: 'info',
+    secondary: 'info',
+  };
+  return map[color] ?? 'info';
+};
+
+const AlertComponent = ({ id, color, message, onRemoveNotification }) => {
+  const [visible, setVisible] = React.useState(true);
 
   const onDismiss = () => {
-    setIsOpen(false);
+    setVisible(false);
     onRemoveNotification(id);
   };
 
@@ -42,9 +55,10 @@ const AlertComponent = ({ id, color, message, onRemoveNotification, i }) => {
     return () => clearTimeout(timer);
   }, [id, onRemoveNotification]);
 
+  if (!visible) return null;
+
   return (
     <div
-      key={i}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -52,16 +66,16 @@ const AlertComponent = ({ id, color, message, onRemoveNotification, i }) => {
       }}
     >
       <Alert
-        color={color}
-        isOpen={isOpen}
-        toggle={onDismiss}
+        tone={colorToTone(color)}
         style={{
           display: 'inline-block',
           whiteSpace: 'pre-wrap',
           pointerEvents: 'auto',
           wordWrap: 'break-word',
-          overflowY: 'auto', // Agrega la posibilidad de desplazamiento vertical si el texto excede el límite de altura
+          overflowY: 'auto',
+          cursor: 'pointer',
         }}
+        onClick={onDismiss}
       >
         {message}
       </Alert>

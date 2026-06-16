@@ -1,26 +1,18 @@
-import React, { useState, useCallback } from 'react';
-import { Tooltip } from 'reactstrap';
+import React from 'react';
+import { Tooltip } from 'prizma-ui';
 
 const DynamicTooltip = React.memo(({
   targetId,
   tooltipText = 'Hello, I am a tooltip!',
-  placement = 'right'
+  placement = 'right',
+  children,
 }) => {
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-
-  const toggle = useCallback(() => {
-    setTooltipOpen(prevState => !prevState);
-  }, []);
-
   return (
     <Tooltip
+      label={tooltipText}
       placement={placement}
-      isOpen={tooltipOpen}
-      target={targetId}
-      toggle={toggle}
-      boundariesElement="scrollParent"
     >
-      {tooltipText}
+      {children ?? <span id={targetId} />}
     </Tooltip>
   );
 });

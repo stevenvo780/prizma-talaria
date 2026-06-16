@@ -28,7 +28,7 @@ export const MapAllDealer = () => {
 
   const [viewport, setViewport] = useState({
     width: '100%',
-    height: (screen.height - (screen.height * 22 / 100)),
+    height: "78vh",
     latitude: 6.253817,
     longitude: -75.576694,
     zoom: 11,
@@ -53,7 +53,7 @@ export const MapAllDealer = () => {
     if (centralPoint && initialLoad === true) {
       setViewport({
         width: '100%',
-        height: (screen.height - (screen.height * 22 / 100)),
+        height: "78vh",
         latitude: centralPoint.latitude,
         longitude: centralPoint.longitude,
         zoom: 12,

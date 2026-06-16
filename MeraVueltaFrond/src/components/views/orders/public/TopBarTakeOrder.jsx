@@ -1,12 +1,8 @@
 import * as React from 'react';
-import {
-  Button,
-  Container,
-  Row,
-  Col,
-} from 'reactstrap';
+import { Alert } from 'prizma-ui';
 import { useSelector } from 'react-redux';
 import InfoAlert from '../../../hooks/InfoAlert';
+
 const TopBarTakeOrder = () => {
   const orderByDeliveryNumber = useSelector(
     (state) => state.order.orderByDeliveryNumber
@@ -19,45 +15,44 @@ const TopBarTakeOrder = () => {
           <br />
           <InfoAlert
             messages={[
-              'Se a guardado la orden',
+              'Se ha guardado la orden',
               'Puedes ver el estado de la orden en este mismo sitio',
             ]}
             color="success"
           />
         </>
       )}
-      <Container
+      <div
         className="themed-container containerProof"
-        fluid="sm"
         style={{ marginTop: '2%' }}
       >
-        <Row>
-          <Col className='takeOrderTopBar' sm="6">
-            <h2 className="takeOrderTitle">Tomar Orden</h2>
-            <p style={{ position: "relative", top: "-20%" }} ><b>Los valores con un * son obligatorios</b></p>
-          </Col>
-          <Col sm="6">
+        <div className="row">
+          <div className='takeOrderTopBar col-sm-6'>
+            <h1 className="takeOrderTitle">Tomar Orden</h1>
+            <p style={{ position: "relative", top: "-20%" }}><b>Los valores con un * son obligatorios</b></p>
+          </div>
+          <div className="col-sm-6">
             <br/>
             {orderByDeliveryNumber.deliveryPacket && (
-              <p className='p-top-bar' >
+              <p className='p-top-bar'>
                 {' '}
                 Paquete a entregar:{' '}
                 {orderByDeliveryNumber.deliveryPacket}
               </p>
             )}
-            <p className='p-top-bar' >
+            <p className='p-top-bar'>
               {' '}
               # Entrega:{' '}
               {orderByDeliveryNumber.deliveryNumber}
             </p>
-            <p className='p-top-bar' >
+            <p className='p-top-bar'>
               {' '}
               Numero de compra:{' '}
               {orderByDeliveryNumber.purchaseNumber}
             </p>
-          </Col>
-        </Row>
-      </Container>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

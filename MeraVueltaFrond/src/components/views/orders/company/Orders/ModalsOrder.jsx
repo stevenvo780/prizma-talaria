@@ -5,19 +5,16 @@ import {
   Button,
   ButtonGroup,
   Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Input,
   Alert,
-  Row,
-  Col,
   Card,
   CardBody,
-  CardText,
-  Container,
+} from 'prizma-ui';
+import {
+  Row,
+  Col,
 } from 'reactstrap';
-import Select from 'react-select';
+import ReactSelect from 'react-select';
 import {
   createOrderMassiveAction,
 } from '../../../../../store/reducer';
@@ -47,276 +44,164 @@ export const ModalDetailOrder = (props) => {
   }
 
   return (
-    <Modal isOpen={toggle} toggle={handleChange} size="xl">
-      <ModalHeader
-        toggle={handleChange}
-      >
-        <span># Compra: {order.purchaseNumber} - {state(order)}</span>
-      </ModalHeader>
-      <ModalBody>
-        <Col sm={12}>
-          <Card className="my-2" style={{ width: '100%', height: '90%' }}>
-            <CardBody style={{ width: '100%' }}>
-              <Row>
-                {order.pickupPicture != null ? (
-                  <>
+    <Modal
+      open={toggle}
+      onClose={handleChange}
+      title={<span># Compra: {order.purchaseNumber} - {state(order)}</span>}
+      style={{ maxWidth: '90vw', width: '900px' }}
+    >
+      <Col sm={12}>
+        <Card style={{ width: '100%', height: '90%' }}>
+          <CardBody style={{ width: '100%' }}>
+            <Row>
+              {order.pickupPicture != null ? (
+                <>
+                  <Col xs={12} sm={6}>
+                    <img
+                      src={order.pickupPicture}
+                      alt="Foto de recolección"
+                      style={{ width: '100%', height: 'auto', marginBottom: '1rem' }}
+                    />
+                  </Col>
+                  <Col xs={12} sm={6}>
+                    <div>
+                      {(order.deliveryNumber != null) && (
+                        <>
+                          <p>
+                            URL: <a href={`${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`} target="_blank" rel="noopener noreferrer">
+                              {`${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`}
+                            </a>
+                          </p>
+                          <p>#Entrega: {order.deliveryNumber}</p>
+                          <p>Domiciliario: {order.domiciliary?.name}</p>
+                        </>
+                      )}
+                      <p>Nombre: {order.name}  {" "}   {order.lastName}</p>
+                      <p>Teléfono: <a href={`https://wa.me/${order.prefix}${order.clientPhone}`} target="_blank" rel="noopener noreferrer">+{order.prefix} {order.clientPhone}</a></p>
+                      <p>Paquete: {order.deliveryPacket}</p>
+                      {(order.geolocationDelivery != null) && (
+                        (() => {
+                          const geoDeliveryObj = JSON.parse(order.geolocationDelivery);
+                          return (
+                            <p>
+                              Geolocalización de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${geoDeliveryObj.latitude},${geoDeliveryObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
+                            </p>
+                          );
+                        })()
+                      )}
+                      {(order.deliveryAddress != null) && (
+                        <p>
+                          Dirección de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.deliveryAddress)}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> {order.deliveryAddress}</a>
+                        </p>
+                      )}
+                      {(order.pickupLocation != null) && (
+                        (() => {
+                          const pickupLocationObj = JSON.parse(order.pickupLocation);
+                          return (
+                            <p>
+                              Ubicación de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${pickupLocationObj.latitude},${pickupLocationObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
+                            </p>
+                          );
+                        })()
+                      )}
+                      {(order.pickupAddress != null) && (
+                        <p>
+                          Dirección de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.pickupAddress)}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> {order.pickupAddress}</a>
+                        </p>
+                      )}
+                      <p>Departamento: {order.department}</p>
+                      <p>Ciudad: {order.city}</p>
+                      <p>Barrio: {order.neighborhood}</p>
+                      <p>Grupo residencial: {order.residentialGroupName}</p>
+                      <p>Número de casa o apartamento: {order.houseNumberOrApartment}</p>
+                      <p>Estado: {state(order)}</p>
+                      <p>Fecha de creación: {moment(order.creationDate).format('HH:mm:ss YYYY/MM/DD')}</p>
+                      <p>Ultima Actualización: {moment(order.updatedAt).format('HH:mm:ss YYYY/MM/DD')}</p>
+                      {(order.deliveryNote != null) && (<p>Nota de entrega: {order.deliveryNote}</p>)}
+                      {(order.paymentMethod != null) && (<p>Metodo de pago: {order.paymentMethod}</p>)}
+                      {(order.email != null) && (<p>Email: {order.email}</p>)}
+                      {(order.documentNumber != null) && (<p>Documento: {order.documentNumber}</p>)}
+                      {(order.documentNumber != null) && (<p>Tipo de documento: {order.typeDocument}</p>)}
+                      {(order.pickupTime != null) && (<p>Hora de recolección: {order.pickupTime}</p>)}
+                      {(order.dealerNote != null) && (<p>Nota del distribuidor: {order.dealerNote}</p>)}
+                    </div>
+                  </Col>
+                </>
+              ) : (
+                <Col xs={12}>
+                  <Row>
                     <Col xs={12} sm={6}>
-                      <img
-                        src={order.pickupPicture}
-                        alt="Foto de recolección"
-                        style={{ width: '100%', height: 'auto', marginBottom: '1rem' }}
-                      />
-                    </Col>
-                    <Col xs={12} sm={6}>
-                      <CardText>
+                      <div>
                         {(order.deliveryNumber != null) && (
                           <>
-                            <CardText>
+                            <p>
                               URL: <a href={`${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`} target="_blank">
                                 {`${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`}
                               </a>
-                            </CardText>
-                            <CardText>
-                              #Entrega: {order.deliveryNumber}
-                            </CardText>
-                            <CardText>
-                              Domiciliario: {order.domiciliary?.name}
-                            </CardText>
+                            </p>
+                            <p>#Entrega: {order.deliveryNumber}</p>
+                            <p>Domiciliario: {order.domiciliary?.name}</p>
                           </>
                         )}
-                        <CardText>
-                          Nombre: {order.name}  {" "}   {order.lastName}
-                        </CardText>
-                        <CardText>
-                          Teléfono: <a href={`https://wa.me/${order.prefix}${order.clientPhone}`} target="_blank" rel="noopener noreferrer">+{order.prefix} {order.clientPhone}</a>
-                        </CardText>
-                        <CardText>
-                          Paquete: {order.deliveryPacket}
-                        </CardText>
-                        {(order.geolocationDelivery != null) && (
-                          (() => {
-                            const geoDeliveryObj = JSON.parse(order.geolocationDelivery);
-                            return (
-                              <CardText>
-                                Geolocalización de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${geoDeliveryObj.latitude},${geoDeliveryObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
-                              </CardText>
-                            );
-                          })()
-                        )}
-                        {(order.deliveryAddress != null) && (
-                          <CardText>
-                            Dirección de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.deliveryAddress)}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> {order.deliveryAddress}</a>
-                          </CardText>
-                        )}
-
-                        {(order.pickupLocation != null) && (
-                          (() => {
-                            const pickupLocationObj = JSON.parse(order.pickupLocation);
-                            return (
-                              <CardText>
-                                Ubicación de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${pickupLocationObj.latitude},${pickupLocationObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
-                              </CardText>
-                            );
-                          })()
-                        )}
-                        {(order.pickupAddress != null) && (
-                          <CardText>
-                            Dirección de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.pickupAddress)}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> {order.pickupAddress}</a>
-                          </CardText>
-                        )}
-                        <CardText>
-                          Departamento: {order.department}
-                        </CardText>
-                        <CardText>
-                          Ciudad: {order.city}
-                        </CardText>
-                        <CardText>
-                          Barrio: {order.neighborhood}
-                        </CardText>
-                        <CardText>
-                          Grupo residencial: {order.residentialGroupName}
-                        </CardText>
-                        <CardText>
-                          Número de casa o apartamento: {order.houseNumberOrApartment}
-                        </CardText>
-                        <CardText>
-                          Estado: {state(order)}
-                        </CardText>
-                        <CardText>
-                          Fecha de creación: {moment(order.creationDate).format('HH:mm:ss YYYY/MM/DD')}
-                        </CardText>
-                        <CardText>
-                          Ultima Actualización: {moment(order.updatedAt).format('HH:mm:ss YYYY/MM/DD')}
-                        </CardText>
-                        {(order.deliveryNote != null) && (
-                          <CardText>
-                            Nota de entrega: {order.deliveryNote}
-                          </CardText>
-                        )}
-                        {(order.paymentMethod != null) && (
-                          <CardText>
-                            Metodo de pago: {order.paymentMethod}
-                          </CardText>
-                        )}
-                        {(order.email != null) && (
-                          <CardText>
-                            Email: {order.email}
-                          </CardText>
-                        )}
-                        {(order.documentNumber != null) && (
-                          <CardText>
-                            Documento: {order.documentNumber}
-                          </CardText>
-                        )}
-                        {(order.documentNumber != null) && (
-                          <CardText>
-                            Tipo de documento: {order.typeDocument}
-                          </CardText>
-                        )}
-                        {(order.pickupTime != null) && (
-                          <CardText>
-                            Hora de recolección: {order.pickupTime}
-                          </CardText>
-                        )}
-                        {(order.dealerNote != null) && (
-                          <CardText>
-                            Nota del distribuidor: {order.dealerNote}
-                          </CardText>
-                        )}
-                      </CardText>
+                        <p>Nombre: {order.name}  {" "}   {order.lastName}</p>
+                        <p>Teléfono: <a href={`https://wa.me/${order.prefix}${order.clientPhone}`} target="_blank" rel="noopener noreferrer">+{order.prefix} {order.clientPhone}</a></p>
+                        <p>Paquete: {order.deliveryPacket}</p>
+                        <p>Departamento: {order.department}</p>
+                        <p>Ciudad: {order.city}</p>
+                        <p>Barrio: {order.neighborhood}</p>
+                        <p>Grupo residencial: {order.residentialGroupName}</p>
+                        <p>Número de casa o apartamento: {order.houseNumberOrApartment}</p>
+                      </div>
                     </Col>
-                  </>
-                ) : (
-                  <Col xs={12}>
-                    <Row>
-                      <Col xs={12} sm={6}>
-                        <CardText>
-                          {(order.deliveryNumber != null) && (
-                            <>
-                              <CardText>
-                                URL: <a href={`${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`} target="_blank">
-                                  {`${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`}
-                                </a>
-                              </CardText>
-                              <CardText>
-                                #Entrega: {order.deliveryNumber}
-                              </CardText>
-                              <CardText>
-                                Domiciliario: {order.domiciliary?.name}
-                              </CardText>
-                            </>
-                          )}
-                          <CardText>
-                            Nombre: {order.name}  {" "}   {order.lastName}
-                          </CardText>
-                          <CardText>
-                            Teléfono: <a href={`https://wa.me/${order.prefix}${order.clientPhone}`} target="_blank" rel="noopener noreferrer">+{order.prefix} {order.clientPhone}</a>
-                          </CardText>
-                          <CardText>
-                            Paquete: {order.deliveryPacket}
-                          </CardText>
-                          <CardText>
-                            Departamento: {order.department}
-                          </CardText>
-                          <CardText>
-                            Ciudad: {order.city}
-                          </CardText>
-                          <CardText>
-                            Barrio: {order.neighborhood}
-                          </CardText>
-                          <CardText>
-                            Grupo residencial: {order.residentialGroupName}
-                          </CardText>
-                          <CardText>
-                            Número de casa o apartamento: {order.houseNumberOrApartment}
-                          </CardText>
-                        </CardText>
-                      </Col>
-                      <Col xs={12} sm={6}>
-                        {(order.geolocationDelivery != null) && (
-                          (() => {
-                            const geoDeliveryObj = JSON.parse(order.geolocationDelivery);
-                            return (
-                              <CardText>
-                                Geolocalización de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${geoDeliveryObj.latitude},${geoDeliveryObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
-                              </CardText>
-                            );
-                          })()
-                        )}
-                        {(order.deliveryAddress != null) && (
-                          <CardText>
-                            Dirección de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.deliveryAddress)}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> {order.deliveryAddress}</a>
-                          </CardText>
-                        )}
-
-                        {(order.pickupLocation != null) && (
-                          (() => {
-                            const pickupLocationObj = JSON.parse(order.pickupLocation);
-                            return (
-                              <CardText>
-                                Ubicación de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${pickupLocationObj.latitude},${pickupLocationObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
-                              </CardText>
-                            );
-                          })()
-                        )}
-                        {(order.pickupAddress != null) && (
-                          <CardText>
-                            Dirección de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.pickupAddress)}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> {order.pickupAddress}</a>
-                          </CardText>
-                        )}
-                        <CardText>
-                          Estado: {state(order)}
-                        </CardText>
-                        <CardText>
-                          Fecha de creación: {moment(order.creationDate).format('HH:mm:ss YYYY/MM/DD')}
-                        </CardText>
-                        <CardText>
-                          Ultima Actualización: {moment(order.updatedAt).format('HH:mm:ss YYYY/MM/DD')}
-                        </CardText>
-                        {(order.deliveryNote != null) && (
-                          <CardText>
-                            Nota de entrega: {order.deliveryNote}
-                          </CardText>
-                        )}
-                        {(order.paymentMethod != null) && (
-                          <CardText>
-                            Metodo de pago: {order.paymentMethod}
-                          </CardText>
-                        )}
-                        {(order.email != null) && (
-                          <CardText>
-                            Email: {order.email}
-                          </CardText>
-                        )}
-                        {(order.documentNumber != null) && (
-                          <CardText>
-                            Documento: {order.documentNumber}
-                          </CardText>
-                        )}
-                        {(order.documentNumber != null) && (
-                          <CardText>
-                            Tipo de documento: {order.typeDocument}
-                          </CardText>
-                        )}
-                        {(order.pickupTime != null) && (
-                          <CardText>
-                            Hora de recolección: {order.pickupTime}
-                          </CardText>
-                        )}
-                        {(order.dealerNote != null) && (
-                          <CardText>
-                            Nota del distribuidor: {order.dealerNote}
-                          </CardText>
-                        )}
-                      </Col>
-                    </Row>
-                  </Col>
-                )}
-              </Row>
-            </CardBody>
-          </Card>
-        </Col>
-      </ModalBody>
+                    <Col xs={12} sm={6}>
+                      {(order.geolocationDelivery != null) && (
+                        (() => {
+                          const geoDeliveryObj = JSON.parse(order.geolocationDelivery);
+                          return (
+                            <p>
+                              Geolocalización de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${geoDeliveryObj.latitude},${geoDeliveryObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
+                            </p>
+                          );
+                        })()
+                      )}
+                      {(order.deliveryAddress != null) && (
+                        <p>
+                          Dirección de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.deliveryAddress)}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> {order.deliveryAddress}</a>
+                        </p>
+                      )}
+                      {(order.pickupLocation != null) && (
+                        (() => {
+                          const pickupLocationObj = JSON.parse(order.pickupLocation);
+                          return (
+                            <p>
+                              Ubicación de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${pickupLocationObj.latitude},${pickupLocationObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
+                            </p>
+                          );
+                        })()
+                      )}
+                      {(order.pickupAddress != null) && (
+                        <p>
+                          Dirección de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.pickupAddress)}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> {order.pickupAddress}</a>
+                        </p>
+                      )}
+                      <p>Estado: {state(order)}</p>
+                      <p>Fecha de creación: {moment(order.creationDate).format('HH:mm:ss YYYY/MM/DD')}</p>
+                      <p>Ultima Actualización: {moment(order.updatedAt).format('HH:mm:ss YYYY/MM/DD')}</p>
+                      {(order.deliveryNote != null) && (<p>Nota de entrega: {order.deliveryNote}</p>)}
+                      {(order.paymentMethod != null) && (<p>Metodo de pago: {order.paymentMethod}</p>)}
+                      {(order.email != null) && (<p>Email: {order.email}</p>)}
+                      {(order.documentNumber != null) && (<p>Documento: {order.documentNumber}</p>)}
+                      {(order.documentNumber != null) && (<p>Tipo de documento: {order.typeDocument}</p>)}
+                      {(order.pickupTime != null) && (<p>Hora de recolección: {order.pickupTime}</p>)}
+                      {(order.dealerNote != null) && (<p>Nota del distribuidor: {order.dealerNote}</p>)}
+                    </Col>
+                  </Row>
+                </Col>
+              )}
+            </Row>
+          </CardBody>
+        </Card>
+      </Col>
     </Modal>
   );
 };
@@ -324,31 +209,33 @@ export const ModalDetailOrder = (props) => {
 export const URLModal = (props) => {
   const { toggle, handleChange, handleCreateSheetOrder } = props;
   return (
-    <Modal isOpen={toggle} toggle={handleChange}>
-      <ModalHeader toggle={handleChange}>
-        ¿Estas seguro de crear esta orden?
-      </ModalHeader>
-      <ModalFooter>
-        <Button
-          color="success"
-          onClick={(e) => {
-            e.preventDefault;
-            handleCreateSheetOrder();
-            handleChange();
-          }}
-        >
-          Aceptar
-        </Button>
-        <Button
-          color="secondary"
-          onClick={() => {
-            handleChange();
-          }}
-        >
-          Cancelar
-        </Button>
-      </ModalFooter>
-    </Modal>
+    <Modal
+      open={toggle}
+      onClose={handleChange}
+      title="¿Estas seguro de crear esta orden?"
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button
+            variant="primary"
+            onClick={(e) => {
+              e.preventDefault();
+              handleCreateSheetOrder();
+              handleChange();
+            }}
+          >
+            Aceptar
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              handleChange();
+            }}
+          >
+            Cancelar
+          </Button>
+        </div>
+      }
+    />
   );
 };
 
@@ -365,7 +252,7 @@ export const PurchaseNumberAddModal = (props) => {
   } = props;
   const [error, setError] = React.useState(null);
   const handleSave = async (e) => {
-    e.preventDefault;
+    e.preventDefault();
     if (phoneNumberModal && phoneNumberModal.length > 0) {
       if (phoneNumberModal.length < 10) {
         setError('El numero Movil debe tener 10 dígitos');
@@ -380,69 +267,71 @@ export const PurchaseNumberAddModal = (props) => {
     }
   };
   return (
-    <Modal isOpen={toggle} toggle={handleClose}>
-      <ModalHeader>Confirmar</ModalHeader>
-      <ModalBody>
-        Añada el numero de compra
-        <Input
-          type="number"
-          id="purchaseNumber"
-          placeholder="Numero de compra"
-          name="purchaseNumber"
-          onChange={handleChangePurchaseNumber}
-        />
-        <br />
-        <p>Puedes opcionalmente añadir el numero del cliente y se le enviara la URL para que llene su vuelta</p>
-        <Row>
-          <Col sm={5}>
-            <Select
-              onChange={handlePrefixChange}
-              value={(prefixClientPhone) ? prefixClientPhone : {
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Confirmar"
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button variant="primary" onClick={(e) => handleSave(e)}>
+            Aceptar
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
+        </div>
+      }
+    >
+      <p>Añada el numero de compra</p>
+      <Input
+        type="number"
+        id="purchaseNumber"
+        placeholder="Numero de compra"
+        name="purchaseNumber"
+        onChange={handleChangePurchaseNumber}
+      />
+      <br />
+      <p>Puedes opcionalmente añadir el numero del cliente y se le enviara la URL para que llene su vuelta</p>
+      <Row>
+        <Col sm={5}>
+          <ReactSelect
+            onChange={handlePrefixChange}
+            value={(prefixClientPhone) ? prefixClientPhone : {
+              value: '57',
+              label: 'Colombia +57',
+            }}
+            inputProps={{ autoComplete: 'off' }}
+            required
+            placeholder="Prefijo"
+            options={[
+              {
                 value: '57',
                 label: 'Colombia +57',
-              }}
-              inputProps={{ autoComplete: 'off' }}
-              required
-              placeholder="Prefijo"
-              options={[
-                {
-                  value: '57',
-                  label: 'Colombia +57',
-                },
-              ]}
-            />
-          </Col>
-          <Col sm={5}>
-            <Input
-              type="number"
-              id="phoneNumber"
-              placeholder="Numero celular del cliente"
-              name="phoneNumber"
-              onChange={handleChangePhoneNumber}
-            />
-          </Col>
-        </Row>
-        {error && (
-          <>
-            <br />
-            <Alert color="danger">{error}</Alert>
-          </>
-        )}
-      </ModalBody>
-      <ModalFooter>
-        <Button color="success" onClick={(e) => handleSave(e)}>
-          Aceptar
-        </Button>
-        <Button onClick={handleClose}>Cancelar</Button>
-      </ModalFooter>
+              },
+            ]}
+          />
+        </Col>
+        <Col sm={5}>
+          <Input
+            type="number"
+            id="phoneNumber"
+            placeholder="Numero celular del cliente"
+            name="phoneNumber"
+            onChange={handleChangePhoneNumber}
+          />
+        </Col>
+      </Row>
+      {error && (
+        <>
+          <br />
+          <Alert tone="danger">{error}</Alert>
+        </>
+      )}
     </Modal>
   );
 };
 
 export const UploadFileModal = (props) => {
   const dispatch = useDispatch();
-  const { handleClose, toggle } =
-    props;
+  const { handleClose, toggle } = props;
 
   function handleExcelFile(e) {
     let file = e.target.files[0];
@@ -470,18 +359,15 @@ export const UploadFileModal = (props) => {
     };
   }
   return (
-    <Modal isOpen={toggle} toggle={handleClose}>
-      <ModalHeader toggle={handleClose}>Ordenes masivas</ModalHeader>
-      <ModalBody>
-        <p>Para subir un archivo de excel con varias ordenes, por favor descargue el formato y llénalo con los datos de las ordenes que desea crear.</p>
-        <p>Solo puedes subir de a 2000 ordenes a la ves</p>
-        <p>Una vez llenado el archivo, por favor sábalo con el botón de subir varias ordenes</p>
-      </ModalBody>
-      <ModalFooter>
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Ordenes masivas"
+      footer={
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             <a href={process.env.REACT_APP_URL_FORMAT_MASSIVE_ORDERS} download>
-              <Button color="info">Descargar archivo</Button>{' '}
+              <Button variant="secondary">Descargar archivo</Button>{' '}
             </a>
           </div>
           <div>
@@ -492,9 +378,9 @@ export const UploadFileModal = (props) => {
               style={{ display: "none" }}
             />
             <Button
-              color="success"
+              variant="primary"
               onClick={(e) => {
-                e.preventDefault;
+                e.preventDefault();
                 document.getElementById("excel-file").value = "";
                 document.getElementById("excel-file").click();
                 document.getElementById("excel-file").onchange = handleExcelFile;
@@ -504,7 +390,11 @@ export const UploadFileModal = (props) => {
             </Button>
           </div>
         </div>
-      </ModalFooter>
+      }
+    >
+      <p>Para subir un archivo de excel con varias ordenes, por favor descargue el formato y llénalo con los datos de las ordenes que desea crear.</p>
+      <p>Solo puedes subir de a 2000 ordenes a la ves</p>
+      <p>Una vez llenado el archivo, por favor súbalo con el botón de subir varias ordenes</p>
     </Modal>
   );
 };
@@ -536,41 +426,40 @@ export const UploadFileResultModal = (props) => {
   }, [orderMassiveResult]);
 
   return (
-    <Modal isOpen={toggle} toggle={handleClose}>
-      <ModalHeader toggle={handleClose}>Ordenes masivas</ModalHeader>
-      <ModalBody>
-        <div
-          style={{
-            height: (screen.height * 40) / 100,
-            width: '100%',
-            overflowY: 'auto',
-          }}
-        >
-          {orderMassiveResult.map((item, i) => (
-            <p key={i}>
-              Estado: {item.status} <br />
-              Número de compra: {item.order.purchaseNumber}
-              {item.order.purchaseNumber == null && (
-                <>
-                  Número de entrega: {item.order?.deliveryNumber}
-                </>
-              )}
-            </p>
-          ))}
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Ordenes masivas"
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="secondary" onClick={handleClose}>Cerrar</Button>
         </div>
-        <hr />
-        <div
-          style={{
-            width: '100%',
-          }}
-        >
-          <p>Ordenes exitosas: {createdOrders}</p>
-          <p>Ordenes con error: {otherStatusOrders}</p>
-        </div>
-      </ModalBody>
-      <ModalFooter>
-        <Button onClick={handleClose}>Cerrar</Button>
-      </ModalFooter>
+      }
+    >
+      <div
+        style={{
+          height: '40vh',
+          width: '100%',
+          overflowY: 'auto',
+        }}
+      >
+        {orderMassiveResult.map((item, i) => (
+          <p key={i}>
+            Estado: {item.status} <br />
+            Número de compra: {item.order.purchaseNumber}
+            {item.order.purchaseNumber == null && (
+              <>
+                Número de entrega: {item.order?.deliveryNumber}
+              </>
+            )}
+          </p>
+        ))}
+      </div>
+      <hr />
+      <div style={{ width: '100%' }}>
+        <p>Ordenes exitosas: {createdOrders}</p>
+        <p>Ordenes con error: {otherStatusOrders}</p>
+      </div>
     </Modal>
   );
 };
@@ -578,20 +467,21 @@ export const UploadFileResultModal = (props) => {
 export const SaveOrderModal = (props) => {
   const { toggle, handleChange, handleClose } = props;
   return (
-    <>
-      <Modal isOpen={toggle} toggle={handleChange}>
-        <ModalHeader toggle={handleClose}>Confirmar</ModalHeader>
-        <ModalBody>
-          ¿Estás seguro/a de crear las ordenes?
-        </ModalBody>
-        <ModalFooter>
-          <Button color="success" onClick={handleChange}>
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Confirmar"
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button variant="primary" onClick={handleChange}>
             Aceptar
           </Button>
-          <Button onClick={handleClose}>Cancelar</Button>
-        </ModalFooter>
-      </Modal>
-    </>
+          <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
+        </div>
+      }
+    >
+      <p>¿Estás seguro/a de crear las ordenes?</p>
+    </Modal>
   );
 };
 
@@ -599,16 +489,22 @@ export function PaginationButtons({ handlePage, margin }) {
   return (
     <div className="float-right">
       <ButtonGroup style={{ margin: margin }}>
-        <Button style={{ margin: margin, marginRight: "1px" }} color="secondary" onClick={() => handlePage("previous")}>
-          <BsChevronLeft />
+        <Button
+          variant="secondary"
+          aria-label="Página anterior"
+          style={{ margin: margin, marginRight: "1px" }}
+          onClick={() => handlePage("previous")}
+        >
+          <BsChevronLeft aria-hidden="true" />
         </Button>
         <Button
-          color="secondary"
+          variant="secondary"
+          aria-label="Página siguiente"
           onClick={() => handlePage("next")}
           className="ml-auto"
           style={{ margin: margin }}
         >
-          <BsChevronRight />
+          <BsChevronRight aria-hidden="true" />
         </Button>
       </ButtonGroup>
     </div>
@@ -618,17 +514,20 @@ export function PaginationButtons({ handlePage, margin }) {
 export const ModalConfirmationDelete = (props) => {
   const { toggle, handleChange, handleClose } = props;
   return (
-    <Modal isOpen={toggle} toggle={handleClose}>
-      <ModalHeader toggle={handleClose}>Confirmar</ModalHeader>
-      <ModalBody>
-        ¿Estás seguro/a de que desea eliminar?
-      </ModalBody>
-      <ModalFooter>
-        <Button color="success" onClick={handleChange}>
-          Aceptar
-        </Button>
-        <Button onClick={handleClose}>Cancelar</Button>
-      </ModalFooter>
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Confirmar"
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button variant="primary" onClick={handleChange}>
+            Aceptar
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
+        </div>
+      }
+    >
+      <p>¿Estás seguro/a de que desea eliminar?</p>
     </Modal>
   );
 };
@@ -636,30 +535,34 @@ export const ModalConfirmationDelete = (props) => {
 export const DeleteDomiciliaryModal = (props) => {
   const { handleChange, handleClose, toggle, deleteDomiciliary } = props;
   return (
-    <Modal isOpen={toggle} toggle={handleClose}>
-      <ModalHeader toggle={handleClose}>Confirmar</ModalHeader>
-      <ModalBody>
-        ¿Estás seguro/a de que desea remover el domiciliario?
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          color="success"
-          onClick={(e) => {
-            e.preventDefault();
-            handleChange(deleteDomiciliary);
-          }}
-        >
-          Aceptar
-        </Button>
-        <Button
-          onClick={(e) => {
-            e.preventDefault;
-            handleClose();
-          }}
-        >
-          Cancelar
-        </Button>
-      </ModalFooter>
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Confirmar"
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button
+            variant="primary"
+            onClick={(e) => {
+              e.preventDefault();
+              handleChange(deleteDomiciliary);
+            }}
+          >
+            Aceptar
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={(e) => {
+              e.preventDefault();
+              handleClose();
+            }}
+          >
+            Cancelar
+          </Button>
+        </div>
+      }
+    >
+      <p>¿Estás seguro/a de que desea remover el domiciliario?</p>
     </Modal>
   );
 };
@@ -731,4 +634,3 @@ export const color = (order) => {
     return "primary";
   }
 };
-

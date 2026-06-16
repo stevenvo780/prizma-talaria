@@ -1,9 +1,9 @@
 /* ============================================================================
-   Olympo — Design Tokens (CSS custom properties)
+   Prizma — Design Tokens (CSS custom properties)
    The single styling source of truth for the whole ecosystem.
-   Import once near the root of any app:  import "@olympo/tokens/olympo.css";
+   Import once near the root of any app:  import "prizma-tokens/prizma.css";
    Themes: default is light. Add data-theme="dark" on <html> for dark.
-   Module accent: add data-module="graf|emw|fiar|sinergia|meravuelta|..." on a
+   Module accent: add data-module="hermes|iris|pistis|talanton|talaria|..." on a
    container to retint --c-accent-module for that product's surface.
    ============================================================================ */
 
@@ -143,7 +143,8 @@
 /* ============ Per-module accent retint ============ */
 [data-module="graf"]          { --c-accent-module:#22A45A; --c-accent-module-tint:#E6F6EC; }
 [data-module="emw"]           { --c-accent-module:#1FB85C; --c-accent-module-tint:#E5F8EC; }
-[data-module="meravuelta"]    { --c-accent-module:#E8A90B; --c-accent-module-tint:#FCF3DA; }
+[data-module="talaria"]       { --c-accent-module:#E8A90B; --c-accent-module-tint:#FCF3DA; }
+[data-module="meravuelta"]    { --c-accent-module:#E8A90B; --c-accent-module-tint:#FCF3DA; } /* alias deprecated */
 [data-module="sinergia"]      { --c-accent-module:#6366F1; --c-accent-module-tint:#ECEDFE; }
 [data-module="fiar"]          { --c-accent-module:#2FAE9B; --c-accent-module-tint:#E3F6F2; }
 [data-module="hub"]           { --c-accent-module:#0B8A8F; --c-accent-module-tint:#E6F7F7; }
@@ -153,9 +154,9 @@
 [data-module="automatizacion"]{ --c-accent-module:#F59E0B; --c-accent-module-tint:#FEF3DC; }
 [data-theme="dark"][data-module] *, [data-theme="dark"] [data-module] { --c-accent-module-tint:rgba(255,255,255,.06); }
 
-/* ============ Base reset / typography opt-in via .cauce ============ */
-.cauce, .cauce *, .cauce *::before, .cauce *::after { box-sizing:border-box; }
-.cauce {
+/* ============ Base reset / typography opt-in via .prizma ============ */
+.prizma, .prizma *, .prizma *::before, .prizma *::after { box-sizing:border-box; }
+.prizma {
   font-family:var(--c-font-sans);
   color:var(--c-text);
   background:var(--c-bg);
@@ -164,7 +165,7 @@
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
-.cauce h1,.cauce h2,.cauce h3,.cauce h4 { font-family:var(--c-font-display); font-weight:var(--c-weight-bold); letter-spacing:-0.015em; line-height:1.15; color:var(--c-text); margin:0; }
-.cauce a { color:var(--c-primary); text-decoration:none; }
-.cauce a:hover { color:var(--c-primary-hover); }
-.cauce code,.cauce pre { font-family:var(--c-font-mono); }
+.prizma h1,.prizma h2,.prizma h3,.prizma h4 { font-family:var(--c-font-display); font-weight:var(--c-weight-bold); letter-spacing:-0.015em; line-height:1.15; color:var(--c-text); margin:0; }
+.prizma a { color:var(--c-primary); text-decoration:none; }
+.prizma a:hover { color:var(--c-primary-hover); }
+.prizma code,.prizma pre { font-family:var(--c-font-mono); }

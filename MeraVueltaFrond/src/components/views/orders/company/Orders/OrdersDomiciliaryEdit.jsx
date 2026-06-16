@@ -1,25 +1,12 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'redux-first-history';
-import {
-  Container,
-  Col,
-  Form,
-  FormGroup,
-  Input,
-  Button,
-  Badge,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Alert,
-} from 'reactstrap';
+import { Button, Badge, Modal, Alert, Input } from 'prizma-ui';
 import {
   updateOrderAction,
   getAllDomiciliaryCompanyByCompanyAction,
 } from '../../../../../store/reducer';
-import Select from 'react-select';
+import ReactSelect from 'react-select';
 import InfoAlert from '../../../../hooks/InfoAlert';
 
 export const OrdersDomiciliaryEdit = (props) => {
@@ -101,39 +88,34 @@ export const OrdersDomiciliaryEdit = (props) => {
   return (
     <>
       <div>
-        <Container
-          className="themed-container containerProof"
-          fluid="sm"
-        >
-          <Form className="form" onSubmit={(e) => handleUpdate(e)}>
-            <Col>
-              <FormGroup>
-                <div className="positionButton">
-                  <Button
-                    color="success"
-                    size="lg"
-                    type="submit"
-                    disabled={!formIsValid}
-                  >
-                    Guardar
-                  </Button>{' '}
-                  {``}
-                </div>
-                {
-                  (
-                    orderByDeliveryNumber.city == null ||
-                    orderByDeliveryNumber.department == null ||
-                    orderByDeliveryNumber.deliveryAddress == null ||
-                    orderByDeliveryNumber.clientPhone == null
-                  ) && (
-                    <Alert color='danger' >Debe tener todos los datos obligatorios en la orden para poder asignar el domiciliario</Alert>
-                  )
-                }
-              </FormGroup>
-              <FormGroup row>
-                <Col sm={10}>
-                  <Badge color="primary">Domiciliario</Badge>
-                  <Select
+        <div className="themed-container containerProof">
+          <form className="form" onSubmit={(e) => handleUpdate(e)}>
+            <div>
+              <div className="positionButton">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  type="submit"
+                  disabled={!formIsValid}
+                >
+                  Guardar
+                </Button>{' '}
+                {``}
+              </div>
+              {
+                (
+                  orderByDeliveryNumber.city == null ||
+                  orderByDeliveryNumber.department == null ||
+                  orderByDeliveryNumber.deliveryAddress == null ||
+                  orderByDeliveryNumber.clientPhone == null
+                ) && (
+                  <Alert tone="danger">Debe tener todos los datos obligatorios en la orden para poder asignar el domiciliario</Alert>
+                )
+              }
+              <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                <div style={{ flex: '0 0 83.333%', maxWidth: '83.333%' }}>
+                  <Badge tone="primary">Domiciliario</Badge>
+                  <ReactSelect
                     inputProps={{ autoComplete: 'off' }}
                     inputId="domiciliary"
                     onChange={handleDealerChange}
@@ -145,14 +127,14 @@ export const OrdersDomiciliaryEdit = (props) => {
                       };
                     })}
                   />
-                  <Button color="info" onClick={(e) => { e.preventDefault(); goToDomiciliary() }}>
+                  <Button variant="secondary" onClick={(e) => { e.preventDefault(); goToDomiciliary() }}>
                     Buscar mas domiciliarios
                   </Button>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Col sm={10}>
-                  <Badge color="primary">Paquete A Entregar</Badge>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                <div style={{ flex: '0 0 83.333%', maxWidth: '83.333%' }}>
+                  <Badge tone="primary">Paquete A Entregar</Badge>
                   <Input
                     required
                     type="text"
@@ -160,29 +142,29 @@ export const OrdersDomiciliaryEdit = (props) => {
                     placeholder="Paquete A Entregar"
                     {...deliveryPacket}
                   />
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Col sm={10}>
-                  <Badge color="primary">Dirección Recogida</Badge>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                <div style={{ flex: '0 0 83.333%', maxWidth: '83.333%' }}>
+                  <Badge tone="primary">Dirección Recogida</Badge>
                   <Input
                     type="text"
                     id="pickupAddress"
                     placeholder="Dirección Recogida"
                     {...pickupAddress}
                   />
-                </Col>
-              </FormGroup>
-              <Col sm={10}>
-                <Badge color="primary">En el enlace publico puede llenar los datos por el cliente</Badge>
+                </div>
+              </div>
+              <div style={{ flex: '0 0 83.333%', maxWidth: '83.333%' }}>
+                <Badge tone="primary">En el enlace publico puede llenar los datos por el cliente</Badge>
                 <br />
-                <Button color="success" onClick={(e) => { e.preventDefault(); goToTakeOrder() }}>
+                <Button variant="primary" onClick={(e) => { e.preventDefault(); goToTakeOrder() }}>
                   LLenar la orden
                 </Button>
-              </Col>
-            </Col>
-          </Form>
-        </Container>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
       <SaveOrderModal
         toggle={toggle}
@@ -192,24 +174,26 @@ export const OrdersDomiciliaryEdit = (props) => {
     </>
   );
 };
+
 const SaveOrderModal = (props) => {
   const { toggle, handleChange, handleClose } = props;
   return (
-    <>
-      <Modal isOpen={toggle} toggle={handleChange}>
-        <ModalHeader toggle={handleClose}>Confirmar</ModalHeader>
-        <ModalBody>
-          ¿Estás seguro/a de que los datos ingresados en el formulario
-          son correctos?
-        </ModalBody>
-        <ModalFooter>
-          <Button color="success" onClick={handleChange}>
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Confirmar"
+      footer={
+        <>
+          <Button variant="primary" onClick={handleChange}>
             Aceptar
           </Button>
-          <Button onClick={handleClose}>Cancelar</Button>
-        </ModalFooter>
-      </Modal>
-    </>
+          <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
+        </>
+      }
+    >
+      ¿Estás seguro/a de que los datos ingresados en el formulario
+      son correctos?
+    </Modal>
   );
 };
 

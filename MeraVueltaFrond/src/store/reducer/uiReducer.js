@@ -8,6 +8,7 @@ export const setVueltasTabIndex = createAction('SET_VUELTAS_TAB_INDEX');
 export const setInfoHandler = createAction('SET_INFO_HANDLER');
 export const addNotification = createAction('ADD_NOTIFICATION');
 export const removeNotification = createAction('REMOVE_NOTIFICATION');
+export const setTourRun = createAction('SET_TOUR_RUN');
 
 // Initial state
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   vueltasTabIndex: "EsperaSalida",
   infoHandler: null,
   notifications: [],
+  tourRun: false,
 };
 
 // UI reducer
@@ -41,6 +43,9 @@ const uiReducer = createReducer(initialState, {
     state.notifications = state.notifications.filter(
       (notification) => notification.id !== action.payload
     );
+  },
+  [setTourRun]: (state, action) => {
+    state.tourRun = action.payload;
   },
 });
 

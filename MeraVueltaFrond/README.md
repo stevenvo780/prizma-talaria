@@ -1,6 +1,6 @@
-# MeraVuelta Frond
+# Talaria Frond
 
-Frontend web de MeraVuelta para operacion de pedidos y seguimiento de entregas.
+Frontend web de Talaria para operacion de pedidos y seguimiento de entregas.
 
 ## Stack
 
@@ -49,3 +49,4 @@ El frontend web esta desplegado en GCP Cloud Run:
 - API: `../MeraVueltaApi/README.md`
 - App movil: `../MeraVueltaMovil/README.md`
 - Sitio publico: `../MeraVueltaPublicity/README.md`
+

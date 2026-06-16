@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'redux-first-history';
 import {
-  Button,
-  Card,
-  CardText,
-  CardBody,
-  CardHeader,
   Row,
   Col,
-  Input,
 } from 'reactstrap';
+import {
+  Button,
+  Card,
+  CardBody,
+  Input,
+} from 'prizma-ui';
 import {
   setOrderStep,
   setOrderTabIndex,
@@ -129,14 +129,14 @@ const OrdersByStatusSearch = (props) => {
 
   return (
     <>
-      <Row style={{ marginTop: "5px" }} >
-        <Col sm={3} xs={5}  >
-          <h4 style={{ margin: 0 }} >{word}</h4>
+      <Row style={{ marginTop: "5px" }}>
+        <Col sm={3} xs={5}>
+          <h4 style={{ margin: 0 }}>{word}</h4>
         </Col>
         <Col sm={2} xs={3}>
           <h4 style={{ margin: 0 }}>#: {orders.length}</h4>
         </Col>
-        <Col sm={2} xs={4} >
+        <Col sm={2} xs={4}>
           <Input
             type="number"
             id="cantidad"
@@ -145,38 +145,42 @@ const OrdersByStatusSearch = (props) => {
             onChange={(count) => {
               setTakeSelect(count.target.value);
             }}
-            onKeyPress={(target) => {
-              if (target.charCode == 13) {
+            onKeyDown={(target) => {
+              if (target.key === 'Enter') {
                 setTake(parseInt(takeSelect))
               }
             }}
             style={{ width: "80%", margin: 0, padding: 0, textAlign: "center" }}
           />
-          <p className="sub-text-button" style={{ marginLeft: "20%" }} >Pedidos</p>
+          <p className="sub-text-button" style={{ marginLeft: "20%" }}>Pedidos</p>
         </Col>
         <Col sm={2} xs={3} style={{ textAlign: "center" }}>
           <p>Pagina: {page}</p>
         </Col>
-        <Col sm={1} xs={2} >
-          <Button style={{ margin: 0 }} color="secondary" onClick={(e) => { e.preventDefault(); handleToggleDirection(!toggleDirection) }}>
+        <Col sm={1} xs={2}>
+          <Button
+            variant="secondary"
+            style={{ margin: 0 }}
+            onClick={(e) => { e.preventDefault(); handleToggleDirection(!toggleDirection) }}
+          >
             {toggleDirection ? <FaArrowDown /> : <FaArrowUp />}
           </Button>
         </Col>
-        <Col sm={2} xs={7} >
+        <Col sm={2} xs={7}>
           <PaginationButtons margin={0} handlePage={handlePage} />
         </Col>
       </Row>
       <hr style={{ marginTop: "5px", marginBottom: "5px" }} />
       <Row style={{
         position: 'relative',
-        height: screen.height * 90 / 100,
+        height: "90vh",
         overflowY: 'auto',
         marginTop: 10
-      }} >
+      }}>
         {orders?.map((order, i) => (
           <Col
             key={i}
-            sm={(screen.width > 1700) ? 3 : 4}
+            sm={4}
           >
             <Card
               style={{
@@ -185,61 +189,60 @@ const OrdersByStatusSearch = (props) => {
                 maxHeight: "90%",
               }}
             >
-              <CardHeader
-                style={{
-                  height: "40px",
-                }}>
+              <div
+                className="cui-card__header"
+                style={{ height: "40px" }}
+              >
                 # Compra: {order.purchaseNumber}
-              </CardHeader>
+              </div>
               <CardBody style={{ width: "100%" }}>
-                <CardText style={{ marginBottom: "2px" }}>
+                <p style={{ marginBottom: "2px" }}>
                   Estado: {state(order)}
-                </CardText>
+                </p>
                 {(order.deliveryNumber != null) && (
-                  <CardText style={{ marginBottom: "2px" }}>
+                  <p style={{ marginBottom: "2px" }}>
                     # Entrega: {order.deliveryNumber}
-                  </CardText>
+                  </p>
                 )}
                 {(order.name != null) && (
-                  <CardText style={{ marginBottom: "2px" }}>
+                  <p style={{ marginBottom: "2px" }}>
                     Nombre: {order.name}  {" "}   {order.lastName}
-                  </CardText>
+                  </p>
                 )}
                 {(order.clientPhone != null) && (
-                  <CardText style={{ marginBottom: "2px" }}>
+                  <p style={{ marginBottom: "2px" }}>
                     Teléfono: +{order.prefix} {order.clientPhone}
-                  </CardText>
+                  </p>
                 )}
                 {(order.deliveryPacket != null) && (
-                  <CardText style={{ marginBottom: "2px" }}>
+                  <p style={{ marginBottom: "2px" }}>
                     Paquete: {order.deliveryPacket}
-                  </CardText>
+                  </p>
                 )}
                 {(order.domiciliary != null) && (
-                  <CardText style={{ marginBottom: "2px" }}>
+                  <p style={{ marginBottom: "2px" }}>
                     Domiciliario: {order.domiciliary.name} {order.domiciliary.lastName}
-                  </CardText>
+                  </p>
                 )}
                 <Row>
-                  <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} sm={6} xs={6} >
+                  <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} sm={6} xs={6}>
                     <Button
-                      outline
-                      color="primary"
+                      variant="ghost"
                       style={{ width: "100%", height: "60%" }}
                       onClick={(e) => {
-                        e.preventDefault;
+                        e.preventDefault();
                         handleToggleDetail();
                         setOrderDetail(order);
                       }}
                       id={`detail-${i}`}
                     >
                       <BsEye size={20} className="sub-icon-button" />
-                      <p className="sub-text-button" >Ver</p>
+                      <p className="sub-text-button">Ver</p>
                     </Button>
                   </Col>
-                  <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} sm={6} xs={6} >
+                  <Col style={{ paddingLeft: "5px", paddingRight: "5px" }} sm={6} xs={6}>
                     <Button
-                      color={"success"}
+                      variant="primary"
                       style={{ width: "100%", height: "60%" }}
                       onClick={(e) => {
                         e.preventDefault();
@@ -248,7 +251,7 @@ const OrdersByStatusSearch = (props) => {
                       id={`see-${i}`}
                     >
                       <TbDirections size={20} className="sub-icon-button" />
-                      <p className="sub-text-button" >Ir</p>
+                      <p className="sub-text-button">Ir</p>
                     </Button>
                   </Col>
                 </Row>

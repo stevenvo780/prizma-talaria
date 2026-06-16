@@ -286,10 +286,16 @@ function* createPayUSaga(action) {
   try {
     const { data } = yield call(userApi.createPayU, action.payload);
     yield put(createPayUDoneAction(data));
-    yield put(addNotification({ message: 'Transacción en progreso, en unos segundos se activa tu plan', color: 'success' }));
-    yield put(addNotification({ message: 'En tu correo podrás ver mas', color: 'success' }));
-    yield delay(2000);
-    window.location.reload(true);
+    // Mercado Pago: el back devuelve el init_point del checkout/PreApproval.
+    // Redirigimos al comercio a Mercado Pago para que autorice el pago; el plan
+    // se activa cuando el Hub nos notifica `suscripcion.activada`.
+    if (data?.initPoint) {
+      yield put(addNotification({ message: 'Redirigiendo a Mercado Pago...', color: 'success' }));
+      yield delay(1200);
+      window.location.href = data.initPoint;
+    } else {
+      yield put(addNotification({ message: 'No se pudo iniciar el pago en Mercado Pago', color: 'danger' }));
+    }
   } catch (error) {
     console.error(error);
     if (error?.response?.data?.message) {

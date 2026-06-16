@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  Col,
-  Container,
-  Form,
-  Row,
-  Label,
-  FormGroup,
-  Input,
-} from 'reactstrap';
+import { Button, Input } from 'prizma-ui';
 import { useDispatch } from 'react-redux';
 import { push } from 'redux-first-history';
 import { loginAction, addNotification } from '../../../store/reducer';
@@ -43,25 +34,23 @@ const LoginPage = () => {
 
   return (
     <>
-      <Container>
-        <Row className="mt-5">
-          <Col
-            sm={6}
-            className="p-5 m-auto shadow rounded-lg"
-          >
+      <div className="container">
+        <div className="row mt-5">
+          <div className="col-sm-6 p-5 m-auto shadow rounded-lg">
             <div className="text-center mb-3">
               <img
-                src="/cauce-symbol.svg"
-                alt="Olympo"
+                src="/prizma-symbol.svg"
+                alt="Prizma"
                 width={48}
                 height={48}
                 style={{ display: "block", margin: "0 auto 8px" }}
               />
-              <h1 className="mb-0">Mera Vuelta</h1>
-              <small className="cauce-umbrella">parte de Olympo</small>
+              <h1 className="mb-0">Talaria</h1>
+              <small className="prizma-umbrella">parte de Prizma</small>
             </div>
-            <Form onSubmit={handleLogin}>
-              <FormGroup>
+            <form onSubmit={handleLogin}>
+              <div className="mb-3">
+                <label htmlFor="email">Correo electrónico</label>
                 <Input
                   type="email"
                   placeholder="Correo"
@@ -70,8 +59,9 @@ const LoginPage = () => {
                   onChange={handleChangeEmail}
                   autoFocus
                 />
-              </FormGroup>
-              <FormGroup>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="password">Contraseña</label>
                 <Input
                   type="password"
                   placeholder="Contraseña"
@@ -80,29 +70,37 @@ const LoginPage = () => {
                   onChange={handleChangePassword}
                   autoComplete="current-password"
                 />
-              </FormGroup>
-              <Button color="primary" type="submit">
+              </div>
+              <Button variant="primary" type="submit">
                 Iniciar Sesión
               </Button>
               <Button
-                outline
-                color="primary"
-                type="submit"
+                variant="secondary"
+                type="button"
                 onClick={() => dispatch(push(`/register`))}
               >
                 Registrarse
               </Button>
-              <br></br>
-              <Button style={{ padding: "5px 10px", fontSize: "9px" }} color="secondary" type="button" onClick={() => dispatch(push("/recoverPassword/null"))}>
+              <br />
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                onClick={() => dispatch(push("/recoverPassword/null"))}
+              >
                 Recuperar Contraseña
               </Button>
-            </Form>
-          </Col>
-          <Col sm={6}>
-            <img width={"85%"} src={"https://firebasestorage.googleapis.com/v0/b/domicilios-fc429.appspot.com/o/assets%2FDise%C3%B1o%20nuevo%20logo%201080.png?alt=media&token=81605ee7-c7d6-4b25-9857-0b0b19509ffb"} alt="Login Image" />
-          </Col>
-        </Row>
-      </Container>
+            </form>
+          </div>
+          <div className="col-sm-6">
+            <img
+              width={"85%"}
+              src={"https://firebasestorage.googleapis.com/v0/b/domicilios-fc429.appspot.com/o/assets%2FDise%C3%B1o%20nuevo%20logo%201080.png?alt=media&token=81605ee7-c7d6-4b25-9857-0b0b19509ffb"}
+              alt="Login Image"
+            />
+          </div>
+        </div>
+      </div>
     </>
   );
 };

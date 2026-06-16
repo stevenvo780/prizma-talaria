@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'redux-first-history';
-import { Button } from 'reactstrap';
+import { Button } from 'prizma-ui';
 import {
   getFromDealerPositionAction,
   getOrderByDeliveryNumberAction,
@@ -30,7 +30,7 @@ export const MapOrderDealer = (props) => {
 
   const [viewport, setViewport] = useState({
     width: '100%',
-    height: (screen.height + (screen.height * 8 / 100)),
+    height: '108vh',
     latitude: 6.253817,
     longitude: -75.576694,
     zoom: 11,
@@ -88,7 +88,7 @@ export const MapOrderDealer = (props) => {
         if (!domiciliaryPosition) {
           setViewport({
             width: '100%',
-            height: (screen.height + (screen.height * 8 / 100)),
+            height: '108vh',
             latitude: centralPoint.latitude,
             longitude: centralPoint.longitude,
             zoom
@@ -141,7 +141,7 @@ export const MapOrderDealer = (props) => {
           zIndex: 5,
         }}
         onClick={(e) => {
-          e.preventDefault;
+          e.preventDefault();
           dispatch(push(`/takeOrder/${deliveryNumber}`));
         }}
         color="contained"

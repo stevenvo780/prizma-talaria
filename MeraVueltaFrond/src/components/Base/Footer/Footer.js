@@ -11,9 +11,9 @@ function Footer(props) {
           <div className="credits">
             <div className="copyright">
               &copy; {1900 + new Date().getYear()}, made with{" "}
-              <i className="fa fa-heart heart" /> Por Mera Vuelta S.A.S
+              <i className="fa fa-heart heart" /> Por Talaria S.A.S
               {" · "}
-              <span className="cauce-umbrella">parte de Olympo</span>
+              <span className="prizma-umbrella">parte de Prizma</span>
             </div>
           </div>
         </Row>

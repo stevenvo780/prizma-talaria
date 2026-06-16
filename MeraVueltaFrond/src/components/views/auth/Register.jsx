@@ -2,20 +2,15 @@
 import React from 'react';
 
 import {
-  Container,
   Button,
-  Form,
-  Label,
-  FormGroup,
-  Input,
-  Row,
-  Col,
   Card,
   CardBody,
-} from 'reactstrap';
+  Input,
+  Select,
+  Checkbox,
+} from 'prizma-ui';
 import { useDispatch } from 'react-redux';
-import Select from 'react-select';
-import { registerAction } from '../../../store/reducer';
+import { registerAction, addNotification } from '../../../store/reducer';
 import { AiOutlineMessage, AiOutlineHome } from 'react-icons/ai';
 import { BiBuildings } from 'react-icons/bi';
 
@@ -27,45 +22,36 @@ const SignUp = () => {
   const [companyName, setCompanyName] = React.useState(null);
   const [lastName, setLastName] = React.useState(null);
   const [documentNumber, setDocumentNumber] = React.useState(null);
-  const [typeDocument, setTypeDocument] = React.useState({
-    value: 'cc',
-    label: 'Cedula',
-  });
+  const [typeDocument, setTypeDocument] = React.useState('cc');
   const [password, setPassword] = React.useState(null);
   const [passwordVerify, setPasswordVerify] = React.useState(null);
   const [bornDate, setBorndate] = React.useState(null);
   const [email, setEmail] = React.useState(null);
   const [address, setAddress] = React.useState(null);
   const [clientPhone, setClientPhone] = React.useState(null);
-  const [prefixClientPhone, setPrefixClientPhone] = React.useState({
-    value: '57',
-    label: 'Colombia (+57)',
-  });
-  const [role, setRole] = React.useState({
-    value: 'company',
-    label: 'Empresa',
-  });
+  const [prefixClientPhone, setPrefixClientPhone] = React.useState('57');
+  const [role, setRole] = React.useState('company');
 
   const handleRegister = (event) => {
     event.preventDefault();
     if (password !== passwordVerify) {
-      alert('Las contraseñas no coinciden');
+      dispatch(addNotification({ message: 'Las contraseñas no coinciden', color: 'danger' }));
       return;
     }
     let data = {
       name: name,
       lastName: lastName,
-      typeDocument: typeDocument.value,
+      typeDocument: typeDocument,
       documentNumber: documentNumber,
       email: email,
-      role: role.value,
+      role: role,
       password: password,
       bornDate: bornDate,
       address: address,
       clientPhone: clientPhone,
-      prefix: prefixClientPhone.value
+      prefix: prefixClientPhone,
     };
-    if (role.value === 'company') {
+    if (role === 'company') {
       data.companyName = companyName;
     }
     dispatch(registerAction(data));
@@ -98,16 +84,16 @@ const SignUp = () => {
     setDocumentNumber(documentNumber.target.value);
   };
 
-  const handleTypeDocument = (role) => {
-    setTypeDocument(role);
+  const handleTypeDocument = (e) => {
+    setTypeDocument(e.target.value);
   };
 
   const handleBornDate = (bornDate) => {
     setBorndate(bornDate.target.value);
   };
 
-  const handleRole = (role) => {
-    setRole(role);
+  const handleRole = (e) => {
+    setRole(e.target.value);
   };
 
   const handleAddressChange = (address) => {
@@ -118,24 +104,21 @@ const SignUp = () => {
     setClientPhone(address.target.value);
   };
 
-  const handlePrefixChange = (prefix) => {
-    setPrefixClientPhone(prefix);
+  const handlePrefixChange = (e) => {
+    setPrefixClientPhone(e.target.value);
   };
 
-  const [politics, setPolitics] = React.useState(null);
-  const handlePolitics = (prefix) => {
-    setPolitics(prefix);
+  const [politics, setPolitics] = React.useState(false);
+  const handlePolitics = (e) => {
+    setPolitics(e.target.checked);
   };
 
   React.useEffect(() => {
-    if (
-      formIsValid === false &&
-      Object.keys(typeDocument).length &&
-      Object.keys(role).length
-    ) {
+    if (formIsValid === false && typeDocument && role) {
       setFormIsValid(true);
     }
   }, [setFormIsValid, formIsValid, typeDocument]);
+
   const cardStyles = {
     background: 'linear-gradient(135deg, #095169, #2a7496)',
     boxShadow: '0px 4px 8px rgba(0,0,0,0.2)',
@@ -147,14 +130,15 @@ const SignUp = () => {
     justifyContent: 'center',
     color: 'white',
   };
+
   return (
     <>
-      <Container>
+      <div className="container">
         <br />
-        {role.value === 'company' && (
+        {role === 'company' && (
           <>
-            <Row style={{ height: '100%' }}>
-              <Col style={{ marginTop: '10px' }} sm="4">
+            <div className="row" style={{ height: '100%' }}>
+              <div className="col-sm-4" style={{ marginTop: '10px' }}>
                 <Card style={cardStyles}>
                   <CardBody>
                     <div style={{ textAlign: 'center' }}>
@@ -163,8 +147,8 @@ const SignUp = () => {
                     <p>Recibirás notificaciones de WhatsApp en tu número de celular.</p>
                   </CardBody>
                 </Card>
-              </Col>
-              <Col style={{ marginTop: '10px' }} sm="4">
+              </div>
+              <div className="col-sm-4" style={{ marginTop: '10px' }}>
                 <Card style={cardStyles}>
                   <CardBody>
                     <div style={{ textAlign: 'center' }}>
@@ -173,8 +157,8 @@ const SignUp = () => {
                     <p>Tu dirección predeterminada será la ubicación de recolección para cada pedido.</p>
                   </CardBody>
                 </Card>
-              </Col>
-              <Col style={{ marginTop: '10px' }} sm="4">
+              </div>
+              <div className="col-sm-4" style={{ marginTop: '10px' }}>
                 <Card style={cardStyles}>
                   <CardBody>
                     <div style={{ textAlign: 'center' }}>
@@ -183,14 +167,14 @@ const SignUp = () => {
                     <p>El nombre de tu empresa aparecerá en las notificaciones de WhatsApp.</p>
                   </CardBody>
                 </Card>
-              </Col>
-            </Row>
+              </div>
+            </div>
           </>
         )}
-        {role.value === 'domiciliary' && (
+        {role === 'domiciliary' && (
           <>
-            <Row style={{ height: '100%' }}>
-              <Col style={{ marginTop: '10px' }} sm="4">
+            <div className="row" style={{ height: '100%' }}>
+              <div className="col-sm-4" style={{ marginTop: '10px' }}>
                 <Card style={cardStyles}>
                   <CardBody>
                     <div style={{ textAlign: 'center' }}>
@@ -199,8 +183,8 @@ const SignUp = () => {
                     <p>Recibirás notificaciones de WhatsApp en tu número de celular.</p>
                   </CardBody>
                 </Card>
-              </Col>
-              <Col style={{ marginTop: '10px' }} sm="4">
+              </div>
+              <div className="col-sm-4" style={{ marginTop: '10px' }}>
                 <Card style={cardStyles}>
                   <CardBody>
                     <div style={{ textAlign: 'center' }}>
@@ -209,8 +193,8 @@ const SignUp = () => {
                     <p>Tu WhatsApp sera enviado a los clientes.</p>
                   </CardBody>
                 </Card>
-              </Col>
-              <Col style={{ marginTop: '10px' }} sm="4">
+              </div>
+              <div className="col-sm-4" style={{ marginTop: '10px' }}>
                 <Card style={cardStyles}>
                   <CardBody>
                     <div style={{ textAlign: 'center' }}>
@@ -219,57 +203,51 @@ const SignUp = () => {
                     <p>Tu nombre aparecerá en las notificaciones de WhatsApp.</p>
                   </CardBody>
                 </Card>
-              </Col>
-            </Row>
+              </div>
+            </div>
           </>
         )}
         <br />
-        <Form onSubmit={handleRegister}>
-          <Row>
-            <Col sm="6">
-              <FormGroup>
-                <Label for="bornDate">Tipo de usuario</Label>
+        <form onSubmit={handleRegister}>
+          <div className="row">
+            <div className="col-sm-6">
+              <div className="mb-3">
+                <label htmlFor="role">Tipo de usuario</label>
                 <Select
-                  onChange={handleRole}
+                  id="role"
                   value={role}
-                  inputProps={{ autoComplete: 'off', placeholder: 'Tipo de usuario' }}
-                  options={[
-                    {
-                      value: 'domiciliary',
-                      label: 'Domiciliario',
-                    },
-                    {
-                      value: 'company',
-                      label: 'Empresa',
-                    },
-                  ]}
-                />
-              </FormGroup>
-              {role.value == 'company' && (
-                <FormGroup>
+                  onChange={handleRole}
+                >
+                  <option value="domiciliary">Domiciliario</option>
+                  <option value="company">Empresa</option>
+                </Select>
+              </div>
+              {role === 'company' && (
+                <div className="mb-3">
+                  <label htmlFor="companyName">Nombre de la empresa</label>
                   <Input
                     type="text"
                     placeholder="Nombre de la empresa"
                     required
                     id="companyName"
                     name="companyName"
-                    className="form-control"
                     onChange={handleCompanyNameChange}
                   />
-                </FormGroup>
+                </div>
               )}
-              <FormGroup>
+              <div className="mb-3">
+                <label htmlFor="name">Nombre</label>
                 <Input
                   type="text"
                   placeholder="Nombre"
                   required
                   id="name"
                   name="name"
-                  className="form-control"
                   onChange={handleNameChange}
                 />
-              </FormGroup>
-              <FormGroup>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="lastName">Apellido</label>
                 <Input
                   type="text"
                   placeholder="Apellido"
@@ -277,11 +255,11 @@ const SignUp = () => {
                   id="lastName"
                   name="lastName"
                   autoComplete="lastName"
-                  className="form-control"
                   onChange={handleLasNameChange}
                 />
-              </FormGroup>
-              <FormGroup>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="email">Correo electrónico</label>
                 <Input
                   type="email"
                   placeholder="Correo"
@@ -290,39 +268,33 @@ const SignUp = () => {
                   required
                   onChange={handleEmailChange}
                 />
-              </FormGroup>
-              <FormGroup>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="typeDocument">Tipo de documento</label>
                 <Select
-                  onChange={handleTypeDocument} u
+                  id="typeDocument"
                   value={typeDocument}
-                  inputProps={{ autoComplete: 'off', placeholder: 'Tipo de documento' }}
-                  options={[
-                    {
-                      value: 'cc',
-                      label: 'Cedula',
-                    },
-                    {
-                      value: 'nit',
-                      label: 'NIT',
-                    },
-                  ]}
-                />
-              </FormGroup>
-            </Col>
-            <Col sm="6">
-              <FormGroup>
-                <Label for="bornDate">Fecha de nacimiento</Label>
+                  onChange={handleTypeDocument}
+                >
+                  <option value="cc">Cedula</option>
+                  <option value="nit">NIT</option>
+                </Select>
+              </div>
+            </div>
+            <div className="col-sm-6">
+              <div className="mb-3">
+                <label htmlFor="bornDate">Fecha de nacimiento</label>
                 <Input
                   type="date"
                   placeholder="Fecha de nacimiento"
                   required
-                  className="form-control"
                   id="bornDate"
                   name="bornDate"
                   onChange={handleBornDate}
                 />
-              </FormGroup>
-              <FormGroup>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="documentNumber">Número de documento</label>
                 <Input
                   type="number"
                   placeholder="Numero de documento"
@@ -330,11 +302,11 @@ const SignUp = () => {
                   id="documentNumber"
                   autoComplete="documentNumber"
                   required
-                  className="form-control"
                   onChange={handleDocumentNumber}
                 />
-              </FormGroup>
-              <FormGroup>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="password">Contraseña</label>
                 <Input
                   type="password"
                   placeholder="Contraseña"
@@ -343,8 +315,9 @@ const SignUp = () => {
                   required
                   onChange={handlePasswordChange}
                 />
-              </FormGroup>
-              <FormGroup>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="passwordVerity">Confirmar contraseña</label>
                 <Input
                   type="password"
                   placeholder="Confirma contraseña"
@@ -353,80 +326,89 @@ const SignUp = () => {
                   required
                   onChange={handlePasswordVerifyChange}
                 />
-              </FormGroup>
-              <FormGroup>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="address">Dirección</label>
                 <Input
-                  type="address"
+                  type="text"
                   placeholder="Dirección"
                   id="address"
                   name="address"
                   required
                   onChange={handleAddressChange}
                 />
-              </FormGroup>
-              <FormGroup>
-                <Row>
-                  <Col>
+              </div>
+              <div className="mb-3">
+                <div className="row">
+                  <div className="col">
+                    <label htmlFor="prefixClientPhone">Prefijo</label>
                     <Select
-                      onChange={handlePrefixChange}
+                      id="prefixClientPhone"
                       value={prefixClientPhone}
-                      inputProps={{ autoComplete: 'off', required: true, placeholder: 'Prefijo' }}
-                      options={[
-                        {
-                          value: '57',
-                          label: 'Colombia +57',
-                        },
-                      ]}
-                    />
-                  </Col>
-                  <Col>
+                      onChange={handlePrefixChange}
+                      required
+                    >
+                      <option value="57">Colombia +57</option>
+                    </Select>
+                  </div>
+                  <div className="col">
+                    <label htmlFor="phone">Número celular</label>
                     <Input
-                      type="phone"
+                      type="tel"
                       placeholder="Numero celular"
                       id="phone"
                       name="phone"
                       required
                       onChange={handleClientPhoneChange}
                     />
-                  </Col>
-                </Row>
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={4}>
-              <FormGroup style={{ marginLeft: "5%" }}>
-                <Row>
-                  <Col sm={1} xs={3}>
-                    <Input className="form-check-input-register" onChange={handlePolitics}
-                      value={politics} required type="checkbox" />
-                  </Col>
-                  <Col sm={11} xs={9}>
-                    <Label >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-4">
+              <div className="mb-3" style={{ marginLeft: "5%" }}>
+                <div className="row">
+                  <div className="col-sm-1 col-xs-3">
+                    <Checkbox
+                      className="form-check-input-register"
+                      onChange={handlePolitics}
+                      checked={!!politics}
+                      required
+                    />
+                  </div>
+                  <div className="col-sm-11 col-xs-9">
+                    <label>
                       ¿Acepta el tratamiento de datos?
-                    </Label>
-                  </Col>
-                  <Col sm={12}>
-                    <Button color="secondary" style={{ padding: "5px 10px", fontSize: "9px" }} onClick={() => window.open(process.env.REACT_APP_REACT_HOST + '/politics', '_blank')}>
+                    </label>
+                  </div>
+                  <div className="col-sm-12">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      type="button"
+                      onClick={() => window.open(process.env.REACT_APP_REACT_HOST + '/politics', '_blank')}
+                    >
                       Ir al tratamiento de datos
                     </Button>
-                  </Col>
-                </Row>
-              </FormGroup>
-            </Col>
-            <Col sm={8}>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-sm-8">
               <Button
-                color="success"
+                variant="accent"
                 type="submit"
-                size='lg'
+                size="lg"
                 disabled={!formIsValid}
               >
                 Registrar
               </Button>
-            </Col>
-          </Row>
-        </Form>
-      </Container>
+            </div>
+          </div>
+        </form>
+      </div>
     </>
   );
 };

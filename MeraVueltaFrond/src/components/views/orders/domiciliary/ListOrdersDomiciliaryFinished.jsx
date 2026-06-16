@@ -1,12 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap';
+import { Button, Modal, Table, Thead, Tbody, Tr, Th, Td, TableWrap } from 'prizma-ui';
 import { getAllOrdersByUserDomiciliaryAction } from '../../../../store/reducer';
 
 const ListOrdersDomiciliaryFinished = () => {
@@ -22,6 +16,7 @@ const ListOrdersDomiciliaryFinished = () => {
   React.useEffect(() => {
     dispatch(getAllOrdersByUserDomiciliaryAction());
   }, [dispatch]);
+
   const handleSetLikn = (e, link) => {
     e.preventDefault();
     setActiveLink(link);
@@ -31,105 +26,108 @@ const ListOrdersDomiciliaryFinished = () => {
     <>
       <div>
         <div style={{ overflowY: 'scroll' }}>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>URL</th>
-                <th scope="col">Número Entrega</th>
-                <th scope="col">Número Compra</th>
-                <th scope="col">Email</th>
-                <th scope="col">Nombres</th>
-                <th scope="col">Apellidos</th>
-                <th scope="col">Documento</th>
-                <th scope="col">Tipo de documento</th>
-                <th scope="col">Fecha Creación</th>
-                <th scope="col">Telefono Cliente</th>
-                <th scope="col">Dirección Recogida</th>
-                <th scope="col">Ubicación Recogida</th>
-                <th scope="col">Dirección Entrega</th>
-                <th scope="col">Departamento</th>
-                <th scope="col">Ciudad</th>
-                <th scope="col">Barrio</th>
-                <th scope="col">Nombre Conjunto Residencial</th>
-                <th scope="col">Nuúmero De Casa O Apto</th>
-                <th scope="col">Paquete A Entregar</th>
-                <th scope="col">Estado Pedido </th>
-                <th scope="col">Nota Domiciliario</th>
-                <th scope="col">Tipo de pago</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order, i) => (
-                <tr key={i}>
-                  <td>
-                    <Button
-                      color="primary"
-                      onClick={(e) => {
-                        handleCloseUrl();
-                        handleSetLikn(
-                          e,
-                          `${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`
-                        );
-                      }}
-                    >
-                      ver URL
-                    </Button>
-                  </td>
-                  <td>{order.deliveryNumber}</td>
-                  <td>{order.purchaseNumber}</td>
-                  <td>{order.email}</td>
-                  <td>{order.name}</td>
-                  <td>{order.lastName}</td>
-                  <td>{order.documentNumber}</td>
-                  <td>{order.typeDocument}</td>
-                  <td>{order.creationDate}</td>
-                  <td>{order.prefix ? "+" : ""}{order.prefix} {order.clientPhone}</td>
-                  <td>{order.pickupAddress}</td>
-                  <td>{order.pickupLocation}</td>
-                  <td>{order.department}</td>
-                  <td>{order.city}</td>
-                  <td>{order.neighborhood}</td>
-                  <td>{order.residentialGroupName}</td>
-                  <td>{order.houseNumberOrApartment}</td>
-                  <td>{order.deliveryPacket}</td>
-                  <td>{order.orderState}</td>
-                  <td>{order.domiciliary}</td>
-                  <td>{order.deliveryNote}</td>
-                  <td>{order.paymentMethod}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TableWrap>
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th>URL</Th>
+                  <Th scope="col">Número Entrega</Th>
+                  <Th scope="col">Número Compra</Th>
+                  <Th scope="col">Email</Th>
+                  <Th scope="col">Nombres</Th>
+                  <Th scope="col">Apellidos</Th>
+                  <Th scope="col">Documento</Th>
+                  <Th scope="col">Tipo de documento</Th>
+                  <Th scope="col">Fecha Creación</Th>
+                  <Th scope="col">Telefono Cliente</Th>
+                  <Th scope="col">Dirección Recogida</Th>
+                  <Th scope="col">Ubicación Recogida</Th>
+                  <Th scope="col">Dirección Entrega</Th>
+                  <Th scope="col">Departamento</Th>
+                  <Th scope="col">Ciudad</Th>
+                  <Th scope="col">Barrio</Th>
+                  <Th scope="col">Nombre Conjunto Residencial</Th>
+                  <Th scope="col">Número De Casa O Apto</Th>
+                  <Th scope="col">Paquete A Entregar</Th>
+                  <Th scope="col">Estado Pedido</Th>
+                  <Th scope="col">Nota Domiciliario</Th>
+                  <Th scope="col">Tipo de pago</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {orders.map((order, i) => (
+                  <Tr key={i}>
+                    <Td>
+                      <Button
+                        variant="ghost"
+                        onClick={(e) => {
+                          handleCloseUrl();
+                          handleSetLikn(
+                            e,
+                            `${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`
+                          );
+                        }}
+                      >
+                        ver URL
+                      </Button>
+                    </Td>
+                    <Td>{order.deliveryNumber}</Td>
+                    <Td>{order.purchaseNumber}</Td>
+                    <Td>{order.email}</Td>
+                    <Td>{order.name}</Td>
+                    <Td>{order.lastName}</Td>
+                    <Td>{order.documentNumber}</Td>
+                    <Td>{order.typeDocument}</Td>
+                    <Td>{order.creationDate}</Td>
+                    <Td>{order.prefix ? "+" : ""}{order.prefix} {order.clientPhone}</Td>
+                    <Td>{order.pickupAddress}</Td>
+                    <Td>{order.pickupLocation}</Td>
+                    <Td>{order.department}</Td>
+                    <Td>{order.city}</Td>
+                    <Td>{order.neighborhood}</Td>
+                    <Td>{order.residentialGroupName}</Td>
+                    <Td>{order.houseNumberOrApartment}</Td>
+                    <Td>{order.deliveryPacket}</Td>
+                    <Td>{order.orderState}</Td>
+                    <Td>{order.domiciliary}</Td>
+                    <Td>{order.deliveryNote}</Td>
+                    <Td>{order.paymentMethod}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableWrap>
         </div>
       </div>
       <URLModal
         toggle={toggleUrl}
-        handleChange={handleCloseUrl}
+        handleChange={() => setToggleUrl(false)}
         url={activeLink}
       />
     </>
   );
 };
+
 const URLModal = (props) => {
   const { toggle, handleChange, url } = props;
   return (
-    <Modal isOpen={toggle} toggle={handleChange}>
-      <ModalHeader toggle={handleChange}>URL de la orden</ModalHeader>
-      <ModalBody>
-        <a href={url} target="_blank">
-          {url}
-        </a>
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          onClick={() => {
-            handleChange();
-          }}
-        >
-          Cerrar
-        </Button>
-      </ModalFooter>
+    <Modal
+      open={toggle}
+      onClose={handleChange}
+      title="URL de la orden"
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button variant="secondary" onClick={handleChange}>
+            Cerrar
+          </Button>
+        </div>
+      }
+    >
+      <a href={url} target="_blank" rel="noreferrer">
+        {url}
+      </a>
     </Modal>
   );
 };
+
 export default ListOrdersDomiciliaryFinished;

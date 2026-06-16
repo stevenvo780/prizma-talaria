@@ -3,17 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'redux-first-history';
 import {
   Col,
+} from 'reactstrap';
+import {
   Button,
   Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap';
+} from 'prizma-ui';
 import {
   updateOrderMassiveAction,
   getAllDomiciliaryCompanyByCompanyAction,
 } from '../../../../../store/reducer';
-import Select from 'react-select';
+import ReactSelect from 'react-select';
 
 export const ModalAssignDomiciliarys = ({ orders, handleClose, toggle }) => {
   const dispatch = useDispatch();
@@ -65,41 +64,44 @@ export const ModalAssignDomiciliarys = ({ orders, handleClose, toggle }) => {
 
   return (
     <>
-      <div>
-        <Modal isOpen={toggle} toggle={handleClose}>
-          <ModalHeader toggle={handleClose}>Asignar domiciliario a varias ordenes</ModalHeader>
-          <ModalBody>
-            <Col sm={10}>
-              <Select
-                inputProps={{ autoComplete: 'off' }}
-                inputId="domiciliary"
-                onChange={handleDealerChange}
-                placeholder="Domiciliario"
-                options={dealers.map((dealer) => {
-                  return {
-                    value: dealer.domiciliary.id,
-                    label: dealer.domiciliary.name + " " + dealer.domiciliary.lastName,
-                  };
-                })}
-              />
-              <Button color="info" onClick={(e) => { e.preventDefault(); goToDomiciliary() }}>
-                Buscar mas domiciliarios
-              </Button>
-            </Col>
-          </ModalBody>
-          <ModalFooter>
+      <Modal
+        open={toggle}
+        onClose={handleClose}
+        title="Asignar domiciliario a varias ordenes"
+        footer={
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
             <Button
-              color="success"
-              type="submit"
+              variant="primary"
               disabled={!dealerData.value}
               onClick={handleToggle}
             >
               Guardar
             </Button>
-            <Button onClick={handleClose}>Cancelar</Button>
-          </ModalFooter>
-        </Modal>
-      </div>
+            <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
+          </div>
+        }
+      >
+        <Col sm={10}>
+          <ReactSelect
+            inputProps={{ autoComplete: 'off' }}
+            inputId="domiciliary"
+            onChange={handleDealerChange}
+            placeholder="Domiciliario"
+            options={dealers.map((dealer) => {
+              return {
+                value: dealer.domiciliary.id,
+                label: dealer.domiciliary.name + " " + dealer.domiciliary.lastName,
+              };
+            })}
+          />
+          <Button
+            variant="secondary"
+            onClick={(e) => { e.preventDefault(); goToDomiciliary(); }}
+          >
+            Buscar mas domiciliarios
+          </Button>
+        </Col>
+      </Modal>
       <SaveOrderModal
         toggle={toggleSave}
         handleChange={handleUpdate}
@@ -112,19 +114,20 @@ export const ModalAssignDomiciliarys = ({ orders, handleClose, toggle }) => {
 const SaveOrderModal = (props) => {
   const { toggle, handleChange, handleClose } = props;
   return (
-    <>
-      <Modal isOpen={toggle} toggle={handleChange}>
-        <ModalHeader toggle={handleClose}>Confirmar</ModalHeader>
-        <ModalBody>
-          ¿Estás seguro/a de asignar el domiciliario a todas las ordenes seleccionadas?
-        </ModalBody>
-        <ModalFooter>
-          <Button color="success" onClick={handleChange}>
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Confirmar"
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button variant="primary" onClick={handleChange}>
             Aceptar
           </Button>
-          <Button onClick={handleClose}>Cancelar</Button>
-        </ModalFooter>
-      </Modal>
-    </>
+          <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
+        </div>
+      }
+    >
+      <p>¿Estás seguro/a de asignar el domiciliario a todas las ordenes seleccionadas?</p>
+    </Modal>
   );
 };

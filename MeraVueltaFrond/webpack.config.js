@@ -75,6 +75,11 @@ module.exports = {
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     alias: {
       path: require.resolve('path-browserify'),
+      // Deduplication: ensure a single React instance even if dependencies bundle their own.
+      // Alias to the package DIRECTORY (not the entry file) so subpath imports like
+      // 'react-dom/client' and 'react/jsx-runtime' still resolve.
+      react: path.dirname(require.resolve('react/package.json')),
+      'react-dom': path.dirname(require.resolve('react-dom/package.json')),
     },
   },
   plugins: [
@@ -94,10 +99,10 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [
         { from: 'public/manifest.json', to: 'manifest.json' },
-        // Olympo brand assets (símbolo de marca paraguas)
-        { from: 'public/cauce-symbol.svg', to: 'cauce-symbol.svg' },
-        { from: 'public/cauce-wordmark.svg', to: 'cauce-wordmark.svg' },
-        { from: 'public/cauce-favicon.svg', to: 'cauce-favicon.svg' },
+        // Prizma brand assets (símbolo de marca paraguas)
+        { from: 'public/prizma-symbol.svg', to: 'prizma-symbol.svg' },
+        { from: 'public/prizma-wordmark.svg', to: 'prizma-wordmark.svg' },
+        { from: 'public/prizma-favicon.svg', to: 'prizma-favicon.svg' },
       ],
     }),
     // new InjectManifest({

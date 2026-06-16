@@ -11,15 +11,8 @@ import { restoreSessionStateAction, updateUserDoneAction } from './store/reducer
 import { userApi } from './store/middleware/api';
 import { getSessionCookie } from './session';
 import React, { useState, useEffect } from 'react';
-import { Button } from 'reactstrap';
+import { Button, Spinner } from 'prizma-ui';
 import InfoAlert from './components/hooks/InfoAlert';
-import RingLoader from "react-spinners/RingLoader";
-const override = {
-  position: "fixed",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)"
-};
 
 function App() {
   const user = useSelector((state) => state.login.user);
@@ -56,23 +49,21 @@ function App() {
     localStorage.setItem('acceptedCookies', true);
   };
   return (
-    <div className="cui-root" data-module="meravuelta">
+    <>
       {loading === true && (
         <div className="loader">
-          <RingLoader
-            color={'#0a827f'}
-            loading={loading}
-            cssOverride={override}
+          <Spinner
             size={100}
-            aria-label="Cargando"
+            label="Cargando"
+            style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
             data-testid="loader"
           />
         </div>
       )}
       {!acceptedCookies && (
-        <div className="cookie-message">
+        <div className="cookie-message" role="region" aria-label="Aviso de cookies">
           Este sitio utiliza cookies para mejorar su experiencia.
-          <Button onClick={handleAcceptCookies}>Aceptar</Button>
+          <Button variant="primary" onClick={handleAcceptCookies}>Aceptar cookies</Button>
         </div>
       )}
       <Router history={history}>
@@ -102,7 +93,7 @@ function App() {
         </Switch>
       </Router>
       <InfoAlert />
-    </div>
+    </>
   );
 }
 

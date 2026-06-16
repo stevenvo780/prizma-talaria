@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Nav } from 'reactstrap';
+import { Nav, NavItem } from 'prizma-ui';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -45,13 +45,13 @@ function Sidebar(props) {
       data-active-color={props.activeColor}
     >
       <div className="logo">
-        <a href="#" className="simple-text logo-mini">
-          <div >
-            <img className="logo-img" src="/cauce-symbol.svg" alt="Olympo" />
+        <span className="simple-text logo-mini" aria-hidden="true">
+          <div>
+            <img className="logo-img" src="/prizma-symbol.svg" alt="" />
           </div>
-        </a>
+        </span>
         <a href="https://www.meravuelta.com/" className="simple-text logo-normal">
-          Mera Vuelta
+          Talaria
         </a>
       </div>
       <div className="sidebar-wrapper" ref={sidebar}>
@@ -61,20 +61,18 @@ function Sidebar(props) {
               plan !== "PLAN_2000") &&
             user.role === "company"
           ) && (
-              <li
-                className={
-                  activeRoute('/company/upgrade')
-                }
+              <NavItem
+                active={activeRoute('/company/upgrade') === 'active'}
+                icon={<i className="nc-icon nc-spaceship" />}
               >
                 <NavLink
                   to="/company/upgrade"
                   className="nav-link"
                   activeClassName="active"
                 >
-                  <i className="nc-icon nc-spaceship" />
-                  <p>Upgrade</p>
+                  Upgrade
                 </NavLink>
-              </li>
+              </NavItem>
             )}
           {props.routes.map((prop, key) => {
             let validateRol = false;
@@ -85,22 +83,21 @@ function Sidebar(props) {
             });
             if (validateRol && prop.visible) {
               return (
-                <li
-                  className={
-                    activeRoute(prop.path)
-                  }
+                <NavItem
                   key={key}
+                  active={activeRoute(prop.path) === 'active'}
+                  icon={<i className={prop.icon} />}
                 >
                   <NavLink
                     to={prop.layout + prop.path}
                     className="nav-link"
                     activeClassName="active"
                     onClick={() => handleNavLinkClick(prop.layout, prop.path)}
+                    {...(prop.path === '/vueltas' ? { 'data-tour': 'sidebar-vueltas' } : {})}
                   >
-                    <i className={prop.icon} />
-                    <p>{prop.name}</p>
+                    {prop.name}
                   </NavLink>
-                </li>
+                </NavItem>
               );
             }
           })}

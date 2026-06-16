@@ -1,20 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Row,
-  Col,
-  Card,
-  CardHeader,
-  CardText,
-  CardBody,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-} from 'reactstrap';
-
+import { Button, Card, CardBody, Input, ConfirmDialog } from 'prizma-ui';
 import {
   getAllDomiciliaryCompanyByCompanyAction,
   deleteDomiciliaryCompanyAction,
@@ -31,22 +17,21 @@ const MyDomiciliaryList = () => {
 
   const [toggleDelete, setToggleDelete] = React.useState(false);
 
-  const handleDeleteClose = (e) => {
-    e.preventDefault();
+  const handleDeleteClose = () => {
     setToggleDelete(!toggleDelete);
   };
 
-  const handleDelete = (event, id) => {
-    event.preventDefault();
-    handleDeleteClose(event);
-    dispatch(deleteDomiciliaryCompanyAction(id));
+  const handleDelete = () => {
+    dispatch(deleteDomiciliaryCompanyAction(deleteDomiciliaryCompany));
+    setToggleDelete(false);
   };
 
   React.useEffect(() => {
     dispatch(getAllDomiciliaryCompanyByCompanyAction());
   }, []);
+
   const handleKeyPress = (target) => {
-    if (target.charCode == 13) {
+    if (target.key === 'Enter') {
       search();
     }
   };
@@ -80,6 +65,12 @@ const MyDomiciliaryList = () => {
     e.preventDefault();
     setOrderWord(word);
   };
+
+  const list =
+    domiciliaryOrdersFiltering !== null
+      ? domiciliaryOrdersFiltering
+      : domiciliaryCompany;
+
   return (
     <>
       <div
@@ -97,85 +88,73 @@ const MyDomiciliaryList = () => {
           id="buscar"
           placeholder="Buscar"
           onChange={(e) => handleChangeWord(e, e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           className="search-views-standard"
         />
         <br />
-        <Row>
-          {domiciliaryOrdersFiltering !== null
-            ? domiciliaryOrdersFiltering.map((domiciliary, i) => (
-              <DomiciliaryCard key={i} domiciliary={domiciliary} handleDeleteClose={handleDeleteClose} setDeleteDomiciliaryCompany={setDeleteDomiciliaryCompany} />
-            ))
-            : domiciliaryCompany.map((domiciliary, i) => (
-              <DomiciliaryCard key={i} domiciliary={domiciliary} handleDeleteClose={handleDeleteClose} setDeleteDomiciliaryCompany={setDeleteDomiciliaryCompany} />
-            ))}
-        </Row>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          {list.map((domiciliary, i) => (
+            <DomiciliaryCard
+              key={i}
+              domiciliary={domiciliary}
+              onDeleteClick={(id) => {
+                setDeleteDomiciliaryCompany(id);
+                setToggleDelete(true);
+              }}
+            />
+          ))}
+        </div>
       </div>
-      <DeleteDomiciliaryCompanyModal
-        toggle={toggleDelete}
-        handleChange={handleDelete}
-        handleClose={handleDeleteClose}
-        deleteDomiciliaryCompany={deleteDomiciliaryCompany}
+      <ConfirmDialog
+        open={toggleDelete}
+        onClose={handleDeleteClose}
+        onConfirm={handleDelete}
+        title="Confirmar"
+        message="¿Estás seguro/a de que desea eliminar el pedido seleccionada?"
+        confirmLabel="Aceptar"
+        cancelLabel="Cancelar"
+        tone="danger"
       />
-      <Button className='button-reload' onClick={() => dispatch(getAllDomiciliaryCompanyByCompanyAction())}><RxReload /></Button>
+      <Button
+        variant="ghost"
+        className="button-reload"
+        onClick={() => dispatch(getAllDomiciliaryCompanyByCompanyAction())}
+      >
+        <RxReload />
+      </Button>
     </>
   );
 };
 
-const DeleteDomiciliaryCompanyModal = (props) => {
-  const {
-    handleChange,
-    handleClose,
-    toggle,
-    deleteDomiciliaryCompany,
-  } = props;
-  return (
-    <Modal isOpen={toggle} toggle={handleChange}>
-      <ModalHeader toggle={handleChange}>Confirmar</ModalHeader>
-      <ModalBody>
-        ¿Estás seguro/a de que desea eliminar el pedido seleccionada?
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          color="success"
-          onClick={(e) => handleChange(e, deleteDomiciliaryCompany)}
-        >
-          Aceptar
-        </Button>
-        <Button onClick={handleClose}>Cancelar</Button>
-      </ModalFooter>
-    </Modal>
-  );
-};
-
-const DomiciliaryCard = ({ domiciliary, handleDeleteClose, setDeleteDomiciliaryCompany }) => (
-  <Col style={{ marginTop: "10px" }} sm="4">
-    <Card style={{ margin: 0, padding: 0, paddingBottom: "10px", width: "100%", height: "fit-content", maxHeight: "90%", boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)" }} body>
+const DomiciliaryCard = ({ domiciliary, onDeleteClick }) => (
+  <div style={{ marginTop: '10px', width: 'calc(33.33% - 10px)', minWidth: '260px' }}>
+    <Card
+      raised
+      style={{
+        margin: 0,
+        padding: 0,
+        paddingBottom: '10px',
+        width: '100%',
+        height: 'fit-content',
+        maxHeight: '90%',
+      }}
+    >
       <CardBody>
-        <CardText>
-          {domiciliary.company.companyName}
-        </CardText>
-        <CardText>
+        <p>{domiciliary.company.companyName}</p>
+        <p>
           {domiciliary.domiciliary.name} {domiciliary.domiciliary.lastName}
-        </CardText>
-        <CardText>
-          Documento: {domiciliary.domiciliary.documentNumber}
-        </CardText>
-        <CardText>
-          {domiciliary.domiciliary.email}
-        </CardText>
+        </p>
+        <p>Documento: {domiciliary.domiciliary.documentNumber}</p>
+        <p>{domiciliary.domiciliary.email}</p>
         <Button
-          color="danger"
-          onClick={(e) => {
-            handleDeleteClose(e);
-            setDeleteDomiciliaryCompany(domiciliary.id);
-          }}
+          variant="danger"
+          onClick={() => onDeleteClick(domiciliary.id)}
         >
           Eliminar
         </Button>
       </CardBody>
     </Card>
-  </Col>
+  </div>
 );
 
 export default MyDomiciliaryList;

@@ -6,6 +6,7 @@ import Sidebar from '../components/Base/Sidebar/Sidebar';
 import Navbar from '../components/Base/Navbars/Navbar';
 import { useSelector, useDispatch } from 'react-redux';
 import { push } from 'redux-first-history';
+import { AppShell } from 'prizma-ui';
 let ps;
 
 function AdminLayout(props) {
@@ -35,41 +36,47 @@ function AdminLayout(props) {
   React.useEffect(() => {
     mainPanel.current.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
+    // Update page title dynamically (WCAG 2.4.2)
+    const matchedRoute = props.routes.find(
+      (r) => location.pathname === r.layout + r.path || location.pathname.startsWith(r.layout + r.path.split(':')[0])
+    );
+    document.title = matchedRoute ? `${matchedRoute.name} — Talaria` : 'Talaria — Prizma';
   }, [location]);
 
   return (
-    <div className="wrapper">
-      <Sidebar
-        {...props}
-        routes={props.routes}
-        bgColor={'black'}
-        activeColor={'warning'}
-      />
-      <div className="main-panel" ref={mainPanel}>
-      <Navbar {...props} />
-        <div style={{ marginTop: "60px" }} className="content">
-          <Switch>
-            {props.routes.map((prop, key) => {
-              let validateRol = false;
-              prop.rol.forEach((rol) => {
-                if (rol === user?.role) {
-                  validateRol = true;
-                }
-              });
-              if (validateRol) {
-                return (
-                  <Route
-                    path={prop.layout + prop.path}
-                    component={prop.component}
-                    key={key}
-                  />
-                );
+    <AppShell
+      sidebar={
+        <Sidebar
+          {...props}
+          routes={props.routes}
+          bgColor={'black'}
+          activeColor={'warning'}
+        />
+      }
+      topbar={<Navbar {...props} />}
+    >
+      <div ref={mainPanel} style={{ marginTop: '60px' }} className="content">
+        <Switch>
+          {props.routes.map((prop, key) => {
+            let validateRol = false;
+            prop.rol.forEach((rol) => {
+              if (rol === user?.role) {
+                validateRol = true;
               }
-            })}
-          </Switch>
-        </div>
+            });
+            if (validateRol) {
+              return (
+                <Route
+                  path={prop.layout + prop.path}
+                  component={prop.component}
+                  key={key}
+                />
+              );
+            }
+          })}
+        </Switch>
       </div>
-    </div>
+    </AppShell>
   );
 }
 

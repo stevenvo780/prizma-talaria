@@ -1,19 +1,7 @@
 import * as React from 'react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Container,
-  Col,
-  Row,
-  Form,
-  FormGroup,
-  Button,
-  Badge,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap';
+import { Button, Badge, Modal } from 'prizma-ui';
 import {
   createCustomerAction,
   updateCustomerAction,
@@ -51,47 +39,44 @@ const TakeCustomerStep2 = () => {
   return (
     <>
       <div>
-        <Container
-          className="themed-container containerProof"
-          fluid="sm"
-        >
-          <Form
+        <div className="themed-container containerProof">
+          <form
             className="form"
             onSubmit={(e) => {
               e.preventDefault();
               handleSave();
             }}
           >
-            <Row>
-              <Col sm="12">
-                <FormGroup>
-                  <Row>
-                    <Col sm="3">
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+              <div style={{ flex: '0 0 100%', maxWidth: '100%' }}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div>
                       <Button
-                        color="info"
+                        variant="secondary"
                         onClick={(e) => { e.preventDefault(); dispatch(setStepCustomer(0)); }}
                       >
                         Volver
                       </Button>
-                    </Col>
-                    <Col sm="6">
+                    </div>
+                    <div>
                       <Button
-                        color="success"
+                        variant="primary"
                         type="submit"
                       >
                         {customer.id ? <>Actualizar orden</> : <>Crear orden</>}
                       </Button>
-                    </Col>
-                  </Row>
-                </FormGroup>
-                <Badge>
+                    </div>
+                  </div>
+                </div>
+                <Badge tone="info">
                   Seleccione la ubicación precisa donde se entregara el pedido
                 </Badge>
                 <SelectPositionCustomer />
-              </Col>
-            </Row>
-          </Form>
-        </Container>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
       <SaveCustomerModal
         toggle={toggle.form}
@@ -105,29 +90,14 @@ const TakeCustomerStep2 = () => {
 const SaveCustomerModal = (props) => {
   const { toggle, handleChange, handleClose } = props;
   return (
-    <>
-      <Modal
-        isOpen={toggle}
-        toggle={(e) => {
-          e.preventDefault();
-          handleChange();
-        }}
-      >
-        <ModalHeader
-          toggle={(e) => {
-            e.preventDefault();
-            handleClose();
-          }}
-        >
-          Confirmar
-        </ModalHeader>
-        <ModalBody>
-          ¿Estás seguro/a de que los datos ingresados en el formulario
-          son correctos?
-        </ModalBody>
-        <ModalFooter>
+    <Modal
+      open={!!toggle}
+      onClose={handleClose}
+      title="Confirmar"
+      footer={
+        <>
           <Button
-            color="success"
+            variant="primary"
             onClick={(e) => {
               e.preventDefault();
               handleChange();
@@ -136,6 +106,7 @@ const SaveCustomerModal = (props) => {
             Aceptar
           </Button>
           <Button
+            variant="secondary"
             onClick={(e) => {
               e.preventDefault();
               handleClose();
@@ -143,9 +114,12 @@ const SaveCustomerModal = (props) => {
           >
             Cancelar
           </Button>
-        </ModalFooter>
-      </Modal>
-    </>
+        </>
+      }
+    >
+      ¿Estás seguro/a de que los datos ingresados en el formulario
+      son correctos?
+    </Modal>
   );
 };
 

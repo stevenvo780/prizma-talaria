@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Card, CardBody, CardText, Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col
-} from 'reactstrap';
+import { Button, Card, CardBody, Modal } from 'prizma-ui';
 import {
   getAllDomiciliaryCompanyRequestByDomiciliaryAction,
   updateDomiciliaryCompanyRequestAction,
@@ -23,7 +21,7 @@ const RequestDomiciliaryList = () => {
   const [toggleRequest, setToggleRequest] = React.useState(false);
 
   const handleRequestClose = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     setToggleRequest(!toggleRequest);
   };
 
@@ -32,8 +30,8 @@ const RequestDomiciliaryList = () => {
     requestDomiciliaryCompanyRequestSelected,
     response
   ) => {
-    event.preventDefault();
-    handleRequestClose(event);
+    if (event) event.preventDefault();
+    setToggleRequest(false);
     dispatch(
       updateDomiciliaryCompanyRequestAction({
         id: requestDomiciliaryCompanyRequestSelected.requestDomiciliaryCompanyRequestId,
@@ -56,26 +54,28 @@ const RequestDomiciliaryList = () => {
         style={{
           position: 'relative',
           left: '2%',
-          left: '2%',
           height: 'calc(100vh - 100px)',
           width: '98%',
           overflowY: 'scroll',
           overflowX: 'hidden',
         }}
       >
-        <Row>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px' }}>
           {domiciliaryCompanyRequests.map((domiciliary, i) => (
-            <RequestCard key={i} domiciliary={domiciliary} handleRequestClose={handleRequestClose} setRequestDomiciliaryCompanyRequest={setRequestDomiciliaryCompanyRequest} />
+            <RequestCard
+              key={i}
+              domiciliary={domiciliary}
+              handleRequestClose={handleRequestClose}
+              setRequestDomiciliaryCompanyRequest={setRequestDomiciliaryCompanyRequest}
+            />
           ))}
-        </Row>
+        </div>
       </div>
       <RequestDomiciliaryCompanyRequestModal
         toggle={toggleRequest}
         handleChange={handleRequest}
-        handleClose={handleRequestClose}
-        requestDomiciliaryCompanyRequest={
-          requestDomiciliaryCompanyRequest
-        }
+        handleClose={() => setToggleRequest(false)}
+        requestDomiciliaryCompanyRequest={requestDomiciliaryCompanyRequest}
       />
     </>
   );
@@ -89,60 +89,51 @@ const RequestDomiciliaryCompanyRequestModal = (props) => {
     requestDomiciliaryCompanyRequest,
   } = props;
   return (
-    <Modal isOpen={toggle} toggle={handleChange}>
-      <ModalHeader toggle={handleChange}>Confirmar</ModalHeader>
-      <ModalBody>
-        Enviar solicitud para afiliarse a esta empresa
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          color="success"
-          onClick={(e) =>
-            handleChange(e, requestDomiciliaryCompanyRequest, 'agree')
-          }
-        >
-          Aceptar
-        </Button>
-        <Button
-          color="danger"
-          onClick={(e) =>
-            handleChange(
-              e,
-              requestDomiciliaryCompanyRequest,
-              'refused'
-            )
-          }
-        >
-          Rechazar
-        </Button>
-      </ModalFooter>
+    <Modal
+      open={toggle}
+      onClose={handleClose}
+      title="Confirmar"
+      footer={
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+          <Button
+            variant="primary"
+            onClick={(e) =>
+              handleChange(e, requestDomiciliaryCompanyRequest, 'agree')
+            }
+          >
+            Aceptar
+          </Button>
+          <Button
+            variant="danger"
+            onClick={(e) =>
+              handleChange(e, requestDomiciliaryCompanyRequest, 'refused')
+            }
+          >
+            Rechazar
+          </Button>
+        </div>
+      }
+    >
+      Enviar solicitud para afiliarse a esta empresa
     </Modal>
   );
 };
 
-const RequestCard = ({ domiciliary, handleRequestClose
-  , setRequestDomiciliaryCompanyRequest }) => {
+const RequestCard = ({ domiciliary, handleRequestClose, setRequestDomiciliaryCompanyRequest }) => {
   return (
-    <Col style={{ marginTop: "10px" }} sm="4">
-      <Card style={{ margin: 0, padding: 0, paddingBottom: "10px", width: "100%", height: "fit-content", maxHeight: "90%", boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)" }} body>
+    <div style={{ width: '30%', minWidth: '200px' }}>
+      <Card raised style={{ marginBottom: '10px' }}>
         <CardBody>
-          <CardText>
-            {domiciliary.company.name} {domiciliary.company.lastName}
-          </CardText>
-          <CardText>
-            {domiciliary.company.documentNumber}
-          </CardText>
-          <CardText>
-            {domiciliary.company.email}
-          </CardText>
+          <p>{domiciliary.company.name} {domiciliary.company.lastName}</p>
+          <p>{domiciliary.company.documentNumber}</p>
+          <p>{domiciliary.company.email}</p>
           <Button
-            color="success"
+            variant="primary"
             onClick={(e) => {
               handleRequestClose(e);
               setRequestDomiciliaryCompanyRequest({
                 companyId: domiciliary.company.id,
-                requestDomiciliaryCompanyRequestId:
-                  domiciliary.id,
+                requestDomiciliaryCompanyRequestId: domiciliary.id,
               });
             }}
           >
@@ -150,7 +141,7 @@ const RequestCard = ({ domiciliary, handleRequestClose
           </Button>
         </CardBody>
       </Card>
-    </Col>
+    </div>
   );
 };
 

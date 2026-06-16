@@ -1,18 +1,11 @@
 import * as React from 'react';
 import { useReducer, useMemo, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Container,
-  Col,
-  Row,
-  Form,
-  FormGroup,
-  Input,
-  Button,
-} from 'reactstrap';
+import { Button, Input } from 'prizma-ui';
 import { setStepCustomer, setCustomerTakeCustomer } from '../../../store/reducer';
-import Select from 'react-select';
+import ReactSelect from 'react-select';
 import { cities, departments } from '../../lib/cities';
+
 const typesDocument = [
   { value: 'CC', label: 'Cédula de ciudadanía' },
   { value: 'CE', label: 'Cédula de extranjería' },
@@ -170,32 +163,29 @@ const TakeCustomerStep1 = () => {
   return (
     <>
       <div>
-        <Container
-          className="themed-container containerProof"
-          fluid="sm"
-        >
-          <Form
+        <div className="themed-container containerProof">
+          <form
             className="form"
             onSubmit={(e) => {
               e.preventDefault();
               handleSave();
             }}
           >
-            <Row>
-              <Col sm="12">
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+              <div style={{ flex: '0 0 100%', maxWidth: '100%' }}>
                 {customer?.id && (
-                  <FormGroup >
-                    <Select
+                  <div style={{ marginBottom: '1rem' }}>
+                    <ReactSelect
                       onChange={(orderData) => dispatchForm({ type: 'UPDATE_FIELD', field: 'order', value: orderData.value })}
                       placeholder="Orden"
                       value={orderOption}
                       options={orderOptions}
                     />
-                  </FormGroup>
+                  </div>
                 )}
-              </Col>
-              <Col sm="6">
-                <FormGroup >
+              </div>
+              <div style={{ flex: '0 0 50%', maxWidth: '50%', padding: '0 8px' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="text"
                     id="name"
@@ -204,8 +194,8 @@ const TakeCustomerStep1 = () => {
                     value={formState.name}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'name', value: e.target.value }) }}
                   />
-                </FormGroup>
-                <FormGroup >
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="text"
                     id="lastName"
@@ -214,35 +204,33 @@ const TakeCustomerStep1 = () => {
                     value={formState.lastName}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'lastName', value: e.target.value }) }}
                   />
-                </FormGroup>
-                <FormGroup>
-                  <Row>
-                    <Col>
-                      <Select
-                        inputProps={{
-                          autoComplete: 'off',
-                          id: 'prefix',
-                          name: 'prefix',
-                        }}
-                        onChange={handlePrefixChange}
-                        value={prefixClientPhone}
-                        placeholder="Prefijo *"
-                        options={jsonPrefix}
-                      />
-                    </Col>
-                    <Col>
-                      <Input
-                        type="phone"
-                        placeholder="Celular *"
-                        id="phone"
-                        name="phone"
-                        value={formState.clientPhone}
-                        onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'clientPhone', value: e.target.value }) }}
-                      />
-                    </Col>
-                  </Row>
-                </FormGroup>
-                <FormGroup >
+                </div>
+                <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
+                  <div style={{ flex: 1 }}>
+                    <ReactSelect
+                      inputProps={{
+                        autoComplete: 'off',
+                        id: 'prefix',
+                        name: 'prefix',
+                      }}
+                      onChange={handlePrefixChange}
+                      value={prefixClientPhone}
+                      placeholder="Prefijo *"
+                      options={jsonPrefix}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <Input
+                      type="phone"
+                      placeholder="Celular *"
+                      id="phone"
+                      name="phone"
+                      value={formState.clientPhone}
+                      onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'clientPhone', value: e.target.value }) }}
+                    />
+                  </div>
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="text"
                     id="deliveryAddress"
@@ -251,18 +239,18 @@ const TakeCustomerStep1 = () => {
                     value={formState.deliveryAddress}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'deliveryAddress', value: e.target.value }) }}
                   />
-                </FormGroup>
-                <FormGroup >
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="text"
-                    id="residentialGroupName"
-                    name='residentialGroupName'
+                    id="neighborhood"
+                    name='neighborhood'
                     placeholder="Barrio *"
                     value={formState.neighborhood}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'neighborhood', value: e.target.value }) }}
                   />
-                </FormGroup>
-                <FormGroup >
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="text"
                     id="residentialGroupName"
@@ -271,8 +259,8 @@ const TakeCustomerStep1 = () => {
                     value={formState.residentialGroupName}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'residentialGroupName', value: e.target.value }) }}
                   />
-                </FormGroup>
-                <FormGroup >
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="text"
                     id="houseOrApartment"
@@ -281,11 +269,11 @@ const TakeCustomerStep1 = () => {
                     value={formState.houseNumberOrApartment}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'houseNumberOrApartment', value: e.target.value }) }}
                   />
-                </FormGroup>
-              </Col>
-              <Col sm="6">
-                <FormGroup >
-                  <Select
+                </div>
+              </div>
+              <div style={{ flex: '0 0 50%', maxWidth: '50%', padding: '0 8px' }}>
+                <div style={{ marginBottom: '1rem' }}>
+                  <ReactSelect
                     inputProps={{
                       autoComplete: 'off',
                       id: 'department',
@@ -301,9 +289,9 @@ const TakeCustomerStep1 = () => {
                       };
                     })}
                   />
-                </FormGroup>
-                <FormGroup >
-                  <Select
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <ReactSelect
                     inputProps={{
                       autoComplete: 'off',
                       id: 'city',
@@ -314,8 +302,8 @@ const TakeCustomerStep1 = () => {
                     value={city || ''}
                     options={finalCitiesData}
                   />
-                </FormGroup>
-                <FormGroup >
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="email"
                     id="email"
@@ -324,9 +312,9 @@ const TakeCustomerStep1 = () => {
                     value={formState.email}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'email', value: e.target.value }) }}
                   />
-                </FormGroup>
-                <FormGroup >
-                  <Select
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <ReactSelect
                     inputProps={{
                       autoComplete: 'off',
                       id: 'typeDocument',
@@ -338,8 +326,8 @@ const TakeCustomerStep1 = () => {
                     defaultValue={selectedTypeDocument}
                     options={typesDocument}
                   />
-                </FormGroup>
-                <FormGroup >
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="text"
                     id="documentNumber"
@@ -348,8 +336,8 @@ const TakeCustomerStep1 = () => {
                     value={formState.documentNumber}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'documentNumber', value: e.target.value }) }}
                   />
-                </FormGroup>
-                <FormGroup >
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="text"
                     id="deliveryNote"
@@ -358,8 +346,8 @@ const TakeCustomerStep1 = () => {
                     value={formState.deliveryNote}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'deliveryNote', value: e.target.value }) }}
                   />
-                </FormGroup>
-                <FormGroup >
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
                   <Input
                     type="text"
                     id="zone"
@@ -368,9 +356,9 @@ const TakeCustomerStep1 = () => {
                     value={formState.zone}
                     onChange={(e) => { dispatchForm({ type: 'UPDATE_FIELD', field: 'zone', value: e.target.value }) }}
                   />
-                </FormGroup>
-                <FormGroup >
-                  <Select
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <ReactSelect
                     inputProps={{
                       autoComplete: 'off',
                       id: 'paymentMethod',
@@ -381,24 +369,24 @@ const TakeCustomerStep1 = () => {
                     value={paymentMethod || ''}
                     options={paymentMethods}
                   />
-                </FormGroup>
-              </Col>
-              <Col sm="12">
-                <FormGroup>
+                </div>
+              </div>
+              <div style={{ flex: '0 0 100%', maxWidth: '100%' }}>
+                <div>
                   <div className="positionButton">
                     <Button
-                      color="success"
+                      variant="primary"
                       type="submit"
                     >
                       Siguiente
                     </Button>{' '}
                     {``}
                   </div>
-                </FormGroup>
-              </Col>
-            </Row>
-          </Form>
-        </Container>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );

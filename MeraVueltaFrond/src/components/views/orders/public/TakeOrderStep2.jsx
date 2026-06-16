@@ -1,19 +1,7 @@
 import * as React from 'react';
 import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Container,
-  Col,
-  Row,
-  Form,
-  FormGroup,
-  Button,
-  Badge,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap';
+import { Button, Badge, Modal } from 'prizma-ui';
 import { updateOrderAction, setOrderStep, setOrderSaveConfirm, resetOrderSave } from '../../../../store/reducer';
 
 import { SelectPosition } from '../../maps/MapBox/SelectPosition';
@@ -61,49 +49,46 @@ const TakeOrderStep2 = () => {
   return (
     <>
       <div>
-        <Container
-          className="themed-container containerProof"
-          fluid="sm"
-        >
-          <Form
+        <div className="themed-container containerProof">
+          <form
             className="form"
             onSubmit={(e) => {
               e.preventDefault();
               handleToggle("form");
             }}
           >
-            <Row>
-              <Col sm="12">
-                <FormGroup>
-                  <Row>
-                    <Col sm="3">
+            <div className="row">
+              <div className="col-sm-12">
+                <div className="form-group">
+                  <div className="row">
+                    <div className="col-sm-3">
                       <Button
-                        color="info"
+                        variant="secondary"
                         size="lg"
                         onClick={(e) => { e.preventDefault(); dispatch(setOrderStep(0)); }}
                       >
                         Volver
                       </Button>
-                    </Col>
-                    <Col sm="3">
+                    </div>
+                    <div className="col-sm-3">
                       <Button
-                        color="success"
+                        variant="accent"
                         size="lg"
                         type="submit"
                       >
                         Crear Orden
                       </Button>
-                    </Col>
-                  </Row>
-                </FormGroup>
-                <Badge>
+                    </div>
+                  </div>
+                </div>
+                <Badge tone="info">
                   Seleccione la ubicación precisa donde se entregara el pedido
                 </Badge>
                 <SelectPosition />
-              </Col>
-            </Row>
-          </Form>
-        </Container>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
       <SaveOrderModal
         toggle={toggles.form}
@@ -123,31 +108,15 @@ const ReturnToWpp = (props) => {
   const loading = useSelector((state) => state.ui.loading);
   const { toggle, handleChange, handleClose } = props;
   return (
-    <>
-      <Modal
-        isOpen={toggle}
-        toggle={(e) => {
-          e.preventDefault();
-          handleChange();
-        }}
-      >
-        <ModalHeader
-          toggle={(e) => {
-            e.preventDefault();
-            handleClose("saveOrder");
-          }}
-        >
-          Confirmar
-        </ModalHeader>
-        <ModalBody>
-          <h4>Se a enviado la información con éxito</h4>
-          Te llegaran una notificaciones a tu WhatsApp de todo el
-          proceso de entrega
-        </ModalBody>
-        <ModalFooter>
+    <Modal
+      open={toggle}
+      onClose={() => handleClose("saveOrder")}
+      title="Confirmar"
+      footer={
+        <>
           <Button
             disabled={loading}
-            color="success"
+            variant="accent"
             onClick={(e) => {
               e.preventDefault();
               handleChange();
@@ -157,6 +126,7 @@ const ReturnToWpp = (props) => {
           </Button>
           <Button
             disabled={loading}
+            variant="secondary"
             onClick={(e) => {
               e.preventDefault();
               handleClose("saveOrder");
@@ -164,38 +134,27 @@ const ReturnToWpp = (props) => {
           >
             Cerrar
           </Button>
-        </ModalFooter>
-      </Modal>
-    </>
+        </>
+      }
+    >
+      <h2>Se ha enviado la información con éxito</h2>
+      Te llegaran una notificaciones a tu WhatsApp de todo el
+      proceso de entrega
+    </Modal>
   );
 };
 
 const SaveOrderModal = (props) => {
   const { toggle, handleChange, handleClose } = props;
   return (
-    <>
-      <Modal
-        isOpen={toggle}
-        toggle={(e) => {
-          e.preventDefault();
-          handleChange("form");
-        }}
-      >
-        <ModalHeader
-          toggle={(e) => {
-            e.preventDefault();
-            handleClose("form");
-          }}
-        >
-          Confirmar
-        </ModalHeader>
-        <ModalBody>
-          ¿Estás seguro/a de que los datos ingresados en el formulario
-          son correctos?
-        </ModalBody>
-        <ModalFooter>
+    <Modal
+      open={toggle}
+      onClose={() => handleClose("form")}
+      title="Confirmar"
+      footer={
+        <>
           <Button
-            color="success"
+            variant="accent"
             onClick={(e) => {
               e.preventDefault();
               handleChange();
@@ -204,6 +163,7 @@ const SaveOrderModal = (props) => {
             Aceptar
           </Button>
           <Button
+            variant="secondary"
             onClick={(e) => {
               e.preventDefault();
               handleClose("form");
@@ -211,9 +171,12 @@ const SaveOrderModal = (props) => {
           >
             Cancelar
           </Button>
-        </ModalFooter>
-      </Modal>
-    </>
+        </>
+      }
+    >
+      ¿Estás seguro/a de que los datos ingresados en el formulario
+      son correctos?
+    </Modal>
   );
 };
 

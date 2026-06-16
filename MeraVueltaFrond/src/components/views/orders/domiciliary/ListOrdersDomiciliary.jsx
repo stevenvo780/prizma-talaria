@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Input } from 'reactstrap';
+import { Button, Input, Table, Thead, Tbody, Tr, Th, Td, TableWrap } from 'prizma-ui';
 import { BsCheckLg, BsXLg } from 'react-icons/bs';
 
 import {
@@ -46,91 +46,92 @@ const ListOrdersDomiciliary = () => {
     } else {
       dispatch(searchOrdersAction(orderWord));
     }
-
   };
   const handleChangeWord = (e, word) => {
     e.preventDefault();
     setOrderWord(word);
   };
 
-  const handleKeyPress = (target) => {
-    if (target.charCode == 13) {
+  const handleKeyDown = (target) => {
+    if (target.key === 'Enter') {
       search();
     }
-  }
+  };
   return (
     <>
       <div>
-        <div style={{ overflowY: 'scroll' }}>
+        <div style={{ overflow: 'auto' }}>
+          <label htmlFor="buscar" className="sr-only">Buscar pedidos</label>
           <Input
             type="text"
             id="buscar"
             placeholder="Buscar"
             onChange={(e) => handleChangeWord(e, e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             className="search-views-standard"
           />
-          <table className="table">
-            <thead>
-              <tr>
-                <th scope="col">Aceptar</th>
-                <th scope="col">Cancelar</th>
-                <th scope="col">Número Entrega</th>
-                <th scope="col">Número Compra</th>
-                <th scope="col">Nombres</th>
-                <th scope="col">Apellidos</th>
-                <th scope="col">Telefono Cliente</th>
-                <th scope="col">Fecha Creación</th>
-                <th scope="col">Dirección Entrega</th>
-                <th scope="col">Departamento</th>
-                <th scope="col">Ciudad</th>
-                <th scope="col">Barrio</th>
-                <th scope="col">Nombre Conjunto Residencial</th>
-                <th scope="col">Número De Casa O Apto</th>
-                <th scope="col">Paquete A Entregar</th>
-                <th scope="col">Estado Pedido </th>
-                <th scope="col">Nota Domiciliario</th>
-                <th scope="col">Tipo de pago</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order, i) => (
-                <tr key={i}>
-                  <td>
-                    <Button
-                      color="success"
-                      onClick={(e) => {
-                        accept(e, order.deliveryNumber);
-                      }}
-                    >
-                      <BsCheckLg size={20} />
-                    </Button>
-                  </td>
-                  <td>
-                    <Button color="secondary">
-                      <BsXLg size={20} />
-                    </Button>
-                  </td>
-                  <td>{order.deliveryNumber}</td>
-                  <td>{order.purchaseNumber}</td>
-                  <td>{order.name}</td>
-                  <td>{order.lastName}</td>
-                  <td>{order.creationDate}</td>
-                  <td>{order.prefix ? "+" : ""}{order.prefix} {order.clientPhone}</td>
-                  <td>{order.department}</td>
-                  <td>{order.city}</td>
-                  <td>{order.neighborhood}</td>
-                  <td>{order.residentialGroupName}</td>
-                  <td>{order.houseNumberOrApartment}</td>
-                  <td>{order.deliveryPacket}</td>
-                  <td>{order.orderState}</td>
-                  <td>{order.domiciliary}</td>
-                  <td>{order.deliveryNote}</td>
-                  <td>{order.paymentMethod}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TableWrap>
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th scope="col">Aceptar</Th>
+                  <Th scope="col">Cancelar</Th>
+                  <Th scope="col">Número Entrega</Th>
+                  <Th scope="col">Número Compra</Th>
+                  <Th scope="col">Nombres</Th>
+                  <Th scope="col">Apellidos</Th>
+                  <Th scope="col">Telefono Cliente</Th>
+                  <Th scope="col">Fecha Creación</Th>
+                  <Th scope="col">Dirección Entrega</Th>
+                  <Th scope="col">Departamento</Th>
+                  <Th scope="col">Ciudad</Th>
+                  <Th scope="col">Barrio</Th>
+                  <Th scope="col">Nombre Conjunto Residencial</Th>
+                  <Th scope="col">Número De Casa O Apto</Th>
+                  <Th scope="col">Paquete A Entregar</Th>
+                  <Th scope="col">Estado Pedido</Th>
+                  <Th scope="col">Nota Domiciliario</Th>
+                  <Th scope="col">Tipo de pago</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {orders.map((order, i) => (
+                  <Tr key={i}>
+                    <Td>
+                      <Button
+                        variant="primary"
+                        aria-label="Aceptar entrega"
+                        onClick={(e) => {
+                          accept(e, order.deliveryNumber);
+                        }}
+                      >
+                        <BsCheckLg size={20} aria-hidden="true" />
+                      </Button>
+                    </Td>
+                    <Td>
+                      {/* Botón cancelar sin handler: omitido hasta conectar lógica de rechazo */}
+                    </Td>
+                    <Td>{order.deliveryNumber}</Td>
+                    <Td>{order.purchaseNumber}</Td>
+                    <Td>{order.name}</Td>
+                    <Td>{order.lastName}</Td>
+                    <Td>{order.creationDate}</Td>
+                    <Td>{order.prefix ? "+" : ""}{order.prefix} {order.clientPhone}</Td>
+                    <Td>{order.department}</Td>
+                    <Td>{order.city}</Td>
+                    <Td>{order.neighborhood}</Td>
+                    <Td>{order.residentialGroupName}</Td>
+                    <Td>{order.houseNumberOrApartment}</Td>
+                    <Td>{order.deliveryPacket}</Td>
+                    <Td>{order.orderState}</Td>
+                    <Td>{order.domiciliary}</Td>
+                    <Td>{order.deliveryNote}</Td>
+                    <Td>{order.paymentMethod}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableWrap>
         </div>
       </div>
     </>

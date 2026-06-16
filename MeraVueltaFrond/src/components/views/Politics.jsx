@@ -3,14 +3,14 @@ import React from 'react';
 const Politics = () => {
   return (
     <div className="politics-container">
-      <h2 className="politics-title">Política de Tratamiento de Datos de Mera Vuelta</h2>
+      <h1 className="politics-title">Política de Tratamiento de Datos de Talaria</h1>
       <p className="politics-text">
-        Mera Vuelta es una aplicación que ofrece asistencia en la gestión de pedidos a domicilio, comprometiéndose a proteger la privacidad de los datos de sus usuarios. Esta política de tratamiento de datos detalla cómo recopilamos, usamos, protegemos y compartimos los datos personales que obtenemos a través de la aplicación, incluyendo la información relacionada con las transacciones de pago a través de Wompi.
+        Talaria es una aplicación que ofrece asistencia en la gestión de pedidos a domicilio, comprometiéndose a proteger la privacidad de los datos de sus usuarios. Esta política de tratamiento de datos detalla cómo recopilamos, usamos, protegemos y compartimos los datos personales que obtenemos a través de la aplicación, incluyendo la información relacionada con las transacciones de pago a través de Mercado Pago.
       </p>
 
-      <h2 className="politics-title">Seguridad de la Información y Ubicación</h2>
+      <h2 className="politics-title" id="seguridad">Seguridad de la Información y Ubicación</h2>
       <p className="politics-text">
-        En Mera Vuelta, la seguridad de la información y la ubicación de nuestros usuarios es una prioridad. Estos datos son esenciales para proporcionar un servicio efectivo y de calidad. Por ello, implementamos las mejores prácticas y medidas de protección para garantizar su confidencialidad, integridad y disponibilidad.
+        En Talaria, la seguridad de la información y la ubicación de nuestros usuarios es una prioridad. Estos datos son esenciales para proporcionar un servicio efectivo y de calidad. Por ello, implementamos las mejores prácticas y medidas de protección para garantizar su confidencialidad, integridad y disponibilidad.
       </p>
       <p className="politics-text">
         La información de la ubicación del usuario nos permite determinar el lugar donde el cliente desea recibir su paquete. De esta manera, el encargado de la entrega puede llegar al destino con mayor facilidad. Además, gracias a nuestra herramienta de seguimiento de paquetes, el conocimiento de la ubicación de entrega permite al usuario saber cuán cerca está el paquete que está esperando.
@@ -34,7 +34,7 @@ const Politics = () => {
       </p>
       <h5>Información que Recopilamos</h5>
       <p className="politics-text">
-        La información recopilada por Mera Vuelta incluye:
+        La información recopilada por Talaria incluye:
       </p>
       <ul>
         <li>Nombre y apellido</li>
@@ -46,7 +46,7 @@ const Politics = () => {
         <li>Dirección de correo electrónico</li>
         <li>Ubicación del usuario en la web</li>
         <li>Ubicación del usuario en tiempo real desde la aplicación móvil</li>
-        <li>Información de transacciones y pagos a través de Wompi</li>
+        <li>Información de transacciones y pagos a través de Mercado Pago</li>
         <li>Fotos de los sitios de entrega de pedidos</li>
       </ul>
       <p className="politics-text">
@@ -55,7 +55,7 @@ const Politics = () => {
 
       <h3 className="politics-subtitle">Uso de Datos</h3>
       <p className="politics-text">
-        Utilizamos la información recopilada únicamente con el fin de brindar y mejorar nuestros servicios, incluyendo la asignación de pedidos a los domiciliarios, el seguimiento en tiempo real de las entregas, la notificación a los usuarios sobre el estado de los pedidos y la gestión de transacciones de pago a través de Wompi. Solo utilizaremos la información para enviar comunicaciones relacionadas con la aplicación o ofertas promocionales si los usuarios han dado su consentimiento explícito para recibir este tipo de mensajes.
+        Utilizamos la información recopilada únicamente con el fin de brindar y mejorar nuestros servicios, incluyendo la asignación de pedidos a los domiciliarios, el seguimiento en tiempo real de las entregas, la notificación a los usuarios sobre el estado de los pedidos y la gestión de transacciones de pago a través de Mercado Pago. Solo utilizaremos la información para enviar comunicaciones relacionadas con la aplicación o ofertas promocionales si los usuarios han dado su consentimiento explícito para recibir este tipo de mensajes.
       </p>
       <p className="politics-text">
         Además, es importante que los usuarios sean conscientes de que si superan el límite de pedidos de su plan, se les cobrará una tarifa adicional por cada entrega extra. El costo por pedido extra varía dependiendo del plan seleccionado. Por ejemplo, si un usuario tiene un plan de 49.500 y realiza más de 300 pedidos, se le cobrará a 165 pesos por cada entrega extra. Los detalles específicos de los costos por pedido extra para cada plan se pueden encontrar en nuestra página de precios.
@@ -72,7 +72,7 @@ const Politics = () => {
         Los datos personales delos usuarios se almacenan en servidores de Google Cloud Platform, ubicados en los Estados Unidos. Google Cloud Platform es un servicio de alojamiento de aplicaciones web y bases de datos administrado por Google. Google Cloud Platform ofrece una plataforma de computación en la nube que incluye servicios de infraestructura como servicio (IaaS), plataforma como servicio (PaaS) y software como servicio (SaaS).
       </p>
       <p className="politics-text">
-        Los datos sensibles, como los pagos recurrentes, se gestionan a través de un Token de pagos recurrentes que proporciona WOMPI. Los datos de pago se almacenan en sus servidores, mientras que en nuestros servidores guardamos el token de forma encriptada.
+        Los datos sensibles, como los pagos recurrentes, se gestionan a través de Mercado Pago mediante una suscripción recurrente (PreApproval). Los datos de la tarjeta se capturan y almacenan en los servidores de Mercado Pago; Talaria no almacena datos de tarjeta, solo la referencia de la suscripción.
       </p>
       <p className="politics-text">
         Las fotos de los sitios de entrega de pedidos se almacenan en Firebase, una plataforma de desarrollo de aplicaciones móviles y web desarrollada por Google.
@@ -82,7 +82,7 @@ const Politics = () => {
       <br />
       <h3 className="politics-subtitle">Compartir Datos</h3>
       <p className="politics-text">
-        No compartimos la información personal de los usuarios con terceros, excepto en los casos en que sea necesario para el funcionamiento de la aplicación, como el envío de notificaciones vía WhatsApp y la gestión de transacciones de pago a través de Wompi. En estos casos, los datos personales se comparten con los proveedores de servicios de mensajería instantánea, como WhatsApp, y con Wompi, para que puedan enviar mensajes a los usuarios y procesar transacciones de pago, respectivamente.
+        No compartimos la información personal de los usuarios con terceros, excepto en los casos en que sea necesario para el funcionamiento de la aplicación, como el envío de notificaciones vía WhatsApp y la gestión de transacciones de pago a través de Mercado Pago. En estos casos, los datos personales se comparten con los proveedores de servicios de mensajería instantánea, como WhatsApp, y con Mercado Pago, para que puedan enviar mensajes a los usuarios y procesar transacciones de pago, respectivamente.
       </p>
 
       <h3 className="politics-subtitle">Protección de Datos</h3>
@@ -106,13 +106,13 @@ const Politics = () => {
 
       <h3 className="politics-subtitle">Acceso y Control de Datos</h3>
       <p className="politics-text">
-        Los usuarios tienen derecho a conocer, actualizar y rectificar sus datos personales en posesión de Mera Vuelta en cualquier momento. Para ejercer este derecho, los usuarios pueden acceder a su información personal a través de la aplicación o pueden contactarnos a través de nuestro soporte para solicitar la actualización o rectificación de su información.
+        Los usuarios tienen derecho a conocer, actualizar y rectificar sus datos personales en posesión de Talaria en cualquier momento. Para ejercer este derecho, los usuarios pueden acceder a su información personal a través de la aplicación o pueden contactarnos a través de nuestro soporte para solicitar la actualización o rectificación de su información.
       </p>
       <p className="politics-text">
         Además, los usuarios tienen derecho a solicitar la supresión de sus datos personales en cualquier momento, siempre y cuando no exista una obligación legal o contractual que requiera la conservación de los mismos.
       </p>
       <p className="politics-text">
-        Mera Vuelta se compromete a respetar y proteger los derechos de los titulares de los datos personales y a cumplir con las disposiciones de la Ley 1581 de 2012 y demás normativas vigentes en Colombia en materia de protección de datos personales.
+        Talaria se compromete a respetar y proteger los derechos de los titulares de los datos personales y a cumplir con las disposiciones de la Ley 1581 de 2012 y demás normativas vigentes en Colombia en materia de protección de datos personales.
       </p>
 
       <h3 className="politics-subtitle">Cambios en la Política de Tratamiento de Datos</h3>
@@ -123,7 +123,7 @@ const Politics = () => {
         Se notificará al correo electrónico proporcionado por los usuarios cuando se realice un cambio en la política de tratamiento de datos.
       </p>
       <p className="politics-text">
-        Mera Vuelta se reserva el derecho de modificar esta política de tratamiento de datos en cualquier momento, por lo que es responsabilidad de los usuarios revisar regularmente esta página para conocer los cambios y asegurarse de que están de acuerdo con ellos. En caso de que haya un cambio importante en nuestra política de tratamiento de datos, se notificará a los usuarios a través de la aplicación o mediante una notificación en el sitio web de Mera Vuelta.
+        Talaria se reserva el derecho de modificar esta política de tratamiento de datos en cualquier momento, por lo que es responsabilidad de los usuarios revisar regularmente esta página para conocer los cambios y asegurarse de que están de acuerdo con ellos. En caso de que haya un cambio importante en nuestra política de tratamiento de datos, se notificará a los usuarios a través de la aplicación o mediante una notificación en el sitio web de Talaria.
       </p>
 
       <h3 className="politics-subtitle">Contacto</h3>

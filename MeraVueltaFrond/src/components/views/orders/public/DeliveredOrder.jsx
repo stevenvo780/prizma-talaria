@@ -2,15 +2,12 @@ import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'redux-first-history';
 import {
-  Container,
-  Col,
-  Row,
   Button,
   Alert,
   Card,
   CardBody,
-  CardText
-} from 'reactstrap';
+} from 'prizma-ui';
+import { Container, Col, Row, CardText } from 'reactstrap';
 import moment from 'moment';
 const DeliveredOrder = () => {
   const dispatch = useDispatch();
@@ -25,23 +22,24 @@ const DeliveredOrder = () => {
           className="themed-container containerProof"
           fluid="sm"
         >
+          <h1 className="sr-only">Estado del pedido</h1>
           <br />
           {(orderByDeliveryNumber.orderState === 'EsperaSalida' ||
             orderByDeliveryNumber.orderState === 'Salida') && (
               <>
-                <Alert color="success">
-                  Esta pedido esta en proceso de entrega
+                <Alert tone="success">
+                  Este pedido está en proceso de entrega
                 </Alert>
                 <Button
+                  variant="primary"
                   onClick={(e) => {
-                    e.preventDefault;
+                    e.preventDefault();
                     dispatch(
                       push(
                         `/map/${orderByDeliveryNumber.deliveryNumber}`
                       )
                     );
                   }}
-                  color="info"
                 >
                   Ver mapa{' '}
                 </Button>
@@ -49,19 +47,19 @@ const DeliveredOrder = () => {
             )}
           {orderByDeliveryNumber.orderState === 'Entregada' && (
             <>
-              <Alert color="success">
-                Esta pedido ya fue entregado
+              <Alert tone="success">
+                Este pedido ya fue entregado
               </Alert>
               <Button
+                variant="primary"
                 onClick={(e) => {
-                  e.preventDefault;
+                  e.preventDefault();
                   dispatch(
                     push(
                       `/mapFinish/${orderByDeliveryNumber.deliveryNumber}`
                     )
                   );
                 }}
-                color="info"
               >
                 Ver mapa{' '}
               </Button>
@@ -82,7 +80,7 @@ const DeliveredOrder = () => {
                     <>
                       <p>Nota del domiciliario: </p>
                       <p>{orderByDeliveryNumber.dealerNote}</p>
-                      <img src={orderByDeliveryNumber.pickupPicture} />
+                      <img src={orderByDeliveryNumber.pickupPicture} alt="Foto de entrega" style={{ maxWidth: '100%' }} />
                     </>
                   </CardBody>
                 </Card>

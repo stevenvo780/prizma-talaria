@@ -1,19 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'redux-first-history';
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Input,
-  Card,
-  CardBody,
-  CardText,
-  Col,
-  Row,
-} from 'reactstrap';
+import { Button, Card, CardBody, Input, ConfirmDialog } from 'prizma-ui';
 import {
   getAllDomiciliaryCompanyRequestByCompanyAction,
   deleteDomiciliaryCompanyRequestAction,
@@ -33,15 +20,13 @@ const RequestWaitingDomiciliaryList = () => {
 
   const [toggleDelete, setToggleDelete] = React.useState(false);
 
-  const handleDeleteClose = (e) => {
-    e.preventDefault();
-    setToggleDelete(!toggleDelete);
+  const handleDeleteClose = () => {
+    setToggleDelete(false);
   };
 
-  const handleDelete = (event, id) => {
-    event.preventDefault();
-    handleDeleteClose(event);
-    dispatch(deleteDomiciliaryCompanyRequestAction(id));
+  const handleDelete = () => {
+    dispatch(deleteDomiciliaryCompanyRequestAction(deleteDomiciliaryCompanyRequest));
+    setToggleDelete(false);
   };
 
   React.useEffect(() => {
@@ -49,7 +34,7 @@ const RequestWaitingDomiciliaryList = () => {
   }, []);
 
   const handleKeyPress = (target) => {
-    if (target.charCode == 13) {
+    if (target.key === 'Enter') {
       search();
     }
   };
@@ -84,6 +69,11 @@ const RequestWaitingDomiciliaryList = () => {
     setOrderWord(word);
   };
 
+  const list =
+    domiciliaryOrdersFiltering !== null
+      ? domiciliaryOrdersFiltering
+      : domiciliaryCompanyRequest;
+
   return (
     <>
       <div
@@ -101,98 +91,72 @@ const RequestWaitingDomiciliaryList = () => {
           id="buscar"
           placeholder="Buscar"
           onChange={(e) => handleChangeWord(e, e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           className="search-views-standard"
         />
         <br />
-        <Row >
-          {domiciliaryOrdersFiltering !== null
-            ? domiciliaryOrdersFiltering.map((domiciliary, i) => (
-              <DomiciliaryRequestCard
-                key={i}
-                domiciliary={domiciliary.domiciliary}
-                handleRequestClose={handleDeleteClose}
-                setRequestDomiciliaryCompanyRequest={setDeleteDomiciliaryCompanyRequest}
-              />
-            ))
-            : domiciliaryCompanyRequest.map((domiciliary, i) => (
-              <DomiciliaryRequestCard
-                key={i}
-                domiciliary={domiciliary.domiciliary}
-                handleRequestClose={handleDeleteClose}
-                setRequestDomiciliaryCompanyRequest={setDeleteDomiciliaryCompanyRequest}
-              />
-            ))}
-        </Row>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+          {list.map((domiciliary, i) => (
+            <DomiciliaryRequestCard
+              key={i}
+              domiciliary={domiciliary.domiciliary}
+              onDeleteClick={(id) => {
+                setDeleteDomiciliaryCompanyRequest(id);
+                setToggleDelete(true);
+              }}
+            />
+          ))}
+        </div>
       </div>
-      <DeleteDomiciliaryCompanyRequestModal
-        toggle={toggleDelete}
-        handleChange={handleDelete}
-        handleClose={handleDeleteClose}
-        deleteDomiciliaryCompanyRequest={
-          deleteDomiciliaryCompanyRequest
-        }
+      <ConfirmDialog
+        open={toggleDelete}
+        onClose={handleDeleteClose}
+        onConfirm={handleDelete}
+        title="Confirmar"
+        message="¿Estás seguro/a de que desea eliminar el pedido seleccionada?"
+        confirmLabel="Aceptar"
+        cancelLabel="Cancelar"
+        tone="danger"
       />
-      <Button className='button-reload' onClick={() => dispatch(getAllDomiciliaryCompanyRequestByCompanyAction())}><RxReload /></Button>
+      <Button
+        variant="ghost"
+        className="button-reload"
+        onClick={() => dispatch(getAllDomiciliaryCompanyRequestByCompanyAction())}
+      >
+        <RxReload />
+      </Button>
     </>
   );
 };
 
-const DeleteDomiciliaryCompanyRequestModal = (props) => {
-  const {
-    handleChange,
-    handleClose,
-    toggle,
-    deleteDomiciliaryCompanyRequest,
-  } = props;
-  return (
-    <Modal isOpen={toggle} toggle={handleChange}>
-      <ModalHeader toggle={handleChange}>Confirmar</ModalHeader>
-      <ModalBody>
-        ¿Estás seguro/a de que desea eliminar el pedido seleccionada?
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          color="success"
-          onClick={(e) =>
-            handleChange(e, deleteDomiciliaryCompanyRequest)
-          }
-        >
-          Aceptar
-        </Button>
-        <Button onClick={handleClose}>Cancelar</Button>
-      </ModalFooter>
-    </Modal>
-  );
-};
-
-const DomiciliaryRequestCard = ({ domiciliary, handleRequestClose, setRequestDomiciliaryCompanyRequest }) => (
-  <Col style={{ marginTop: "10px" }} sm="4">
-    <Card style={{ margin: 0, padding: 0, paddingBottom: "10px", width: "100%", height: "fit-content", maxHeight: "90%", boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)" }} body>
+const DomiciliaryRequestCard = ({ domiciliary, onDeleteClick }) => (
+  <div style={{ marginTop: '10px', width: 'calc(33.33% - 10px)', minWidth: '260px' }}>
+    <Card
+      raised
+      style={{
+        margin: 0,
+        padding: 0,
+        paddingBottom: '10px',
+        width: '100%',
+        height: 'fit-content',
+        maxHeight: '90%',
+      }}
+    >
       <CardBody>
-        <CardText>
+        <p>
           {domiciliary.name} {domiciliary.lastName}
-        </CardText>
-        <CardText>
-          Documento: {domiciliary.documentNumber}
-        </CardText>
-        <CardText>
-          {domiciliary.email}
-        </CardText>
+        </p>
+        <p>Documento: {domiciliary.documentNumber}</p>
+        <p>{domiciliary.email}</p>
         <Button
-          color="danger"
-          onClick={(e) => {
-            handleDeleteClose(e);
-            setDeleteDomiciliaryCompanyRequest(
-              domiciliary.id
-            );
-          }}
+          variant="danger"
+          onClick={() => onDeleteClick(domiciliary.id)}
         >
           Eliminar
         </Button>
       </CardBody>
     </Card>
-  </Col>
+  </div>
 );
 
 export default RequestWaitingDomiciliaryList;

@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Card, CardBody, CardText, Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col
-} from 'reactstrap';
+import { Button, Card, CardBody, ConfirmDialog } from 'prizma-ui';
 import {
   getAllDomiciliaryCompanyByDomiciliaryAction,
   deleteDomiciliaryCompanyAction,
@@ -18,15 +16,13 @@ const MyDomiciliaryList = () => {
 
   const [toggleDelete, setToggleDelete] = React.useState(false);
 
-  const handleDeleteClose = (e) => {
-    e.preventDefault();
-    setToggleDelete(!toggleDelete);
+  const handleDeleteClose = () => {
+    setToggleDelete(false);
   };
 
-  const handleDelete = (event, id) => {
-    event.preventDefault();
-    handleDeleteClose(event);
-    dispatch(deleteDomiciliaryCompanyAction(id));
+  const handleDelete = () => {
+    dispatch(deleteDomiciliaryCompanyAction(deleteDomiciliaryCompany));
+    setToggleDelete(false);
   };
 
   React.useEffect(() => {
@@ -45,69 +41,56 @@ const MyDomiciliaryList = () => {
           overflowX: 'hidden',
         }}
       >
-        <Row>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
           {domiciliaryCompany.map((domiciliary, i) => (
-            <Col style={{ marginTop: "10px" }} sm="4">
-              <Card style={{ margin: 0, padding: 0, paddingBottom: "10px", width: "100%", height: "fit-content", maxHeight: "90%", boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)" }} body>
+            <div
+              key={i}
+              style={{ marginTop: '10px', width: 'calc(33.33% - 10px)', minWidth: '260px' }}
+            >
+              <Card
+                raised
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  paddingBottom: '10px',
+                  width: '100%',
+                  height: 'fit-content',
+                  maxHeight: '90%',
+                }}
+              >
                 <CardBody>
-                  <CardText>
+                  <p>
                     {domiciliary.company.name} {domiciliary.company.lastName}
-                  </CardText>
-                  <CardText>
-                    {domiciliary.company.documentNumber}
-                  </CardText>
-                  <CardText>
-                    {domiciliary.company.email}
-                  </CardText>
-                  <Button color="danger" onClick={(e) => {
-                    handleDeleteClose(e);
-                    setDeleteDomiciliaryCompany(domiciliary.id);
-                  }}>
+                  </p>
+                  <p>{domiciliary.company.documentNumber}</p>
+                  <p>{domiciliary.company.email}</p>
+                  <Button
+                    variant="danger"
+                    onClick={() => {
+                      setDeleteDomiciliaryCompany(domiciliary.id);
+                      setToggleDelete(true);
+                    }}
+                  >
                     Eliminar
                   </Button>
                 </CardBody>
               </Card>
-            </Col>
+            </div>
           ))}
-        </Row>
+        </div>
       </div>
-      <DeleteDomiciliaryCompanyModal
-        toggle={toggleDelete}
-        handleChange={handleDelete}
-        handleClose={handleDeleteClose}
-        deleteDomiciliaryCompany={deleteDomiciliaryCompany}
+      <ConfirmDialog
+        open={toggleDelete}
+        onClose={handleDeleteClose}
+        onConfirm={handleDelete}
+        title="Confirmar"
+        message="¿ Estás seguro/a de que desea eliminar la relación con esta empresa ??"
+        confirmLabel="Aceptar"
+        cancelLabel="Cancelar"
+        tone="danger"
       />
     </>
   );
 };
-
-const DeleteDomiciliaryCompanyModal = (props) => {
-  const {
-    handleChange,
-    handleClose,
-    toggle,
-    deleteDomiciliaryCompany,
-  } = props;
-  return (
-    <Modal isOpen={toggle} toggle={handleChange}>
-      <ModalHeader toggle={handleChange}>Confirmar</ModalHeader>
-      <ModalBody>
-        ¿ Estás seguro/a de que desea eliminar la relación con esta
-        empresa ??
-      </ModalBody>
-      <ModalFooter>
-        <Button
-          color="success"
-          onClick={(e) => handleChange(e, deleteDomiciliaryCompany)}
-        >
-          Aceptar
-        </Button>
-        <Button onClick={handleClose}>Cancelar</Button>
-      </ModalFooter>
-    </Modal>
-  );
-};
-
-
 
 export default MyDomiciliaryList;

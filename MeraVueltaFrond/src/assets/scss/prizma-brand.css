@@ -1,17 +1,17 @@
 /**
- * cauce-brand.css — Puente entre Bootstrap 4.6 / Paper Dashboard (estilos
- * existentes de Mera Vuelta) y los tokens del design system Olympo.
+ * prizma-brand.css — Puente entre Bootstrap 4.6 / Paper Dashboard (estilos
+ * existentes de Talaria) y los tokens del design system Prizma.
  *
  * Objetivo: que botones, links, encabezados y acentos adopten el acento del
- * módulo "meravuelta" sin reescribir los estilos existentes (aditivo).
+ * módulo "talaria" sin reescribir los estilos existentes (aditivo).
  *
- * Los tokens --c-* provienen de ./cauce-tokens.css (copia self-hosted de
- * @olympo/tokens, sin dependencias npm nuevas). El acento del módulo
- * (--c-accent-module) se resuelve por el atributo data-module="meravuelta"
- * presente en el wrapper .cauce.cui-root (ver src/index.js).
+ * Los tokens --c-* provienen de ./prizma-tokens.css (copia self-hosted de
+ * prizma-tokens, sin dependencias npm nuevas). El acento del módulo
+ * (--c-accent-module) se resuelve por el atributo data-module="talaria"
+ * presente en el wrapper .prizma.cui-root (ver src/index.js).
  */
 
-/* ---- Variables Bootstrap mapeadas a tokens Olympo ---- */
+/* ---- Variables Bootstrap mapeadas a tokens Prizma ---- */
 :root {
   --bs-primary: var(--c-accent-module);
   --bs-link-color: var(--c-primary);
@@ -91,10 +91,10 @@ a:focus {
   box-shadow: 0 0 0 0.2rem var(--c-accent-module-tint);
 }
 
-/* ---- Co-branding marca paraguas Olympo ----
-   Texto/etiqueta que acompaña al nombre del producto (Mera Vuelta) para
-   indicar que pertenece al ecosistema Olympo. Discreto, en color de marca. */
-.cauce-umbrella {
+/* ---- Co-branding marca paraguas Prizma ----
+   Texto/etiqueta que acompaña al nombre del producto (Talaria) para
+   indicar que pertenece al ecosistema Prizma. Discreto, en color de marca. */
+.prizma-umbrella {
   font-family: var(--c-font-display);
   font-weight: var(--c-weight-semibold);
   letter-spacing: 0.02em;
