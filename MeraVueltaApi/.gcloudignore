@@ -1,0 +1,11 @@
+.gcloudignore
+.git
+.gitignore
+node_modules
+/dist
+vendor-contracts/node_modules
+vendor-contracts/test
+.env
+.env.*
+tests
+jest.config.js

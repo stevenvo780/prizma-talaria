@@ -2,13 +2,18 @@ FROM node:14.19.3-alpine
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-RUN npm i
+# Copy source files (node_modules and root /dist excluded via .gcloudignore,
+# but vendor-contracts/dist IS included)
+COPY . .
 
-ADD . /usr/src/app
+# Install dependencies - olympo-contracts (Prizma) installs from ./vendor-contracts
+RUN npm install --prefer-offline
 
+# Build TypeScript
 RUN npm run build
 
-EXPOSE 3006
+EXPOSE 8080
 
-CMD ["npm", "start"]
+ENV PORT=8080
+
+CMD ["node", "dist/index.js"]
