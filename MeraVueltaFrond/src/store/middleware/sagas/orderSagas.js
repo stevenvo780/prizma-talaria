@@ -32,6 +32,7 @@ import {
   deleteMassiveOrdersAction,
   deleteMassiveOrdersDoneAction
 } from '../../reducer';
+import { ORDER_STATES, getOrderState, getOrderStateRoute, isValidOrderState } from './orderConstants';
 
 // Orders
 function* searchOrdersSaga(action) {
@@ -167,32 +168,44 @@ function* updateOrderSaga(action) {
   try {
     const { data } = yield call(orderApi.updateOrderAction, action.payload);
     const user = yield select((state) => state.login.user);
+
+    // Defensive extraction of orderState with validation
+    const orderState = getOrderState(data);
+    if (!orderState) {
+      console.warn('Update order response missing orderState', data);
+      yield put(addNotification({ message: "Orden actualizada pero estado no confirmado", color: "warning" }));
+      yield put(updateOrderDoneAction(data));
+      return;
+    }
+
+    // Validate orderState is recognized
+    if (!isValidOrderState(orderState)) {
+      console.warn(`Unknown order state returned: ${orderState}`);
+      yield put(addNotification({ message: "Orden actualizada con estado desconocido", color: "warning" }));
+      yield put(updateOrderDoneAction(data));
+      return;
+    }
+
+    // Route user to appropriate page based on new orderState
     if (user) {
       if (user.role === 'company') {
-        if (data.orderState === 'Compra') {
-          yield put(getAllOrderByCompanyForStatusAction({ state: "Compra", take: 20, skip: 0, orderQuery: false }));
-          yield put(push('/company/orders'));
-          yield put(setOrderTabIndex('2'));
-        }
-        if (data.orderState === 'EsperaDespacho') {
-          yield put(getAllOrderByCompanyForStatusAction({ state: "EsperaDespacho", take: 20, skip: 0, orderQuery: false }));
-          yield put(push('/company/orders'));
-          yield put(setOrderTabIndex('2'));
-        }
-        if (data.orderState === 'EsperaSalida') {
-          yield put(getAllOrderByCompanyForStatusAction({ state: "EsperaSalida", take: 20, skip: 0, orderQuery: false }));
-          yield put(push('/company/vueltas'));
+        const route = getOrderStateRoute(orderState);
+        yield put(getAllOrderByCompanyForStatusAction({ state: orderState, take: 20, skip: 0, orderQuery: false }));
+        yield put(push(route.page));
+        if (route.tab) {
+          yield put(setOrderTabIndex(route.tab));
         }
       } else if (user.role === 'domiciliary') {
         yield put(getAllOrdersByUserDomiciliaryAction());
       }
     }
+
     yield put(updateOrderDoneAction(data));
     yield put(addNotification({ message: "Orden actualizada correctamente", color: "success" }));
   } catch (error) {
     console.error(error);
     if (error?.response?.data?.message) {
-      yield put(addNotification({ message: "Ocurrió un error actualizando la orden", color: "danger" }));
+      yield put(addNotification({ message: error.response.data.message, color: "danger" }));
     } else {
       yield put(addNotification({ message: "Ocurrió un error actualizando la orden", color: "danger" }));
     }
@@ -206,33 +219,35 @@ function* updateOrderSaga(action) {
 function* deleteOrderSaga(action) {
   try {
     const { data } = yield call(orderApi.deleteOrder, action.payload);
-    if (data.orderState === 'Compra') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "Compra", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/orders'));
-      yield put(setOrderTabIndex('1'));
+
+    // Defensive extraction of orderState with validation
+    const orderState = getOrderState(data);
+    if (!orderState) {
+      console.warn('Delete order response missing orderState', data);
+      yield put(addNotification({ message: "Orden eliminada pero estado no confirmado", color: "warning" }));
+      return;
     }
-    if (data.orderState === 'EsperaDespacho') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "EsperaDespacho", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/orders'));
-      yield put(setOrderTabIndex('2'));
+
+    // Validate orderState is recognized
+    if (!isValidOrderState(orderState)) {
+      console.warn(`Unknown order state returned from delete: ${orderState}`);
+      yield put(addNotification({ message: "Orden eliminada con estado desconocido", color: "warning" }));
+      return;
     }
-    if (data.orderState === 'EsperaSalida') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "EsperaSalida", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/vueltas'));
+
+    // Route user to appropriate page based on orderState
+    const route = getOrderStateRoute(orderState);
+    yield put(getAllOrderByCompanyForStatusAction({ state: orderState, take: 20, skip: 0, orderQuery: false }));
+    yield put(push(route.page));
+    if (route.tab) {
+      yield put(setOrderTabIndex(route.tab));
     }
-    if (data.orderState === 'Aceptada') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "Aceptada", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/vueltas'));
-    }
-    if (data.orderState === 'Salida') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "Salida", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/vueltas'));
-    }
-    yield put(addNotification({ message: "Se elimino correctamente", color: "success" }));
+
+    yield put(addNotification({ message: "Se eliminó correctamente", color: "success" }));
   } catch (error) {
     console.error(error);
     if (error?.response?.data?.message) {
-      yield put(addNotification({ message: "Ocurrió un error eliminando la orden", color: "danger" }));
+      yield put(addNotification({ message: error.response.data.message, color: "danger" }));
     } else {
       yield put(addNotification({ message: "Ocurrió un error eliminando la orden", color: "danger" }));
     }
@@ -247,36 +262,30 @@ function* deleteMassiveOrdersSaga(action) {
   try {
     const { data } = yield call(orderApi.deleteMassiveOrder, action.payload);
     yield put(deleteMassiveOrdersDoneAction(data));
-    if (data[0].order.orderState === 'Compra') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "Compra", take: 20, skip: 0, orderQuery: false }));
+
+    // Defensive extraction: use first item's orderState for routing (if available)
+    const orderState = getOrderState(data);
+    if (orderState && isValidOrderState(orderState)) {
+      const route = getOrderStateRoute(orderState);
+      yield put(getAllOrderByCompanyForStatusAction({ state: orderState, take: 20, skip: 0, orderQuery: false }));
+      yield put(push(route.page));
+      if (route.tab) {
+        yield put(setOrderTabIndex(route.tab));
+      }
+    } else if (Array.isArray(data) && data.length === 0) {
+      // Empty result: default to orders list
       yield put(push('/company/orders'));
       yield put(setOrderTabIndex('1'));
     }
-    if (data[0].order.orderState === 'EsperaDespacho') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "EsperaDespacho", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/orders'));
-      yield put(setOrderTabIndex('2'));
-    }
-    if (data[0].order.orderState === 'EsperaSalida') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "EsperaSalida", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/vueltas'));
-    }
-    if (data[0].order.orderState === 'Aceptada') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "Aceptada", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/vueltas'));
-    }
-    if (data[0].order.orderState === 'Salida') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "Salida", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/vueltas'));
-    }
+
     yield put(createOrderMassiveDoneAction(data));
-    yield put(addNotification({ message: "Ordenes eliminadas correctamente", color: "success" }));
+    yield put(addNotification({ message: "Órdenes eliminadas correctamente", color: "success" }));
   } catch (error) {
     console.error(error);
     if (error?.response?.data?.message) {
-      yield put(addNotification({ message: "Ocurrió un error eliminando las ordenes", color: "danger" }));
+      yield put(addNotification({ message: error.response.data.message, color: "danger" }));
     } else {
-      yield put(addNotification({ message: "Ocurrió un error eliminando las ordenes", color: "danger" }));
+      yield put(addNotification({ message: "Ocurrió un error eliminando las órdenes", color: "danger" }));
     }
   } finally {
     if (yield cancelled()) {
@@ -308,27 +317,31 @@ function* updateOrderMassiveSaga(action) {
   try {
     const { data } = yield call(orderApi.updateOrderMassive, action.payload);
     yield put(updateOrderMassiveDoneAction(data));
-    if (data[0].order.orderState === 'Compra') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "Compra", take: 20, skip: 0, orderQuery: false }));
+
+    // Defensive extraction: use first item's orderState for routing (if available)
+    const orderState = getOrderState(data);
+    if (orderState && isValidOrderState(orderState)) {
+      const route = getOrderStateRoute(orderState);
+      yield put(getAllOrderByCompanyForStatusAction({ state: orderState, take: 20, skip: 0, orderQuery: false }));
+      yield put(push(route.page));
+      if (route.tab) {
+        yield put(setOrderTabIndex(route.tab));
+      }
+    } else if (Array.isArray(data) && data.length === 0) {
+      // Empty result: default to orders list
       yield put(push('/company/orders'));
-      yield put(setOrderTabIndex('2'));
+      yield put(setOrderTabIndex('1'));
+    } else {
+      console.warn('Update massive orders: could not extract valid orderState', data);
     }
-    if (data[0].order.orderState === 'EsperaDespacho') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "EsperaDespacho", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/orders'));
-      yield put(setOrderTabIndex('2'));
-    }
-    if (data[0].order.orderState === 'EsperaSalida') {
-      yield put(getAllOrderByCompanyForStatusAction({ state: "EsperaSalida", take: 20, skip: 0, orderQuery: false }));
-      yield put(push('/company/vueltas'));
-    }
+
     yield put(createOrderMassiveDoneAction(data));
   } catch (error) {
     console.error(error);
     if (error?.response?.data?.message) {
-      yield put(addNotification({ message: "Ocurrió un error actualizando las ordenes", color: "danger" }));
+      yield put(addNotification({ message: error.response.data.message, color: "danger" }));
     } else {
-      yield put(addNotification({ message: "Ocurrió un error actualizando las ordenes", color: "danger" }));
+      yield put(addNotification({ message: "Ocurrió un error actualizando las órdenes", color: "danger" }));
     }
   } finally {
     if (yield cancelled()) {

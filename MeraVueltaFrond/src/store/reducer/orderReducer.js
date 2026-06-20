@@ -28,6 +28,10 @@ export const updateOrderDoneAction = createAction("UPDATE_ORDER_DONE_ACTION");
 export const deleteOrderAction = createAction("DELETE_ORDER_ACTION");
 export const deleteOrderDoneAction = createAction("DELETE_ORDER_DONE_ACTION");
 
+// Reject order actions
+export const rejectOrderAction = createAction("REJECT_ORDER_ACTION");
+export const rejectOrderDoneAction = createAction("REJECT_ORDER_DONE_ACTION");
+
 // All Orders
 export const getAllOrderAction = createAction('GET_ALL_ORDER_ACTION');
 export const getAllOrderDoneAction = createAction(
@@ -139,7 +143,8 @@ const uiReducer = createReducer(initialState, {
     state.order = null;
   },
   [deleteOrderDoneAction]: (state, action) => {
-    state.order.order = null;
+    state.order = null;
+    state.orderByDeliveryNumber = null;
   },
   [resetOrderSave]: (state, action) => {
     state.orderSave = null;

@@ -25,21 +25,52 @@ import {
 import moment from 'moment';
 import { FiMapPin } from 'react-icons/fi';
 
+const parseJSON = (str, defaultValue = {}) => {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    console.warn('Invalid JSON in order data:', e);
+    return defaultValue;
+  }
+};
+
 export const ModalDetailOrder = (props) => {
   const { toggle, handleChange, order } = props;
+
+  // Defensive check for order structure
+  if (!order || typeof order !== 'object') {
+    return (
+      <Modal
+        open={toggle}
+        onClose={handleChange}
+        title="Error: Orden inválida"
+      >
+        <p>No se pudo cargar la información de la orden.</p>
+      </Modal>
+    );
+  }
+
   const state = (order) => {
-    if (order.orderState === "EsperaDespacho") {
+    if (!order || typeof order !== 'object') {
+      return "Estado desconocido";
+    }
+    const orderState = order.orderState;
+    if (orderState === "EsperaDespacho") {
       return "En entrega";
-    } else if (order.orderState === "EsperaSalida") {
+    } else if (orderState === "EsperaSalida") {
       return "Asignada";
-    } else if (order.orderState === "Aceptada") {
+    } else if (orderState === "Aceptada") {
       return "En ruta";
-    } else if (order.orderState === "Salida") {
+    } else if (orderState === "Salida") {
       return "En curso";
-    } else if (order.orderState === "Entregada") {
+    } else if (orderState === "Entregada") {
       return "Finalizada";
+    } else if (orderState === "Rechazada") {
+      return "Rechazada";
+    } else if (orderState === "Compra") {
+      return "Orden de compra";
     } else {
-      return "Ordenen de compra";
+      return `Orden de compra (${orderState || "sin estado"})`;
     }
   }
 
@@ -81,11 +112,13 @@ export const ModalDetailOrder = (props) => {
                       <p>Paquete: {order.deliveryPacket}</p>
                       {(order.geolocationDelivery != null) && (
                         (() => {
-                          const geoDeliveryObj = JSON.parse(order.geolocationDelivery);
-                          return (
+                          const geoDeliveryObj = parseJSON(order.geolocationDelivery);
+                          return geoDeliveryObj?.latitude && geoDeliveryObj?.longitude ? (
                             <p>
                               Geolocalización de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${geoDeliveryObj.latitude},${geoDeliveryObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
                             </p>
+                          ) : (
+                            <p>Geolocalización no disponible</p>
                           );
                         })()
                       )}
@@ -96,11 +129,13 @@ export const ModalDetailOrder = (props) => {
                       )}
                       {(order.pickupLocation != null) && (
                         (() => {
-                          const pickupLocationObj = JSON.parse(order.pickupLocation);
-                          return (
+                          const pickupLocationObj = parseJSON(order.pickupLocation);
+                          return pickupLocationObj?.latitude && pickupLocationObj?.longitude ? (
                             <p>
                               Ubicación de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${pickupLocationObj.latitude},${pickupLocationObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
                             </p>
+                          ) : (
+                            <p>Ubicación no disponible</p>
                           );
                         })()
                       )}
@@ -135,7 +170,7 @@ export const ModalDetailOrder = (props) => {
                         {(order.deliveryNumber != null) && (
                           <>
                             <p>
-                              URL: <a href={`${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`} target="_blank">
+                              URL: <a href={`${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`} target="_blank" rel="noopener noreferrer">
                                 {`${process.env.REACT_APP_REACT_HOST}/takeOrder/${order.deliveryNumber}`}
                               </a>
                             </p>
@@ -156,11 +191,13 @@ export const ModalDetailOrder = (props) => {
                     <Col xs={12} sm={6}>
                       {(order.geolocationDelivery != null) && (
                         (() => {
-                          const geoDeliveryObj = JSON.parse(order.geolocationDelivery);
-                          return (
+                          const geoDeliveryObj = parseJSON(order.geolocationDelivery);
+                          return geoDeliveryObj?.latitude && geoDeliveryObj?.longitude ? (
                             <p>
                               Geolocalización de entrega: <a href={`https://www.google.com/maps/search/?api=1&query=${geoDeliveryObj.latitude},${geoDeliveryObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
                             </p>
+                          ) : (
+                            <p>Geolocalización no disponible</p>
                           );
                         })()
                       )}
@@ -171,11 +208,13 @@ export const ModalDetailOrder = (props) => {
                       )}
                       {(order.pickupLocation != null) && (
                         (() => {
-                          const pickupLocationObj = JSON.parse(order.pickupLocation);
-                          return (
+                          const pickupLocationObj = parseJSON(order.pickupLocation);
+                          return pickupLocationObj?.latitude && pickupLocationObj?.longitude ? (
                             <p>
                               Ubicación de recolección: <a href={`https://www.google.com/maps/search/?api=1&query=${pickupLocationObj.latitude},${pickupLocationObj.longitude}`} target="_blank" rel="noopener noreferrer"><FiMapPin /> Ver en Google Maps</a>
                             </p>
+                          ) : (
+                            <p>Ubicación no disponible</p>
                           );
                         })()
                       )}
