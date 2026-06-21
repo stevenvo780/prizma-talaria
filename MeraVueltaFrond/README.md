@@ -39,10 +39,8 @@ npm start
 
 ## Nota de despliegue
 
-El frontend web esta desplegado en GCP Cloud Run:
-- Proyecto: `arctic-sum-359215`
-- Servicio: `appdomicios`
-- URL: `https://appdomicios-xb252ymbgq-uc.a.run.app`
+El frontend web esta desplegado en Vercel:
+- URL: `https://talaria.prisma-enterprise.cloud`
 
 ## Relacion con otros componentes
 

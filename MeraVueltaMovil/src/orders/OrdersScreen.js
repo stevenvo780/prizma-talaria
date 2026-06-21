@@ -275,7 +275,7 @@ const OrdersScreen = (props) => {
 				<View style={styles.menu}>
 					<Text style={{ fontWeight: 'bold' }} >{(user?.name + " " + user?.lastName).slice(0, 35)}</Text>
 					<View style={{ borderBottomColor: '#a8a8a8', borderBottomWidth: 1, left: 2, width: "98%", marginTop: 10 }} />
-					<TouchableOpacity style={[styles.menuItem, { marginTop: 10 }]} onPress={() => openURL('https://app.meravuelta.com')}>
+					<TouchableOpacity style={[styles.menuItem, { marginTop: 10 }]} onPress={() => openURL('https://app.talaria.com')}>
 						<FontAwesome5 name="cog" size={25} color="#999" style={{ marginRight: 10 }} />
 						<Text>Configuraciones</Text>
 					</TouchableOpacity>

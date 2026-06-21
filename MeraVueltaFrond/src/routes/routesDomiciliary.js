@@ -1,41 +1,41 @@
-// import ListOrdersDomiciliary from '../components/views/orders/domiciliary/ListOrdersDomiciliary';
-// import ListOrdersDomiciliaryProgress from '../components/views/orders/domiciliary/ListOrdersDomiciliaryProgress';
+import ListOrdersDomiciliary from '../components/views/orders/domiciliary/ListOrdersDomiciliary';
+import ListOrdersDomiciliaryProgress from '../components/views/orders/domiciliary/ListOrdersDomiciliaryProgress';
 import EditUser from '../components/views/auth/EditUser';
 import { MapOrderDealer } from '../components/views/maps/MapBox/MapOrderDealer';
 
 import RequestDomiciliaryList from '../components/views/requestDomiciliary/domiciliary/RequestDomiciliaryList';
 import MyCompanysList from '../components/views/requestDomiciliary/domiciliary/MyCompanysList';
-// import ListOrdersDomiciliaryFinished from '../components/views/orders/domiciliary/ListOrdersDomiciliaryFinished';
+import ListOrdersDomiciliaryFinished from '../components/views/orders/domiciliary/ListOrdersDomiciliaryFinished';
 
 
 var routesDomiciliary = [
-  // {
-  //   path: '/ordersList',
-  //   name: 'Ordenes en espera',
-  //   icon: 'nc-icon nc-map-big',
-  //   rol: ['domiciliary'],
-  //   component: ListOrdersDomiciliary,
-  //   layout: '/domiciliary',
-  //   visible: true,
-  // },
-  // {
-  //   path: '/orders/process',
-  //   name: 'Ordenes en proceso',
-  //   icon: 'nc-icon nc-delivery-fast',
-  //   rol: ['domiciliary'],
-  //   component: ListOrdersDomiciliaryProgress,
-  //   layout: '/domiciliary',
-  //   visible: true,
-  // },
-  // {
-  //   path: '/orders/finished',
-  //   name: 'Ordenes finalizadas',
-  //   icon: 'nc-icon nc-single-copy-04',
-  //   rol: ['domiciliary'],
-  //   component: ListOrdersDomiciliaryFinished,
-  //   layout: '/domiciliary',
-  //   visible: true,
-  // },
+  {
+    path: '/ordersList',
+    name: 'Ordenes en espera',
+    icon: 'nc-icon nc-map-big',
+    rol: ['domiciliary'],
+    component: ListOrdersDomiciliary,
+    layout: '/domiciliary',
+    visible: true,
+  },
+  {
+    path: '/orders/process',
+    name: 'Ordenes en proceso',
+    icon: 'nc-icon nc-delivery-fast',
+    rol: ['domiciliary'],
+    component: ListOrdersDomiciliaryProgress,
+    layout: '/domiciliary',
+    visible: true,
+  },
+  {
+    path: '/orders/finished',
+    name: 'Ordenes finalizadas',
+    icon: 'nc-icon nc-single-copy-04',
+    rol: ['domiciliary'],
+    component: ListOrdersDomiciliaryFinished,
+    layout: '/domiciliary',
+    visible: true,
+  },
   // Maps
   {
     path: '/dealermap/:id',

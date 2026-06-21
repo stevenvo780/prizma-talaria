@@ -129,7 +129,7 @@ const Politics = () => {
       <h3 className="politics-subtitle">Contacto</h3>
       <p className='politics-text' >
         Si tiene preguntas o comentarios sobre nuestra política de tratamiento de datos, no dude en contactarnos a través de nuestro soporte.
-        Correo: suport.user@meravuelta.com
+        Correo: suport.user@talaria.com
       </p>
       <p className="politics-text">
         <strong>Última actualización: 8 de junio de 2023</strong>

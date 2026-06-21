@@ -6,7 +6,7 @@ import { UsersEmailToken } from '../../entities/usersEmailToken';
 import { UsersPasswordRecoveryToken } from '../../entities/usersPasswordRecoveryToken';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
-import { createUserToken } from '../../utils/token';
+import { createUserTokenPair, hashRefreshToken, verifyToken, createAccessToken } from '../../utils/token';
 import { sendEmail, TEMPLATES_EMAIL, parameterEmail } from '../../utils/mailJet';
 import { Wompi } from '../../entities/wompi';
 import { validatePayment } from '../PayUsers/services';
@@ -19,7 +19,18 @@ import { validatePayment } from '../PayUsers/services';
  */
 export async function authenticate(
   req: Hapi.request
-): Promise<{ user: User, token: string, validatePay: boolean, plan: string } | { message: string } | null> {
+): Promise<
+  | {
+      user: User;
+      token: string;
+      accessToken: string;
+      refreshToken: string;
+      validatePay: boolean;
+      plan: string;
+    }
+  | { message: string }
+  | null
+> {
   const connection: Connection = req.server.app.connection;
   const { email, password } = req.payload;
 
@@ -45,13 +56,29 @@ export async function authenticate(
       } else {
         validatePay = false;
       }
-      const token = createUserToken(user);
+      // Crear par de tokens: access (corto) + refresh (largo)
+      const { accessToken, refreshToken, refreshTokenExpiresAt } = createUserTokenPair(user);
+
+      // Guardar refresh token hasheado y expiración en BD
+      user.refreshToken = hashRefreshToken(refreshToken);
+      user.refreshTokenExpiresAt = refreshTokenExpiresAt;
+      user.lastLoginAt = new Date();
+      user.isActive = true; // Asegurar que el usuario esté activo
+
       try {
-        connection.manager.save(user);
+        await connection.manager.save(user);
       } catch (error) {
         throw Boom.internal('Error al guardar el usuario');
       }
-      return { user, token, validatePay, plan: payUser?.plan ? payUser.plan : 'free' };
+
+      return {
+        user,
+        token: accessToken, // Usar como token principal (compatibilidad hacia atrás)
+        accessToken, // Explícito para clientes nuevos
+        refreshToken, // Enviar al cliente para refresh (no guardar en server)
+        validatePay,
+        plan: payUser?.plan ? payUser.plan : 'free',
+      };
     } else {
       return { message: 'Contraseña erronea' };
     }
@@ -142,7 +169,7 @@ export async function register(
  */
 export async function confirmEmail(
   req: Hapi.request
-): Promise<{ user: User, token: string }> {
+): Promise<{ user: User; token: string; accessToken: string; refreshToken: string }> {
   const connection: Connection = req.server.app.connection;
   const { token } = req.params;
   const userEmailToken = await connection.manager.findOne(UsersEmailToken, {
@@ -156,9 +183,15 @@ export async function confirmEmail(
       user.confirmEmail = true;
       try {
         await connection.manager.remove(userEmailToken);
+
+        // Crear tokens y guardar refresh token en BD
+        const { accessToken, refreshToken, refreshTokenExpiresAt } = createUserTokenPair(user);
+        user.refreshToken = hashRefreshToken(refreshToken);
+        user.refreshTokenExpiresAt = refreshTokenExpiresAt;
+        user.isActive = true;
+
         await connection.manager.save(user);
-        const token = createUserToken(user);
-        return { user, token };
+        return { user, token: accessToken, accessToken, refreshToken };
       } catch (error) {
         console.error(error);
         throw Boom.internal('Error al guardar el usuario');
@@ -252,7 +285,7 @@ export async function recoverPasswordSendEmail(
 */
 export async function recoverPassword(
   req: Hapi.request
-): Promise<{ user: User, token: string }> {
+): Promise<{ user: User; token: string; accessToken: string; refreshToken: string }> {
   const connection: Connection = req.server.app.connection;
   const { password, token } = req.payload;
   const userPasswordToken = await connection.manager.findOne(UsersPasswordRecoveryToken, {
@@ -267,8 +300,15 @@ export async function recoverPassword(
         const passwordHash = await bcrypt.hash(password, 13);
         user.password = passwordHash;
         await connection.manager.remove(userPasswordToken);
-        const token = createUserToken(user);
-        return { user, token };
+
+        // Crear tokens y guardar refresh token en BD
+        const { accessToken, refreshToken, refreshTokenExpiresAt } = createUserTokenPair(user);
+        user.refreshToken = hashRefreshToken(refreshToken);
+        user.refreshTokenExpiresAt = refreshTokenExpiresAt;
+        user.isActive = true;
+
+        await connection.manager.save(user);
+        return { user, token: accessToken, accessToken, refreshToken };
       } catch (error) {
         console.error(error);
         throw Boom.internal('Error al guardar el usuario');
@@ -307,5 +347,69 @@ export async function emailQuestion(
   } catch (error) {
     console.error(error);
     throw Boom.internal('Error al guardar el usuario');
+  }
+}
+
+/**
+ * Refresh Token Endpoint
+ * Intercambia un refresh token válido por un nuevo access token.
+ * El refresh token debe haber sido guardado en BD durante login.
+ *
+ * @param {Hapi.request} req Request con { refreshToken } en payload
+ * @returns {Promise<{ accessToken: string; expiresIn: string }>}
+ */
+export async function refreshAccessToken(req: Hapi.request): Promise<
+  | { accessToken: string; expiresIn: string }
+  | { message: string }
+> {
+  try {
+    const connection: Connection = req.server.app.connection;
+    const { refreshToken } = req.payload as { refreshToken: string };
+
+    if (!refreshToken) {
+      return { message: 'Refresh token requerido' };
+    }
+
+    // Verificar que el refresh token es válido (sintaxis JWT)
+    const decoded = verifyToken(refreshToken);
+    if (!decoded || decoded.type !== 'refresh') {
+      return { message: 'Refresh token inválido o expirado' };
+    }
+
+    // Buscar el usuario y verificar que el refresh token coincida (hasheado)
+    const userId = decoded.id as number;
+    const user = await connection.manager.findOne(User, {
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return { message: 'Usuario no encontrado' };
+    }
+
+    if (!user.isActive) {
+      return { message: 'Usuario desactivado' };
+    }
+
+    // Verificar que el refresh token guardado en BD coincide
+    const refreshTokenHash = hashRefreshToken(refreshToken);
+    if (user.refreshToken !== refreshTokenHash) {
+      return { message: 'Refresh token no coincide con el guardado en BD' };
+    }
+
+    // Verificar que no ha expirado
+    if (!user.refreshTokenExpiresAt || new Date() > user.refreshTokenExpiresAt) {
+      return { message: 'Refresh token expirado' };
+    }
+
+    // Generar nuevo access token
+    const newAccessToken = createAccessToken(user);
+
+    return {
+      accessToken: newAccessToken,
+      expiresIn: '24h',
+    };
+  } catch (error) {
+    console.error('[RefreshToken] Error:', error);
+    throw Boom.internal('Error refrescando token');
   }
 }

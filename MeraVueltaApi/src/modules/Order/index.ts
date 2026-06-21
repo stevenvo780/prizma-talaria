@@ -150,6 +150,9 @@ export = {
         description: 'Get all data order',
         notes: 'Get all data order',
         tags: ['api'],
+        auth: {
+          strategy: 'jwt',
+        },
         validate: {
           params: Joi.object({
             orderId: Joi.string().required(),
@@ -501,7 +504,6 @@ export = {
         },
         auth: {
           strategy: 'jwt',
-          mode: 'optional',
         },
       },
       handler: updateOrder,

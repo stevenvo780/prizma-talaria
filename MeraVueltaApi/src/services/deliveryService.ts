@@ -31,14 +31,14 @@ export class DeliveryService {
       console.log(`📦 [Talaria] Procesando pedido: ${payload.orderNumber}`);
 
       // Buscar o crear empresa/usuario por defecto para pedidos de Graf
-      let company = await manager.findOne(User, { 
-        where: { email: 'soporte@prisma-enterprice.cloud' } 
+      let company = await manager.findOne(User, {
+        where: { email: 'soporte@prisma-enterprise.cloud' }
       });
 
       if (!company) {
         // Crear empresa Graf si no existe
         company = new User();
-        company.email = 'soporte@prisma-enterprice.cloud';
+        company.email = 'soporte@prisma-enterprise.cloud';
         company.name = 'Graf';
         company.lastName = 'Sistema';
         company.documentNumber = '900123456';

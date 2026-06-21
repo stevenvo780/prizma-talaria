@@ -6,7 +6,8 @@ import { BsCheckLg, BsXLg } from 'react-icons/bs';
 import {
   getAllOrdersByUserDomiciliaryAction,
   updateOrderAction,
-  searchOrdersAction
+  searchOrdersAction,
+  addNotification
 } from '../../../../store/reducer';
 
 const ListOrdersDomiciliary = () => {
@@ -35,6 +36,30 @@ const ListOrdersDomiciliary = () => {
         updateOrderAction({
           id: orderByDeliveryNumber.deliveryNumber,
           data: dataAPI,
+        })
+      );
+    }
+  };
+
+  const reject = (e, deliveryNumber) => {
+    e.preventDefault();
+    const orderByDeliveryNumber = orders.find(
+      (order) => order.deliveryNumber === deliveryNumber
+    );
+    if (orderByDeliveryNumber) {
+      let dataAPI = {
+        orderState: 'Rechazada',
+      };
+      dispatch(
+        updateOrderAction({
+          id: orderByDeliveryNumber.deliveryNumber,
+          data: dataAPI,
+        })
+      );
+      dispatch(
+        addNotification({
+          message: `La entrega #${deliveryNumber} ha sido rechazada.`,
+          color: 'info',
         })
       );
     }
@@ -96,7 +121,7 @@ const ListOrdersDomiciliary = () => {
               </Thead>
               <Tbody>
                 {orders.map((order, i) => (
-                  <Tr key={i}>
+                  <Tr key={order.deliveryNumber}>
                     <Td>
                       <Button
                         variant="primary"
@@ -109,7 +134,15 @@ const ListOrdersDomiciliary = () => {
                       </Button>
                     </Td>
                     <Td>
-                      {/* Botón cancelar sin handler: omitido hasta conectar lógica de rechazo */}
+                      <Button
+                        variant="danger"
+                        aria-label="Rechazar entrega"
+                        onClick={(e) => {
+                          reject(e, order.deliveryNumber);
+                        }}
+                      >
+                        <BsXLg size={20} aria-hidden="true" />
+                      </Button>
                     </Td>
                     <Td>{order.deliveryNumber}</Td>
                     <Td>{order.purchaseNumber}</Td>

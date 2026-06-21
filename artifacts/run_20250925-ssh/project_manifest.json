@@ -1,14 +1,14 @@
 {
   "timestamp": "2025-09-25T00:00:00Z",
-  "workspace_root": "/mnt/DATA/repos/humanizar/MeraVuelta",
+  "workspace_root": "/mnt/DATA/repos/prizma/Talaria",
   "projects": [
-    "MeraVueltaApi",
-    "MeraVueltaFrond",
-    "MeraVueltaMovil",
-    "MeraVueltaPublicity"
+    "TalariaApi",
+    "TalariaFrond",
+    "TalariaMovil",
+    "TalariaPublicity"
   ],
   "repo": {
-    "name": "MeraVueltaApi",
+    "name": "TalariaApi",
     "branch": "master",
     "commit": "2cb27a1"
   }

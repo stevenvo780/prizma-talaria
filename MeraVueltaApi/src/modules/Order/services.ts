@@ -57,7 +57,7 @@ export async function searchOrdersAllService(manager: EntityManager, userId: num
       .skip(skip)
       .take(take)
       .getMany();
-    const orderOrders = OrderOrders(manager, userId, orders);
+    const orderOrders = await OrderOrders(manager, userId, orders);
     return orderOrders;
   } catch (error) {
     console.error('Error searchOrdersAllService', error);
@@ -85,7 +85,7 @@ export async function searchOrdersService(manager: EntityManager, word: string, 
       .skip(skip)
       .take(take)
       .getMany();
-    const orderOrders = OrderOrders(manager, userId, orders);
+    const orderOrders = await OrderOrders(manager, userId, orders);
     return orderOrders;
   } catch (error) {
     console.error('Error searchOrdersService', error);
@@ -111,7 +111,7 @@ export async function searchOrdersServiceByDomiciliary(manager: EntityManager, u
       .orderBy('score', 'DESC')
       .addOrderBy('o."purchaseNumber"', orderQuery ? 'DESC' : 'ASC')
       .getMany();
-    const orderOrders = OrderOrders(manager, userId, orders);
+    const orderOrders = await OrderOrders(manager, userId, orders);
     return orderOrders;
   } catch (error) {
     console.error('Error searchOrdersServiceByDomiciliary', error);
@@ -157,7 +157,7 @@ export const getOrderByUserDomiciliaryService = async (manager: EntityManager, u
         skip,
       });
     }
-    const orderOrders = OrderOrders(manager, userId, orders);
+    const orderOrders = await OrderOrders(manager, userId, orders);
     return orderOrders;
   } catch (error) {
     console.error('get all order Error', error);
@@ -182,7 +182,7 @@ export const getOrderByCompanyService = async (manager: EntityManager, userId: n
       skip,
       relations: ['domiciliary']
     });
-    const orderOrders = OrderOrders(manager, userId, orders);
+    const orderOrders = await OrderOrders(manager, userId, orders);
     return orderOrders;
   } catch (error) {
     console.error('get all order Error', error);
@@ -236,7 +236,7 @@ export const getOrderByCompanyForStatusService = async (manager: EntityManager, 
       take,
       skip,
     });
-    const orderOrders = OrderOrders(manager, userId, orders);
+    const orderOrders = await OrderOrders(manager, userId, orders);
     return orderOrders;
   } catch (error) {
     console.error('get all order Error', error);
@@ -260,7 +260,7 @@ export const getAllOrderService = async (manager: EntityManager, userId: number,
     take,
     skip,
   });
-  const orderOrders = OrderOrders(manager, userId, orders);
+  const orderOrders = await OrderOrders(manager, userId, orders);
   return orderOrders;
 };
 
@@ -365,9 +365,9 @@ export const updateOrderService = async (
   if (!user) {
     throw Boom.badRequest(ErrorMessages.ERROR_USER_NOT_FOUND);
   }
-  let dataOrder = await manager.findOne(Order, { where: { purchaseNumber: orderId, isDelete: false }, relations: ['domiciliary'] });
+  let dataOrder = await manager.findOne(Order, { where: { purchaseNumber: orderId, isDelete: false, company: userId }, relations: ['domiciliary'] });
   if (!dataOrder) {
-    dataOrder = await manager.findOne(Order, { where: { deliveryNumber: orderId, isDelete: false }, relations: ['domiciliary'] });
+    dataOrder = await manager.findOne(Order, { where: { deliveryNumber: orderId, isDelete: false, company: userId }, relations: ['domiciliary'] });
   }
   if (!dataOrder) {
     throw Boom.notFound(ErrorMessages.ERROR_ORDER_NOT_FOUND);
@@ -427,7 +427,7 @@ export const deleteOrderService = async (
   if (!user) {
     throw Boom.badRequest(ErrorMessages.ERROR_USER_NOT_FOUND);
   }
-  const dataOrder = await manager.findOne(Order, { where: { deliveryNumber, isDelete: false } });
+  const dataOrder = await manager.findOne(Order, { where: { deliveryNumber, isDelete: false, company: userId } });
   if (!dataOrder) {
     throw Boom.notFound(ErrorMessages.ERROR_ORDER_NOT_FOUND);
   }
@@ -512,8 +512,8 @@ export async function createMassiveOrderService(manager: EntityManager, orders: 
         ordersFailed.push({ status: 'Orden ya existe', order: orderData });
         continue;
       }
-      if (orderData.orderState == null || !orderData.deliveryNumber) {
-        ordersFailed.push({ status: 'Creada', order: orderData });
+      if (orderData.orderState == null) {
+        ordersFailed.push({ status: 'El estado de la orden es requerido', order: orderData });
         continue;
       }
 

@@ -23,7 +23,7 @@ export class WebhookService {
         Buffer.from(receivedSignature, 'hex')
       );
     } catch (error) {
-      console.error('❌ [MeraVuelta] Error validando firma:', error);
+      console.error('❌ [Talaria] Error validando firma:', error);
       return false;
     }
   }
@@ -37,11 +37,11 @@ export class WebhookService {
     data: Record<string, unknown>
   ): Promise<void> {
     try {
-      const confirmationUrl = process.env.HUB_CENTRAL_URL || 'http://localhost:3007';
+      const confirmationUrl = process.env.PRIZMA_NOUS_URL || 'http://localhost:3007';
       
       const confirmationPayload = {
         orderId,
-        service: 'meravuelta',
+        service: 'talaria',
         status,
         timestamp: new Date().toISOString(),
         data
@@ -53,16 +53,16 @@ export class WebhookService {
         {
           headers: {
             'Content-Type': 'application/json',
-            'User-Agent': 'MeraVuelta-Webhook-Client'
+            'User-Agent': 'Talaria-Webhook-Client'
           },
           timeout: 5000
         }
       );
 
-      console.log(`✅ [MeraVuelta] Confirmación enviada - Pedido: ${orderId}, Status: ${status}`);
+      console.log(`✅ [Talaria] Confirmación enviada - Pedido: ${orderId}, Status: ${status}`);
       
     } catch (error) {
-      console.error('❌ [MeraVuelta] Error enviando confirmación:', error);
+      console.error('❌ [Talaria] Error enviando confirmación:', error);
       // No lanzar error para evitar que falle el webhook principal
     }
   }

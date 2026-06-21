@@ -56,9 +56,6 @@ export async function update(
     if (documentNumber) {
       user.documentNumber = documentNumber;
     }
-    if (role) {
-      user.role = role;
-    }
     if (address) {
       user.address = address;
     }

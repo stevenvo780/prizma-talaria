@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MeraVuelta",
-    "slug": "domicilios",
+    "name": "Talaria",
+    "slug": "talaria",
     "version": "3.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -37,9 +37,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.stevenvo780.MeraVuelta"
+      "package": "com.stevenvo780.talaria"
     },
-    "githubUrl": "https://github.com/stevenvo780/MovilDomicilios.git",
+    "githubUrl": "https://github.com/stevenvo780/TalariaMovil.git",
     "web": {
       "favicon": "./assets/favicon.png"
     },
@@ -49,7 +49,7 @@
       }
     },
     "ios": {
-      "bundleIdentifier": "com.stevenvo780.MeraVuelta"
+      "bundleIdentifier": "com.stevenvo780.talaria"
     }
   }
 }

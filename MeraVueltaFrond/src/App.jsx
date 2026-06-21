@@ -18,18 +18,21 @@ function App() {
   const user = useSelector((state) => state.login.user);
   const loading = useSelector((state) => state.ui.loading);
   const dispatch = useDispatch();
-  React.useEffect(async () => {
-    if (!user) {
-      const userSessionInfo = getSessionCookie();
-      if (Object.keys(userSessionInfo).length > 0) {
-        dispatch(restoreSessionStateAction());
-        const userUpdate = await userApi.getStatusLogin();
-        if (userUpdate?.data?.user) {
-          dispatch(updateUserDoneAction(userUpdate.data.user));
+  React.useEffect(() => {
+    const restoreUserSession = async () => {
+      if (!user) {
+        const userSessionInfo = getSessionCookie();
+        if (Object.keys(userSessionInfo).length > 0) {
+          dispatch(restoreSessionStateAction());
+          const userUpdate = await userApi.getStatusLogin();
+          if (userUpdate?.data?.user) {
+            dispatch(updateUserDoneAction(userUpdate.data.user));
+          }
         }
       }
-    }
-  }, []);
+    };
+    restoreUserSession();
+  }, [user, dispatch]);
 
   React.useEffect(() => {
     if (loading) {

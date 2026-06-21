@@ -1,14 +1,14 @@
 /**
- * Tests unitarios para servicios de webhook de MeraVuelta
+ * Tests unitarios para servicios de webhook de Talaria (Prizma)
  * No requiere servidor activo - Solo valida lógica de negocio
  */
 
 import { WebhookService } from '../src/services/webhookService';
 import crypto from 'crypto';
 
-describe('MeraVuelta Webhook Services', () => {
+describe('Talaria Webhook Services', () => {
   const webhookService = new WebhookService();
-  const SECRET = 'meravuelta-webhook-secret-2024';
+  const SECRET = 'talaria-webhook-secret-2024';
 
   describe('Validación de firmas HMAC', () => {
     test('Debe validar firma HMAC correcta', () => {
@@ -71,7 +71,7 @@ describe('MeraVuelta Webhook Services', () => {
   describe('Estructura de webhook payload', () => {
     test('Debe validar estructura completa de webhook', () => {
       const webhookPayload = {
-        orderId: 'graf-order-123',
+        orderId: 'hermes-order-123',
         orderNumber: '2024001',
         status: 'PAID',
         customerName: 'María García',
@@ -184,7 +184,7 @@ describe('MeraVuelta Webhook Services', () => {
 
   describe('Generación de confirmaciones', () => {
     test('Debe crear payload de confirmación exitosa', () => {
-      const orderId = 'graf-order-123';
+      const orderId = 'hermes-order-123';
       const status = 'success';
       const data = {
         deliveryNumber: 123456789,
@@ -194,21 +194,21 @@ describe('MeraVuelta Webhook Services', () => {
 
       const confirmationPayload = {
         orderId,
-        service: 'meravuelta',
+        service: 'talaria',
         status,
         timestamp: new Date().toISOString(),
         data
       };
 
       expect(confirmationPayload).toHaveProperty('orderId', orderId);
-      expect(confirmationPayload).toHaveProperty('service', 'meravuelta');
+      expect(confirmationPayload).toHaveProperty('service', 'talaria');
       expect(confirmationPayload).toHaveProperty('status', status);
       expect(confirmationPayload).toHaveProperty('data');
       expect(confirmationPayload.data).toHaveProperty('deliveryNumber');
     });
 
     test('Debe crear payload de confirmación de error', () => {
-      const orderId = 'graf-order-123';
+      const orderId = 'hermes-order-123';
       const status = 'error';
       const data = {
         message: 'Error procesando webhook'
@@ -216,7 +216,7 @@ describe('MeraVuelta Webhook Services', () => {
 
       const confirmationPayload = {
         orderId,
-        service: 'meravuelta',
+        service: 'talaria',
         status,
         timestamp: new Date().toISOString(),
         data
@@ -228,7 +228,7 @@ describe('MeraVuelta Webhook Services', () => {
   });
 
   console.log(`
-✅ TESTS UNITARIOS MERAVUELTA COMPLETADOS
+✅ TESTS UNITARIOS TALARIA COMPLETADOS
 =========================================
 🔐 Validación HMAC-SHA256: ✅
 📊 Estructura de payload: ✅
@@ -236,8 +236,8 @@ describe('MeraVuelta Webhook Services', () => {
 📡 Confirmaciones: ✅
 
 🎯 CONFIGURACIÓN VALIDADA:
-- Secret: meravuelta-webhook-secret-2024
-- Servicio: meravuelta
+- Secret: talaria-webhook-secret-2024
+- Servicio: talaria
 - Algoritmo: HMAC-SHA256
 - Formato: sha256=<hash>
 `);

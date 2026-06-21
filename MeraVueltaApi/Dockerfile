@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 # but vendor-contracts/dist IS included)
 COPY . .
 
-# Install dependencies - olympo-contracts (Prizma) installs from ./vendor-contracts
+# Install dependencies - prizma-contracts (Prizma) installs from ./vendor-contracts
 RUN npm install --prefer-offline
 
 # Build TypeScript

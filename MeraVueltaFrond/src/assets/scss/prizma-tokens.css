@@ -141,15 +141,15 @@
 }
 
 /* ============ Per-module accent retint ============ */
-[data-module="graf"]          { --c-accent-module:#22A45A; --c-accent-module-tint:#E6F6EC; }
-[data-module="emw"]           { --c-accent-module:#1FB85C; --c-accent-module-tint:#E5F8EC; }
+[data-module="hermes"]          { --c-accent-module:#22A45A; --c-accent-module-tint:#E6F6EC; }
+[data-module="iris"]           { --c-accent-module:#1FB85C; --c-accent-module-tint:#E5F8EC; }
 [data-module="talaria"]       { --c-accent-module:#E8A90B; --c-accent-module-tint:#FCF3DA; }
-[data-module="meravuelta"]    { --c-accent-module:#E8A90B; --c-accent-module-tint:#FCF3DA; } /* alias deprecated */
-[data-module="sinergia"]      { --c-accent-module:#6366F1; --c-accent-module-tint:#ECEDFE; }
-[data-module="fiar"]          { --c-accent-module:#2FAE9B; --c-accent-module-tint:#E3F6F2; }
+[data-module="talaria"]    { --c-accent-module:#E8A90B; --c-accent-module-tint:#FCF3DA; } /* alias deprecated */
+[data-module="talanton"]      { --c-accent-module:#6366F1; --c-accent-module-tint:#ECEDFE; }
+[data-module="pistis"]          { --c-accent-module:#2FAE9B; --c-accent-module-tint:#E3F6F2; }
 [data-module="hub"]           { --c-accent-module:#0B8A8F; --c-accent-module-tint:#E6F7F7; }
-[data-module="apisigo"]       { --c-accent-module:#2E90FA; --c-accent-module-tint:#E9F2FE; }
-[data-module="apisoftia"]     { --c-accent-module:#8B5CF6; --c-accent-module-tint:#F0EAFE; }
+[data-module="logos"]       { --c-accent-module:#2E90FA; --c-accent-module-tint:#E9F2FE; }
+[data-module="mnemosyne"]     { --c-accent-module:#8B5CF6; --c-accent-module-tint:#F0EAFE; }
 [data-module="comercial"]     { --c-accent-module:#FF5A2B; --c-accent-module-tint:#FFEDE6; }
 [data-module="automatizacion"]{ --c-accent-module:#F59E0B; --c-accent-module-tint:#FEF3DC; }
 [data-theme="dark"][data-module] *, [data-theme="dark"] [data-module] { --c-accent-module-tint:rgba(255,255,255,.06); }

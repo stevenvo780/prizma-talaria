@@ -36,7 +36,6 @@ export = {
             typeDocument: Joi.string().optional(),
             documentNumber: Joi.string().optional(),
             address: Joi.string().optional(),
-            role: Joi.string().optional(),
             googleSheets: Joi.string().optional(),
             urlPush: Joi.string().optional(),
             clientPhone: Joi.string().optional(),

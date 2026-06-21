@@ -1,19 +1,19 @@
-# MeraVuelta
+# Talaria
 
 Suite de logistica de ultima milla para gestion y seguimiento de entregas.
 
 ## Componentes
 
-- `MeraVueltaApi`: backend TypeScript (Hapi + TypeORM + PostgreSQL), puerto base `3006`.
-- `MeraVueltaFrond`: frontend React/Webpack, puerto base `9091`.
-- `MeraVueltaMovil`: app movil con Expo/React Native.
-- `MeraVueltaPublicity`: sitio publico estatico.
+- `TalariaApi`: backend TypeScript (Hapi + TypeORM + PostgreSQL), puerto base `3006`.
+- `TalariaFrond`: frontend React/Webpack, puerto base `9091`.
+- `TalariaMovil`: app movil con Expo/React Native.
+- `TalariaPublicity`: sitio publico estatico.
 
 ## Infraestructura
 
-- `MeraVueltaApi/Dockerfile` (Node 14, expone `3006`).
-- `MeraVueltaFrond/Dockerfile` (build React + Nginx, expone `9091`).
-- `MeraVueltaPublicity/Dockerfile` (Nginx estatico, expone `80`).
+- `TalariaApi/Dockerfile` (Node 14, expone `3006`).
+- `TalariaFrond/Dockerfile` (build React + Nginx, expone `9091`).
+- `TalariaPublicity/Dockerfile` (Nginx estatico, expone `80`).
 - Integraciones externas: Google Sheets, Google Maps, WhatsApp, Firebase.
 
 ## Despliegue validado (GCP)
@@ -23,20 +23,20 @@ Suite de logistica de ultima milla para gestion y seguimiento de entregas.
   - `appdomicios` -> `https://appdomicios-xb252ymbgq-uc.a.run.app`
   - `mera-vuelta-publicity` -> `https://mera-vuelta-publicity-xb252ymbgq-uc.a.run.app`
 - Proyecto `emergent-enterprises` (integraciones)
-  - `weebhookmeravueltatotalpedidos` -> `https://weebhookmeravueltatotalpedidos-6dalnsowyq-uc.a.run.app`
-  - `webhook-reports-totalpedidos` -> `https://webhook-reports-totalpedidos-6dalnsowyq-uc.a.run.app`
+  - `weebhooktalariaprizma-hermes` -> `https://weebhooktalariaprizma-hermes-6dalnsowyq-uc.a.run.app`
+  - `webhook-reports-prizma-hermes` -> `https://webhook-reports-prizma-hermes-6dalnsowyq-uc.a.run.app`
 
 ## Arranque rapido por servicio
 
 ```bash
-cd MeraVueltaApi && npm install && npm run dev
-cd ../MeraVueltaFrond && npm install && npm run dev
-cd ../MeraVueltaMovil && npm install && npm run start
+cd TalariaApi && npm install && npm run dev
+cd ../TalariaFrond && npm install && npm run dev
+cd ../TalariaMovil && npm install && npm run start
 ```
 
 ## Referencias
 
-- API: `MeraVueltaApi/README.md`
-- Webhooks HubCentral: `MeraVueltaApi/WEBHOOK_README.md`
-- Frontend web: `MeraVueltaFrond/README.md`
-- Sitio publico: `MeraVueltaPublicity/README.md`
+- API: `TalariaApi/README.md`
+- Webhooks Nous: `TalariaApi/WEBHOOK_README.md`
+- Frontend web: `TalariaFrond/README.md`
+- Sitio publico: `TalariaPublicity/README.md`

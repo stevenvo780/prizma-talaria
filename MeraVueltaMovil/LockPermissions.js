@@ -37,7 +37,7 @@ export const RequestPermissionsView = ({ requestPermissionsButton }) => {
   return (
     <ImageBackground style={styles.image}>
       <View style={styles.card}>
-        <Text style={styles.heading}>Mera vuelta recoge/transmite/sincroniza/almacena la ubicación en tiempo real y usa la cámara para habilitar el seguimiento de las entregas mientras se tengan entregas asignadas</Text>
+        <Text style={styles.heading}>Talaria recoge/transmite/sincroniza/almacena la ubicación en tiempo real y usa la cámara para habilitar el seguimiento de las entregas mientras se tengan entregas asignadas</Text>
         <View style={styles.form}>
           <View style={styles.inputs}>
             <View style={styles.checkboxContainer}>
@@ -48,7 +48,7 @@ export const RequestPermissionsView = ({ requestPermissionsButton }) => {
               />
               <Text style={styles.label}>Acepto las políticas de seguridad</Text>
             </View>
-            <Text style={styles.policyText}>Aquí están nuestras <Text style={styles.urlText} onPress={() => Linking.openURL('https://app.meravuelta.com/politics')}>políticas de seguridad</Text></Text>
+            <Text style={styles.policyText}>Aquí están nuestras <Text style={styles.urlText} onPress={() => Linking.openURL('https://app.talaria.com/politics')}>políticas de seguridad</Text></Text>
             <TouchableOpacity style={styles.buttonAlt} onPress={requestPermissionsButton} disabled={!isSelected}>
               <Text style={styles.buttonAltText}>Dar permisos</Text>
             </TouchableOpacity>

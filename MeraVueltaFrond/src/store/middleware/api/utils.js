@@ -9,19 +9,23 @@ import {
 
 const getSessionToken = () => {
   const uiStore = localStorage.getItem('store');
-  var ui = JSON.parse(uiStore);
-  if (ui) return ui.login.token;
-  else return null;
+  try {
+    var ui = JSON.parse(uiStore);
+    if (ui) return ui.login.token;
+    else return null;
+  } catch (e) {
+    console.warn('corrupted store');
+    return null;
+  }
 };
 
 // axios client factory ...
 // useful in case we want to setup custom interceptors for e.g. regular token refresh etc...
 function getClient() {
   if (!client) {
+    const backendUrl = process.env.REACT_APP_BACK_END || 'https://prizma-talaria-kjopuery2a-uc.a.run.app';
     client = axios.create({
-      baseURL:
-        process.env.REACT_APP_BACK_END + '/api' ||
-        'http://localhost:3006' + '/api',
+      baseURL: backendUrl + '/api',
     });
     let calls = 0;
     client.interceptors.request.use(function (config) {

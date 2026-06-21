@@ -64,4 +64,16 @@ export class User extends SharedProp {
 
   @Column({ type: 'uuid', default: () => 'uuid_generate_v4()' })
   auth_token: string;
+
+  @Column({ type: 'boolean', default: true })
+  isActive: boolean;
+
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  refreshToken: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  refreshTokenExpiresAt: Date | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  lastLoginAt: Date | null;
 }

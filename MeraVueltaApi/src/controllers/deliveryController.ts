@@ -8,7 +8,7 @@ import {
   publishDeliveryStatusUpdate,
   publishDeliveryCompleted,
   isCompletedStatus,
-} from '../cauce/hub';
+} from '../prizma/hub';
 
 // Tipos para la API de entregas
 interface DeliveryPayload {
@@ -40,18 +40,24 @@ interface StatusUpdatePayload {
 
 // HMAC validation para seguridad
 function validateHubSignature(payload: string, signature: string): boolean {
-  const secret = process.env.HUB_WEBHOOK_SECRET || 'default-secret';
+  if (!signature || !signature.startsWith('sha256=')) {
+    return false;
+  }
+  const secret = process.env.PRIZMA_NOUS_SECRET || 'default-secret';
   const expectedSignature = `sha256=${crypto.createHmac('sha256', secret).update(payload).digest('hex')}`;
+  if (signature.length !== expectedSignature.length) {
+    return false;
+  }
   return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
 }
 
 // Crear nueva entrega desde Hub Central - ENDPOINT CRÍTICO FLUJO 1A
 export async function createDelivery(request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> {
   try {
-    console.log('🚚 MeraVuelta API - Recibiendo orden de entrega para Flujo 1A');
+    console.log('🚚 Talaria API - Recibiendo orden de entrega para Flujo 1A');
     
     // Validar HMAC signature
-    const signature = request.headers['x-hub-signature'] as string;
+    const signature = (request.headers['x-prizma-signature'] || request.headers['x-hub-signature']) as string;
     const payload = JSON.stringify(request.payload);
     
     if (!validateHubSignature(payload, signature)) {
@@ -89,7 +95,7 @@ export async function createDelivery(request: Hapi.Request, h: Hapi.ResponseTool
 
     console.log(`✅ Entrega creada: ID ${delivery.id} - Número: ${delivery.deliveryNumber} - Estado: ${delivery.orderState}`);
 
-    // Olympo: publicar delivery.created al HubCentral (no bloqueante, tolerante a fallos)
+    // Prizma: publicar delivery.created al Nous (no bloqueante, tolerante a fallos)
     void publishDeliveryCreated({
       deliveryId: delivery.deliveryNumber.toString(),
       orderId: orderData.orderId,
@@ -98,7 +104,7 @@ export async function createDelivery(request: Hapi.Request, h: Hapi.ResponseTool
     // Enviar confirmación a Hub Central de forma asíncrona
     setImmediate(async () => {
       try {
-        const hubCentralUrl = process.env.HUB_CENTRAL_URL || 'http://localhost:3007';
+        const hubCentralUrl = process.env.PRIZMA_NOUS_URL || 'http://localhost:3007';
         const confirmationData = {
           orderId: orderData.orderId,
           deliveryId: delivery.deliveryNumber.toString(),
@@ -110,8 +116,8 @@ export async function createDelivery(request: Hapi.Request, h: Hapi.ResponseTool
         const response = await axios.post(`${hubCentralUrl}/api/webhooks/delivery-confirmation`, confirmationData, {
           headers: {
             'Content-Type': 'application/json',
-            'x-meravuelta-signature': `sha256=${crypto
-              .createHmac('sha256', process.env.HUB_WEBHOOK_SECRET || 'default-secret')
+            'x-prizma-signature': `sha256=${crypto
+              .createHmac('sha256', process.env.PRIZMA_NOUS_SECRET || 'default-secret')
               .update(JSON.stringify(confirmationData))
               .digest('hex')}`
           }
@@ -167,7 +173,7 @@ export async function updateDeliveryStatus(request: Hapi.Request, h: Hapi.Respon
       }).code(404);
     }
 
-    // Olympo: publicar el cambio de estado al HubCentral (no bloqueante, tolerante a fallos)
+    // Prizma: publicar el cambio de estado al Nous (no bloqueante, tolerante a fallos)
     void publishDeliveryStatusUpdate({
       deliveryId: updatedDelivery.deliveryNumber.toString(),
       status: updatedDelivery.orderState,
@@ -183,7 +189,7 @@ export async function updateDeliveryStatus(request: Hapi.Request, h: Hapi.Respon
     // Notificar a Hub Central sobre cambio de estado
     setImmediate(async () => {
       try {
-        const hubCentralUrl = process.env.HUB_CENTRAL_URL || 'http://localhost:3007';
+        const hubCentralUrl = process.env.PRIZMA_NOUS_URL || 'http://localhost:3007';
         const statusData = {
           deliveryId: updatedDelivery.deliveryNumber.toString(),
           status: updatedDelivery.orderState,
@@ -194,8 +200,8 @@ export async function updateDeliveryStatus(request: Hapi.Request, h: Hapi.Respon
         await axios.post(`${hubCentralUrl}/api/webhooks/delivery-status-update`, statusData, {
           headers: {
             'Content-Type': 'application/json',
-            'x-meravuelta-signature': `sha256=${crypto
-              .createHmac('sha256', process.env.HUB_WEBHOOK_SECRET || 'default-secret')
+            'x-prizma-signature': `sha256=${crypto
+              .createHmac('sha256', process.env.PRIZMA_NOUS_SECRET || 'default-secret')
               .update(JSON.stringify(statusData))
               .digest('hex')}`
           }
@@ -276,17 +282,17 @@ export async function healthCheck(request: Hapi.Request, h: Hapi.ResponseToolkit
     
     return h.response({
       status: 'healthy',
-      service: 'MeraVuelta Deliveries API',
+      service: 'Talaria Deliveries API',
       version: '1.0.0',
       timestamp: new Date().toISOString(),
       database: dbHealth ? 'connected' : 'disconnected',
-      hubCentralUrl: process.env.HUB_CENTRAL_URL || 'not configured'
+      hubCentralUrl: process.env.PRIZMA_NOUS_URL || 'not configured'
     }).code(200);
 
   } catch (error) {
     return h.response({
       status: 'unhealthy',
-      service: 'MeraVuelta Deliveries API',
+      service: 'Talaria Deliveries API',
       error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString()
     }).code(503);

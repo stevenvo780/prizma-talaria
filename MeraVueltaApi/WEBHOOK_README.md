@@ -1,17 +1,17 @@
-# MeraVuelta - Integración con Hub Central
+# Talaria - Integración con Hub Central
 
 ## Implementación de Webhook para Entregas
 
-Este documento describe la implementación del sistema de webhooks de MeraVuelta para la integración con el Hub Central del ecosistema Humanizar.
+Este documento describe la implementación del sistema de webhooks de Talaria para la integración con el Hub Central del ecosistema Prizma.
 
 ### 🎯 Propósito
 
-MeraVuelta recibe webhooks del Hub Central cuando se completan pedidos en Graf, convirtiendo automáticamente los pedidos pagados en entregas para gestión logística.
+Talaria recibe webhooks del Hub Central cuando se completan pedidos en Hermes, convirtiendo automáticamente los pedidos pagados en entregas para gestión logística.
 
 ### 🏗️ Arquitectura
 
 ```
-Graf → Hub Central → MeraVuelta
+Hermes → Hub Central → Talaria
                 ↓
         Notificación Entrega + WhatsApp
 ```
@@ -27,7 +27,7 @@ Graf → Hub Central → MeraVuelta
 #### Payload Estructura
 ```json
 {
-  "orderId": "graf-order-123",
+  "orderId": "hermes-order-123",
   "orderNumber": "2024001",
   "status": "PAID",
   "customerName": "María García",
@@ -56,20 +56,20 @@ Graf → Hub Central → MeraVuelta
 ### 🔐 Seguridad
 
 - **Validación HMAC-SHA256**: Todas las solicitudes deben incluir firma válida
-- **Secret**: `meravuelta-webhook-secret-2024`
+- **Secret**: `talaria-webhook-secret-2024`
 - **Sin autenticación adicional**: La seguridad se basa en la firma HMAC
 
 ### 🚀 Funcionalidades
 
 #### 1. Creación de Entregas
-- Convierte pedidos de Graf en entregas de MeraVuelta
+- Convierte pedidos de Graf en entregas de Talaria
 - Genera número único de entrega automáticamente
 - Estado inicial: "Compra"
 
 #### 2. Gestión de Clientes
 - Busca cliente existente por teléfono
 - Crea nuevo cliente si no existe
-- Asigna empresa Graf como propietaria
+- Asigna empresa Hermes como propietaria
 
 #### 3. Notificaciones
 - Envío automático de WhatsApp al cliente
@@ -140,17 +140,18 @@ npm test -- webhook-integration.test.js
 
 #### Variables de Entorno
 ```bash
-# MeraVuelta
+# Talaria
 PORT=3006
-WEBHOOK_SECRET=meravuelta-webhook-secret-2024
+WEBHOOK_SECRET=talaria-webhook-secret-2024
 
-# Hub Central (para confirmaciones)
-HUB_CENTRAL_URL=http://localhost:3007
+# Nous (Hub Central, para confirmaciones)
+PRIZMA_NOUS_URL=http://localhost:3007
+PRIZMA_NOUS_SECRET=
 
 # Base de datos
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=meravuelta
+DB_NAME=talaria
 DB_USER=postgres
 DB_PWD=postgres
 ```
@@ -159,19 +160,19 @@ DB_PWD=postgres
 - `src/controllers/webhookController.ts` - Control de webhooks
 - `src/services/deliveryService.ts` - Lógica de entregas
 - `src/services/webhookService.ts` - Validación y confirmaciones
-- `src/modules/HubCentralWebhooks/index.ts` - Rutas de webhook
+- `src/modules/NousWebhooks/index.ts` - Rutas de webhook
 - `tests/webhook-integration.test.js` - Tests de integración
 
 ### 🔄 Flujo de Confirmación Asíncrona
 
 ```mermaid
 sequenceDiagram
-    Graf->>Hub Central: Pedido PAID
-    Hub Central->>MeraVuelta: Webhook entrega
-    MeraVuelta->>MeraVuelta: Procesar entrega
-    MeraVuelta->>Hub Central: Respuesta 200
-    MeraVuelta->>Hub Central: Confirmación async
-    MeraVuelta->>Cliente: WhatsApp notificación
+    Hermes->>Hub Central: Pedido PAID
+    Hub Central->>Talaria: Webhook entrega
+    Talaria->>Talaria: Procesar entrega
+    Talaria->>Hub Central: Respuesta 200
+    Talaria->>Hub Central: Confirmación async
+    Talaria->>Cliente: WhatsApp notificación
 ```
 
 ### 📋 Checklist de Implementación
@@ -189,7 +190,7 @@ sequenceDiagram
 
 ### 🎉 Estado: COMPLETADO
 
-La integración de MeraVuelta con el Hub Central está lista para producción con todas las funcionalidades implementadas y probadas.
+La integración de Talaria con el Hub Central está lista para producción con todas las funcionalidades implementadas y probadas.
 
 ### 📞 Endpoints Adicionales
 
@@ -200,7 +201,7 @@ Respuesta:
 ```json
 {
   "status": "ok",
-  "service": "MeraVuelta Delivery Service",
+  "service": "Talaria Delivery Service",
   "timestamp": "2024-01-15T10:30:00Z",
   "database": "connected"
 }

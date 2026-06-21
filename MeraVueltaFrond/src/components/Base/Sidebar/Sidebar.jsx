@@ -50,7 +50,7 @@ function Sidebar(props) {
             <img className="logo-img" src="/prizma-symbol.svg" alt="" />
           </div>
         </span>
-        <a href="https://www.meravuelta.com/" className="simple-text logo-normal">
+        <a href="https://www.talaria.com/" className="simple-text logo-normal">
           Talaria
         </a>
       </div>

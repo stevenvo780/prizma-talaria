@@ -2,7 +2,7 @@ import { createAction, createReducer } from "@reduxjs/toolkit";
 
 export const loginAction = createAction("LOGIN_ACTION");
 export const loginDoneAction = createAction("LOGIN_DONE_ACTION");
-export const logoutAction = createAction("LOGOUT_ACION");
+export const logoutAction = createAction("LOGOUT_ACTION");
 // confirm email
 export const confirmEmailAction = createAction("CONFIRM_EMAIL_ACTION");
 export const confirmEmailDoneAction = createAction(

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, TextInput, Image, KeyboardAvoidingView, Alert, Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchData } from "../api/api"
@@ -10,12 +10,15 @@ const AuthScreen = (props) => {
 	const [isError, setIsError] = useState(false);
 	const [message, setMessage] = useState('');
 	const [isLogin, setIsLogin] = useState(true);
-	(async function () {
-		let user = await AsyncStorage.getItem('user');
-		if (user) {
-			props.navigation.navigate('Ordenes');
-		}
-	})();
+	useEffect(() => {
+		const checkSession = async () => {
+			let user = await AsyncStorage.getItem('user');
+			if (user) {
+				props.navigation.navigate('Ordenes');
+			}
+		};
+		checkSession();
+	}, []);
 	const onSubmitHandler = async () => {
 		if (!email || !password) {
 			setIsError(true);
@@ -43,9 +46,9 @@ const AuthScreen = (props) => {
 				if (data.user.confirmEmail == false || data.user.confirmEmail == null) {
 					setIsError(true);
 					setMessage("Por favor confirma tu correo");
-					const supported = await Linking.canOpenURL("https://app.meravuelta.com/");
+					const supported = await Linking.canOpenURL("https://app.talaria.com/");
 					if (supported) {
-						await Linking.openURL("https://app.meravuelta.com/");
+						await Linking.openURL("https://app.talaria.com/");
 						return;
 					} else {
 						Alert.alert(`No se puede abrir el enlace: ${url}`);
@@ -95,9 +98,9 @@ const AuthScreen = (props) => {
 							<TouchableOpacity style={styles.buttonLogin} onPress={onSubmitHandler}>
 								<Text style={styles.buttonAltText}>iniciar sesión</Text>
 							</TouchableOpacity>
-							<OpenURLButton color="#095169" url="https://app.meravuelta.com/register">Registrarse</OpenURLButton>
+							<OpenURLButton color="#095169" url="https://app.talaria.com/register">Registrarse</OpenURLButton>
 							<View style={styles.recovery}>
-								<OpenURLButton color="#66615B" url="https://app.meravuelta.com/recoverPassword/null">Recuperar contraseña</OpenURLButton>
+								<OpenURLButton color="#66615B" url="https://app.talaria.com/recoverPassword/null">Recuperar contraseña</OpenURLButton>
 							</View>
 						</View>
 					</View>
@@ -128,7 +131,7 @@ const OpenURLButton = ({ url, children, color }) => {
 
 const Logo = () => {
 	const handlePress = () => {
-		Linking.openURL('https://app.meravuelta.com/');
+		Linking.openURL('https://app.talaria.com/');
 	};
 
 	return (

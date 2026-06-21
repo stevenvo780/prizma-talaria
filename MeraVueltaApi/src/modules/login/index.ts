@@ -7,7 +7,8 @@ import {
   reSendConfirmEmail,
   recoverPasswordSendEmail,
   recoverPassword,
-  emailQuestion
+  emailQuestion,
+  refreshAccessToken
 } from './controller';
 import { Options } from '../../config/types';
 
@@ -139,6 +140,22 @@ export = {
         },
       },
       handler: emailQuestion,
+    });
+
+    server.route({
+      method: 'POST',
+      path: `${options.routePrefix}/auth/refresh`,
+      options: {
+        description: 'Refresh access token using refresh token',
+        notes: 'Exchange a valid refresh token for a new short-lived access token',
+        tags: ['api'],
+        validate: {
+          payload: {
+            refreshToken: Joi.string().required(),
+          },
+        },
+      },
+      handler: refreshAccessToken,
     });
   },
 };

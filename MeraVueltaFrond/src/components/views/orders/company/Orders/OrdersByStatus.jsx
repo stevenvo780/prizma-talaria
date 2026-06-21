@@ -115,7 +115,7 @@ const OrdersByStatus = (props) => {
   }, [orders]);
 
   const search = () => {
-    if (orderWord != "") {
+    if (orderWord !== "") {
       dispatch(
         searchOrdersAction({
           word: orderWord,
@@ -174,6 +174,8 @@ const OrdersByStatus = (props) => {
       data.push(dataApi);
     });
     dispatch(updateOrderMassiveAction({ orders: data }));
+    setPage(1);
+    setSkip(0);
     setToggleDeleteDomiciliary(false);
   };
 
@@ -190,6 +192,8 @@ const OrdersByStatus = (props) => {
         deliverysNumber: data,
       }),
     );
+    setPage(1);
+    setSkip(0);
     setToggleDeleteDomiciliary(false);
   };
 
@@ -251,6 +255,8 @@ const OrdersByStatus = (props) => {
       data.push(dataApi);
     });
     dispatch(updateOrderMassiveAction({ orders: data }));
+    setPage(1);
+    setSkip(0);
     dispatch(setOrderTabIndex('2'));
   };
   const [orderSelected, setOrderSelected] = useState(false);

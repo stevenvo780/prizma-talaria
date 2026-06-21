@@ -1,4 +1,4 @@
-# MeraVuelta API
+# Talaria API
 
 API de logistica de ultima milla para gestion de entregas y webhooks del ecosistema.
 
@@ -51,7 +51,7 @@ npm run migration:revert
 npm run migration:show
 ```
 
-## Integracion HubCentral
+## Integracion Nous
 
 Detalles de contrato de webhooks en:
 - `WEBHOOK_README.md`

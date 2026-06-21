@@ -30,6 +30,7 @@ export default function App() {
 
   useEffect(() => {
     retrieveData();
+    validateTask();
   }, []);
 
 
@@ -44,8 +45,7 @@ export default function App() {
     }
   };
 
-  validateTask();
-  if (!grantedFull && !isSelected) {
+  if (!grantedFull) {
     return (
       <RequestPermissionsView
         requestPermissionsButton={requestPermissionsButton}

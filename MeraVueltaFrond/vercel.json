@@ -1,7 +1,7 @@
 {
-  "buildCommand": "echo 'skipping build – using pre-built dist'",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "echo 'no install needed'",
+  "installCommand": "npm install --no-package-lock",
   "framework": null,
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }

@@ -1,12 +1,12 @@
 import path from 'path';
 import glob from 'glob';
 import Hapi from '@hapi/hapi';
-import config from '../config';
-import { Environments } from './types';
 
 const registerModules = async (server: Hapi.Server): Promise<void> => {
   const dirname = path.join(__dirname, '../');
-  const routesFile = config.server.environment === Environments.PROD ? 'index.js' : 'index.ts';
+  // Derive extension from the currently-running file: .js when compiled, .ts when running via ts-node.
+  // This is immune to NODE_ENV values ('production' vs 'PROD').
+  const routesFile = __filename.endsWith('.js') ? 'index.js' : 'index.ts';
   const modules = glob.sync(`/modules/**/${routesFile}`, {
     root: dirname,
   });

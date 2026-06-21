@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: https://www.meravuelta.com/sitemap.xml
+Sitemap: https://talaria.prisma-enterprice.cloud/sitemap.xml

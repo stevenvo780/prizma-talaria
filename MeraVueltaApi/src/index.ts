@@ -3,6 +3,7 @@ import registerModules from './config/modules';
 import initializeAuth from './config/auth';
 import initializeDatabase from './config/database/initializeDatabase';
 import config from './config';
+import { OutboxProcessor } from './jobs/outboxProcessor';
 
 async function startServer() {
   // Initialize Hapi Server
@@ -10,9 +11,25 @@ async function startServer() {
   // Initialize authentication
   await initializeAuth(server);
   // Initialize database
-  await initializeDatabase(__dirname).connect(server);
+  const database = initializeDatabase(__dirname);
+  await database.connect(server);
   // Register modules (APIs for this project)
   await registerModules(server);
+
+  // Initialize outbox processor for persistent delivery confirmations
+  const connection = (server.app as any).connection;
+  if (connection) {
+    const outboxProcessor = new OutboxProcessor(connection);
+    outboxProcessor.start();
+
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      console.log('[Server] SIGTERM received, shutting down gracefully...');
+      outboxProcessor.stop();
+      server.stop().then(() => process.exit(0));
+    });
+  }
+
   // Start the server
   await server.start();
   console.info(

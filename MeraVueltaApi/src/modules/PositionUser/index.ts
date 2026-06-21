@@ -53,6 +53,9 @@ export = {
         description: 'Get all data positionUser',
         notes: 'Get all data positionUser',
         tags: ['api'],
+        auth: {
+          strategy: 'jwt',
+        },
         validate: {
           params: Joi.object({
             userId: Joi.string().required(),

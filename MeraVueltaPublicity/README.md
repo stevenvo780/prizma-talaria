@@ -1,6 +1,6 @@
-# MeraVuelta Publicity
+# Talaria Publicity
 
-Sitio publico estatico de MeraVuelta (landing/informacion comercial).
+Sitio publico estatico de Talaria (landing/informacion comercial).
 
 ## Stack
 
@@ -21,13 +21,11 @@ Abrir:
 ## Docker
 
 ```bash
-docker build -t meravuelta-publicity .
-docker run -p 8080:80 meravuelta-publicity
+docker build -t talaria-publicity .
+docker run -p 8080:80 talaria-publicity
 ```
 
 ## Nota de despliegue
 
-Desplegado en GCP Cloud Run:
-- Proyecto: `arctic-sum-359215`
-- Servicio: `mera-vuelta-publicity`
-- URL: `https://mera-vuelta-publicity-xb252ymbgq-uc.a.run.app`
+Desplegado en Vercel/Cloud Run:
+- URL: `https://talaria.prisma-enterprise.cloud`

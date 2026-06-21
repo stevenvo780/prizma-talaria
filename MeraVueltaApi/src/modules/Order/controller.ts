@@ -276,7 +276,13 @@ export async function createOrderWebhook(
       clientPhone: orderData.clientPhone
     }
   });
-  Object.assign(orderData, customer);
+  if (customer) {
+    orderData.name = customer.name || orderData.name;
+    orderData.lastName = customer.lastName || orderData.lastName;
+    orderData.email = customer.email || orderData.email;
+    orderData.documentNumber = customer.documentNumber || orderData.documentNumber;
+    orderData.typeDocument = customer.typeDocument || orderData.typeDocument;
+  }
   if (orderWithLargestNumber) {
     const numberOrder = Number(orderWithLargestNumber.purchaseNumber) + 1;
     orderData.purchaseNumber = numberOrder;

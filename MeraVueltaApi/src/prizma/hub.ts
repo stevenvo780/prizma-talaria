@@ -1,7 +1,7 @@
 /**
  * Prizma integration — Talaria API.
  *
- * Cablea `prizma-contracts` para que este servicio publique al HubCentral los
+ * Cablea `prizma-contracts` para que este servicio publique al Nous los
  * eventos de los que es DUEÑO según la matriz SSOT (ARCHITECTURE.md §4-5):
  *   - delivery (Talaria es SSOT del estado de entrega).
  *
@@ -10,14 +10,17 @@
  * `throwOnError` esté activo, así que las llamadas pueden hacerse "fire-and-forget".
  *
  * Config por entorno:
- *   - NOUS_HUB_URL     → URL del HubCentral (default http://localhost:3007).
+ *   - NOUS_HUB_URL     → URL del Nous (default http://localhost:3007).
  *   - NOUS_HUB_SECRET  → secret HMAC compartido para firmar el envelope (opcional).
  */
 import { HubClient, EVENTS, validateEvent, type EventEnvelope } from 'prizma-contracts';
 
-/** Cliente Hub configurado como source="meravuelta" (nombre canónico en prizma-contracts). */
+/** Cliente Hub configurado como source="talaria" (nombre canónico en prizma-contracts v1.4+). */
+// Cast a `any`: prizma-contracts v1.3.0 (registry) no incluye "talaria" en su enum
+// ServiceSource todavía; el cast mantiene el valor canónico y se limpia cuando
+// el paquete se actualice a v1.4+ (o al usar vendor-contracts local).
 export const hub = new HubClient({
-  source: 'meravuelta',
+  source: 'talaria' as any,
   hubUrl: process.env.NOUS_HUB_URL,
   secret: process.env.NOUS_HUB_SECRET,
   // throwOnError omitido a propósito: queremos que un fallo del Hub no tumbe la entrega.
@@ -41,7 +44,7 @@ async function safePublish(
     eventId: 'pre',
     eventType,
     timestamp: new Date().toISOString(),
-    source: 'meravuelta',
+    source: 'talaria' as any,
     data,
     priority: priority || 'normal',
   } as EventEnvelope);

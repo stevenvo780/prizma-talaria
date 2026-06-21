@@ -4,6 +4,7 @@ import { EntityManager } from 'typeorm';
 import config from '../config';
 import { deliveryService } from '../services/deliveryService';
 import { webhookService } from '../services/webhookService';
+import { outboxService } from '../services/outboxService';
 
 export interface WebhookPayload {
   orderId: string;
@@ -33,10 +34,11 @@ export interface WebhookPayload {
  * Webhook endpoint para recibir pedidos desde Hub Central
  */
 export async function receiveWebhook(req: Hapi.request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject | Boom.Boom> {
+  const manager: EntityManager = req.server.app.connection.manager;
+
   try {
-    const manager: EntityManager = req.server.app.connection.manager;
     const payload = req.payload as WebhookPayload;
-    const signature = req.headers['x-hub-signature-256'] as string;
+    const signature = (req.headers['x-prizma-signature'] || req.headers['x-hub-signature-256']) as string;
 
     // Validar firma HMAC
     const isValidSignature = webhookService.validateSignature(
@@ -46,53 +48,63 @@ export async function receiveWebhook(req: Hapi.request, h: Hapi.ResponseToolkit)
     );
 
     if (!isValidSignature) {
-      console.error('❌ [MeraVuelta] Firma de webhook inválida');
+      console.error('❌ [Talaria] Firma de webhook inválida');
       return Boom.unauthorized('Firma de webhook inválida');
     }
 
-    console.log(`✅ [MeraVuelta] Webhook recibido - Pedido: ${payload.orderNumber}`);
+    console.log(`✅ [Talaria] Webhook recibido - Pedido: ${payload.orderNumber}`);
 
     // Procesar el pedido y crear la entrega
     const delivery = await deliveryService.createFromWebhook(manager, payload);
 
-    // Enviar confirmación asíncrona al Hub Central
-    setTimeout(async () => {
-      try {
-        await webhookService.sendAsyncConfirmation(payload.orderId, 'success', {
-          deliveryNumber: delivery.deliveryNumber,
-          status: delivery.orderState,
-          message: 'Entrega creada exitosamente'
-        });
-      } catch (error) {
-        console.error('❌ [MeraVuelta] Error enviando confirmación asíncrona:', error);
-      }
-    }, 1000);
+    // Persistir confirmación en outbox para reintentos (no setTimeout efímero)
+    const outbox = await outboxService.persistConfirmation(manager, payload.orderId, 'success', {
+      deliveryNumber: delivery.deliveryNumber,
+      status: delivery.orderState,
+      message: 'Entrega creada exitosamente',
+    });
+
+    // Intentar envío inmediato (asíncrono, no bloqueante)
+    // Si falla, el outbox processor retentará periódicamente
+    setImmediate(() => {
+      outboxService.sendConfirmationWithRetry(outbox, manager).catch((err) => {
+        console.error('[Outbox] Error en reintentos inmediatos:', err);
+      });
+    });
 
     return h.response({
       success: true,
       message: 'Webhook procesado correctamente',
       deliveryNumber: delivery.deliveryNumber,
-      status: delivery.orderState
+      status: delivery.orderState,
     }).code(200);
 
   } catch (error: unknown) {
-    console.error('❌ [MeraVuelta] Error procesando webhook:', error);
+    console.error('❌ [Talaria] Error procesando webhook:', error);
 
-    // Enviar confirmación de error asíncrona
-    setTimeout(async () => {
-      try {
-        const payload = req.payload as WebhookPayload;
-        await webhookService.sendAsyncConfirmation(payload.orderId, 'error', {
-          message: (error as Error).message || 'Error procesando webhook'
+    // Persistir confirmación de error en outbox para reintentos
+    try {
+      const payload = req.payload as WebhookPayload;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      const outbox = await outboxService.persistConfirmation(manager, payload.orderId, 'error', {
+        message: errorMessage,
+      });
+
+      // Intentar envío inmediato
+      setImmediate(() => {
+        outboxService.sendConfirmationWithRetry(outbox, manager).catch((err) => {
+          console.error('[Outbox] Error en reintentos de error:', err);
         });
-      } catch (confirmError) {
-        console.error('❌ [MeraVuelta] Error enviando confirmación de error:', confirmError);
-      }
-    }, 1000);
+      });
+    } catch (confirmError) {
+      console.error('❌ [Talaria] Error persistiendo confirmación de error:', confirmError);
+    }
 
     if (error && typeof error === 'object' && 'isBoom' in error) {
       return error as Boom.Boom;
-    }    return Boom.internal('Error interno del servidor');
+    }
+    return Boom.internal('Error interno del servidor');
   }
 }
 
@@ -108,13 +120,13 @@ export async function healthCheck(req: Hapi.request, h: Hapi.ResponseToolkit): P
 
     return h.response({
       status: 'ok',
-      service: 'MeraVuelta Delivery Service',
+      service: 'Talaria Delivery Service',
       timestamp: new Date().toISOString(),
       database: 'connected'
     }).code(200);
 
   } catch (error) {
-    console.error('❌ [MeraVuelta] Error en health check:', error);
+    console.error('❌ [Talaria] Error en health check:', error);
     return Boom.serverUnavailable('Servicio no disponible');
   }
 }

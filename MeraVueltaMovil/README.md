@@ -1,4 +1,4 @@
-# MeraVuelta Movil
+# Talaria Movil
 
 Aplicacion movil (React Native + Expo) para operacion de domiciliarios y seguimiento de entregas.
 

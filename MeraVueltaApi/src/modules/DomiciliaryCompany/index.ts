@@ -100,6 +100,10 @@ export = {
         description: 'Create domiciliaryCompany',
         notes: 'Create domiciliaryCompany',
         tags: ['api'],
+        auth: {
+          strategy: 'jwt',
+          scope: [UserRoleOptions.COMPANY, UserRoleOptions.ADMIN],
+        },
         validate: {
           payload: Joi.object().keys({
             company: Joi.number().required(),

@@ -1,5 +1,5 @@
 import Hapi from '@hapi/hapi';
-import { ApplicationState, DatabaseConfig, Environments } from '../types';
+import { ApplicationState, DatabaseConfig } from '../types';
 import { createConnection } from 'typeorm';
 
 export default class Database {
@@ -11,7 +11,11 @@ export default class Database {
 
     async connect(server: Hapi.server): Promise<void> {
       try {
-        const isProd = process.env.NODE_ENV === Environments.PROD;
+        // SSL controlado explícitamente por env (no acoplado a NODE_ENV): el
+        // Postgres configurado puede no soportar SSL ("server does not support
+        // SSL connections"). Default false; poner DB_SSL=true solo si el server
+        // lo soporta (p.ej. Neon).
+        const useSsl = process.env.DB_SSL === 'true';
         const connection = await createConnection({
           type: 'postgres',
           host: this.config.host,
@@ -22,7 +26,7 @@ export default class Database {
           entities: [this.config.entitiesPath],
           synchronize: this.config.synchronize,
           logging: this.config.logging,
-          ssl: isProd ? { rejectUnauthorized: false } : false,
+          ssl: useSsl ? { rejectUnauthorized: false } : false,
         });
 
         (<ApplicationState>server.app).connection = connection;

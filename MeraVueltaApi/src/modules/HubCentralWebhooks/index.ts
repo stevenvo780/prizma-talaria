@@ -4,7 +4,7 @@ import { Options } from '../../config/types';
 import { receiveWebhook, healthCheck } from '../../controllers/webhookController';
 
 export = {
-  name: 'hubcentral-webhooks',
+  name: 'nous-webhooks',
   register: function (server: Hapi.Server, options: Options): void {
     // Endpoint para recibir webhooks del Hub Central
     server.route({
@@ -12,12 +12,13 @@ export = {
       path: `${options.routePrefix}/webhooks/deliveries`,
       options: {
         description: 'Recibir webhook de pedidos desde Hub Central para crear entregas',
-        notes: 'Endpoint que recibe pedidos pagados desde Graf vía Hub Central y los convierte en entregas de MeraVuelta',
-        tags: ['api', 'webhooks', 'hubcentral'],
+        notes: 'Endpoint que recibe pedidos pagados desde Hermes vía Hub Central y los convierte en entregas de Talaria',
+        tags: ['api', 'webhooks', 'nous'],
         auth: false, // Sin autenticación, validación por HMAC
         validate: {
           headers: Joi.object({
-            'x-hub-signature-256': Joi.string().required(),
+            'x-prizma-signature': Joi.string().optional(),
+            'x-hub-signature-256': Joi.string().optional(),
             'content-type': Joi.string().valid('application/json').required(),
           }).unknown(true),
           payload: Joi.object({
@@ -55,7 +56,7 @@ export = {
       method: 'GET',
       path: `${options.routePrefix}/webhooks/health`,
       options: {
-        description: 'Health check del servicio de webhooks de MeraVuelta',
+        description: 'Health check del servicio de webhooks de Talaria',
         notes: 'Verificar estado del servicio de entregas',
         tags: ['api', 'health'],
         auth: false,
